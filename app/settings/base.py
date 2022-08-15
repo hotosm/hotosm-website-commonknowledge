@@ -29,6 +29,19 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail",
+    "modelcluster",
+    "taggit",
 ]
 
 MIDDLEWARE = [
@@ -41,6 +54,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "livereload.middleware.LiveReloadScript",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 ROOT_URLCONF = "app.urls"
@@ -177,3 +191,8 @@ LOGGING = {
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+
+# Wagtail
+
+WAGTAIL_SITE_NAME = "Humanitarian OpenStreetMap Team"
