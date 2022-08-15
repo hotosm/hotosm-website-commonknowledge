@@ -13,12 +13,17 @@ export default defineConfig(() => {
     build: {
       manifest: true,
       emptyOutDir: true,
+      polyfillModulePreload: false,
       rollupOptions: {
         output: {
-          dir: "dist/",
+          dir: "vite/",
         },
         input: BUNDLE_ENTRYPOINTS,
       },
+    },
+    server: {
+      port: 3000,
+      strictPort: true,
     },
   };
 });

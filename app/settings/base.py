@@ -124,10 +124,12 @@ STATICFILES_FINDERS = [
 ]
 
 
-DJANGO_VITE_ASSETS_PATH = BASE_DIR + "/dist"
+DJANGO_VITE_ASSETS_PATH = BASE_DIR + "/vite"
 DJANGO_VITE_MANIFEST_PATH = DJANGO_VITE_ASSETS_PATH + "/manifest.json"
 
-STATICFILES_DIRS = [DJANGO_VITE_ASSETS_PATH]
+STATICFILES_DIRS = [
+    DJANGO_VITE_ASSETS_PATH,
+]
 
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated
