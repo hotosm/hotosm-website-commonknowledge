@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__/", include(debug_toolbar.urls)),
-    path("", TemplateView.as_view(template_name="pages/index.html", extra_context=map)),
+    path("", TemplateView.as_view(template_name="pages/index.html")),
 ]
 
 
