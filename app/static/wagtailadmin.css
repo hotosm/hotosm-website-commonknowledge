@@ -1,0 +1,14 @@
+:root {
+  --w-color-primary-hue: 2;
+  --w-color-primary-saturation: 53%; /* 53% */
+  --w-color-primary-lightness: 45%; /* 53% */
+  /* --w-color-primary-darker-hue: 24;
+  --w-color-primary-darker-saturation: 100%;
+  --w-color-primary-darker-lightness: 20%;
+  --w-color-primary-dark-hue: 23;
+  --w-color-primary-dark-saturation: 100%;
+  --w-color-primary-dark-lightness: 15%; */
+  --w-color-secondary-hue: 220deg;
+  --w-color-secondary-saturation: 12%;
+  --w-color-secondary-lightness: 20%;
+}
