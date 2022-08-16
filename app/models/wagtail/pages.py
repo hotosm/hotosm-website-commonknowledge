@@ -3,6 +3,8 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 from wagtail.models import Page
 
+import app.models.wagtail.blocks as app_blocks
+
 block_features = [
     "h1",
     "h2",
@@ -28,6 +30,7 @@ class HomePage(Page):
     show_in_menus_default = True
     layout = StreamField(
         [
+            ("summary_text", app_blocks.PageSummaryBlock()),
             ("richtext", blocks.RichTextBlock()),
         ],
         null=True,

@@ -1,0 +1,14 @@
+  <div class="container">
+    <header class="home-header">
+      <h1>
+        {{ value.text }}
+      </h1>
+      <div class="home-cta">
+        {% for cta in value.buttons %}
+        <a href="{% firstof url page.url %}" class="btn btn-primary btn-lg btn-chevron btn-block">
+          {% firstof title page.title %}
+        </a>
+        {% endfor %}
+      </div>
+    </header>
+  </div>

@@ -1,0 +1,19 @@
+{% load wagtailcore_tags %}
+<a href="{{ url }}" class="home-banner small-banner">
+  <div class="banner-container">
+    <header class="banner-header">
+      
+      <br>
+      <div class="banner-headers">
+        <h2 class="banner-header-main">{{ title }}</h2>
+        <h3 class="banner-header-sub">{{ text|richtext }}</h3>
+      </div>
+    </header>
+    <div class="banner-body">
+      
+      <div class="banner-cta">
+        <span href="{{ url }}"></span>
+      </div>
+    </div>
+  </div>
+</a>
