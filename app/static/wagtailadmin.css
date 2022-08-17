@@ -12,3 +12,7 @@
   --w-color-secondary-saturation: 12%;
   --w-color-secondary-lightness: 20%;
 }
+
+.sidebar-custom-branding {
+  width: 100% !important;
+}
