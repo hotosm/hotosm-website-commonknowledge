@@ -35,7 +35,7 @@
   {% wagtailuserbar %}
 
   {% block banner %}
-    {% if page.show_header %}
+    {% if page.show_header is None or page.show_header is True %}
       {% if settings.app.SiteBannerSetting.banner_active %}
         <a href="{{ settings.app.SiteBannerSetting.url }}" class="home-banner small-banner">
           <div class="banner-container">
@@ -59,7 +59,7 @@
   
   <div class="page-body">
     {% block header %}
-      {% if page.show_header %}
+      {% if page.show_header is None or page.show_header is True %}
         <div class="nav-mobile">
           <div class="nav-mobile-header">
             <div class="nav-mobile-logo">
@@ -179,7 +179,7 @@
       </div>
 
       {% block footer %}
-        {% if page.show_footer %}
+        {% if page.show_footer is None or page.show_footer is True %}
           <footer class="site-footer">
             <div class="footer-body">
               <nav class="footer-group">
