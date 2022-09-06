@@ -200,6 +200,7 @@ class TopicHomepage(TopicContextMixin, Page):
             ("links_gallery", app_blocks.GuideSection()),
             ("featured_link", app_blocks.FeaturedLinkBlock()),
             ("richtext", blocks.RichTextBlock()),
+            ("simple_link", app_blocks.LinkBlock()),
         ],
         null=True,
         blank=True,
@@ -226,9 +227,10 @@ class TopicPage(TopicContextMixin, Page):
     short_description = models.CharField(max_length=300)
     layout = StreamField(
         [
-            ("richtext", blocks.RichTextBlock()),
             ("links_gallery", app_blocks.GuideSection()),
-            ("featured_link", app_blocks.FeaturedLinkBlock())
+            ("featured_link", app_blocks.FeaturedLinkBlock()),
+            ("richtext", blocks.RichTextBlock()),
+            ("simple_link", app_blocks.LinkBlock()),
             # TODO: direct link to tasks via API
             # TODO: code block
             # TODO: github repo block

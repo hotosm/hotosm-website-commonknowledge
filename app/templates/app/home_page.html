@@ -8,7 +8,7 @@
 <div class="home">
     <p class="text-3xl">{{ page.description }}</p>
 
-    {% include_block page.layout %}
+    {% include "app/include/streamfield.html" with streamfield=page.layout %}
 </div>
 
 {% endblock %}

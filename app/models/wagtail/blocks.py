@@ -34,6 +34,9 @@ class LinkBlock(blocks.StructBlock):
     )
     description = blocks.CharBlock(max_length=250, required=False)
 
+    class Meta:
+        template = "app/blocks/link_block.html"
+
 
 class FeaturedLinkBlock(blocks.StructBlock):
     title = blocks.CharBlock(
@@ -54,12 +57,18 @@ class FeaturedLinkBlock(blocks.StructBlock):
         help_text="Will override the page URL if specified",
     )
 
+    class Meta:
+        template = "app/blocks/featured_link_block.html"
+
 
 class GuideSection(blocks.StructBlock):
     title = blocks.CharBlock(max_length=250)
     description = blocks.RichTextBlock(required=False)
     links = blocks.ListBlock(LinkBlock())
     more_info = LinkBlock(required=False)
+
+    class Meta:
+        template = "app/blocks/guide_section_block.html"
 
 
 class HomepageSectionBlock(blocks.StructBlock):
