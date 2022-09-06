@@ -19,7 +19,7 @@ RUN groupadd -r app && useradd --no-log-init -r -g app app
 RUN mkdir -p /home/app && chown -R app /home/app
 RUN mkdir -p /app && chown -R app /app
 ENV POETRY_HOME=/usr/local
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN curl -sSL https://install.python-poetry.org | python3 - --preview
 USER app
 RUN poetry config virtualenvs.create false
 

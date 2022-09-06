@@ -29,8 +29,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "wagtail.contrib.forms",
-    "wagtail.contrib.redirects",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -38,6 +36,10 @@ INSTALLED_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
+    "wagtail_localize",
+    "wagtail_localize.locales",  # This replaces "wagtail.locales"
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
     "wagtail.admin",
     "wagtail",
     "modelcluster",
@@ -56,6 +58,9 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "livereload.middleware.LiveReloadScript",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    # wagtail-localize
+    "django.middleware.locale.LocaleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
@@ -131,6 +136,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+WAGTAIL_I18N_ENABLED = True
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en", "English"),
+    ("fr", "French"),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -199,3 +210,5 @@ INTERNAL_IPS = [
 # Wagtail
 
 WAGTAIL_SITE_NAME = "Humanitarian OpenStreetMap Team"
+WAGTAILIMAGES_IMAGE_MODEL = "app.CMSImage"
+WAGTAILDOCS_DOCUMENT_MODEL = "app.CMSDocument"

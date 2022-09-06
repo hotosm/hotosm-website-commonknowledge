@@ -141,3 +141,7 @@ local.py
 # Docs artifacts
 docs/api
 docs/components
+
+# Misc
+wagtail-localize/
+___wagtail-localize/

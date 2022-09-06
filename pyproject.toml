@@ -27,7 +27,8 @@ django-storages = "*"
 groundwork-django = '^0.1.3'
 gunicorn = '>=20.1.0'
 psycopg2 = '>=2.8.6'
-wagtail = "4.0rc1"
+wagtail = "4.0rc2"
+wagtail-localize = { path = "./wagtail-localize", develop = true }
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"

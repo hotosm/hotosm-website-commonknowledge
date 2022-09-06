@@ -9,5 +9,8 @@
   "jest.autoRun": "off",
   "[django-html]": {
     "editor.formatOnSave": false
+  },
+  "files.associations": {
+    "*.html": "django-html"
   }
 }

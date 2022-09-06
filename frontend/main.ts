@@ -1,5 +1,6 @@
 import "./scss/main.scss";
 import "@hotwired/turbo";
+import "flowbite";
 
 import { startApp } from "groundwork-django";
 

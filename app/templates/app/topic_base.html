@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags app %}
+
+{% block content %}
+{% comment %} Top nav for all guide docs (”Mapping”, “Using GIS data”, “Contributing open source code”) --> {% endcomment %}
+<nav class="border-b border-gray-200 text-sm px-2 sm:px-4">
+    <div class="space-x-3">
+        <span class='text-gray-500'>Guides</span>
+        {% for topic in all_topics %}
+            <a class='
+                inline-block text-gray-700
+                py-3 border-b-2 -mb-[1px]
+                {% if_ancestor topic page "text-hotRed border-b-hotRed" "border-b-transparent" %}
+            ' href="{% pageurl topic %}">{{ topic.title }}</a>
+        {% endfor %}
+    </div>
+</nav>
+
+<div class='flex-grow flex flex-row md:overflow-hidden'>
+    {% comment %} Table of Contents {% endcomment %}
+    {% comment %} TODO: Collapsible {% endcomment %}
+    <div class='py-4 px-2 sm:px-4 hidden md:block !w-[240px] flex-shrink-0 flex-grow-0 border-r border-r-gray-200 overflow-y-auto overflow-x-hidden'>
+        <ul class="list-unstyled space-y-2 text-gray-800 text-sm">
+            <li class='block {% if page.id == current_topic.id %}text-hotRed{% endif %}'>
+                <a href="{% pageurl current_topic %}">Overview</a>
+            </li>
+            {% for this_page in current_topic.get_children.live.public.in_menu %}
+                <li class='block'>
+                    <a class='{% if_ancestor this_page page %}' href="{% pageurl this_page %}">{{ this_page.title }}</a>
+                    <ul class="list-unstyled space-y-2 pl-3 my-2">
+                    {% for subpage in this_page.get_children.live.public.in_menu %}
+                        <li class='block'>
+                            <a class='{% if_ancestor subpage page %}' href="{% pageurl subpage %}">{{ subpage.title }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class='flex-shrink flex-grow md:overflow-y-auto overflow-x-hidden flex flex-col' id='doc-scrollable-area'>
+        {% comment %} Page content {% endcomment %}
+        {% block topic_content %}
+            <div class='mb-4 px-2 sm:px-4 md:px-5 flex-grow'>
+                <header class='mb-4'>
+                    <h1 class='font-bold text-3xl mb-2 text-black'>{{ page.title }}</h1>
+                    {% if page.short_description %}
+                        <div class='text-2xl'>{{ page.short_description }}</div>
+                    {% endif %}
+                </header>
+
+                <div class='prose' data-toc-target="content">
+                    {% include_block page.layout %}
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block body_class %}
+    md:overflow-hidden
+{% endblock %}
+
+{% block screen_class %}
+    top-0
+    left-0
+    fixed
+    w-screen
+    min-w-full
+    h-screen
+    max-h-screen
+    min-h-screen
+{% endblock %}
+
+{% block content_class %}
+    md:overflow-hidden
+{% endblock %}
+
+{% block footer %}
+    {% comment %} Hidden {% endcomment %}
+{% endblock%}

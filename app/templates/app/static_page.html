@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags %}
 
-{% block body_class %}align-items-center justify-content-center bg-dark text-white{% endblock %}
+
 
 {% block content %}
 
 <h1>{{ page.title }}</h1>
 
 {% include_block page.layout %}
-  
+
 {% endblock %}
-  
