@@ -9,6 +9,8 @@ from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
+from app.views.search import SearchView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__/", include(debug_toolbar.urls)),
@@ -17,6 +19,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
+    path("search/", SearchView.as_view()),
     path("", include(wagtail_urls)),
 )
 

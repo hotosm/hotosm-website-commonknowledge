@@ -14,6 +14,7 @@ module.exports = {
                 2: "10px",
                 3: "15px",
                 4: "20px",
+                icon: "1.25rem",
                 5: "40px",
                 6: "80px",
             },

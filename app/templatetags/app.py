@@ -1,4 +1,7 @@
+from urllib import parse
+
 from django import template
+from django.http.request import HttpRequest
 from wagtail.models import Page
 
 register = template.Library()
@@ -34,3 +37,24 @@ def if_ancestor(
     if highlighted_in_table_of_content(page, current_page):
         return ancestor_class
     return unrelated_class
+
+
+@register.simple_tag(takes_context=True)
+def querystring(context, **kwargs):
+    """
+    Add query kwargs to URL.
+
+    e.g. {% querystring annual=None as url %}
+    """
+    request: HttpRequest = context.get("request", None)
+    if request is None:
+        return
+
+    params = request.GET.dict()
+    for key, value in kwargs.items():
+        if value is None:
+            params.pop(key, None)
+        else:
+            params[key] = value
+
+    return "?" + parse.urlencode(params)
