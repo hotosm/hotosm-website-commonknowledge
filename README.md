@@ -29,3 +29,9 @@ A starter repository for [Groundwork](https://groundwork.commonknowledge.coop) p
 - VSCode Development Containers
 - Github Actions
 - Docker
+
+## Setup instructions
+
+- [ ] Configure locales in the Wagtail Admin UI
+- [ ] Configure DeepL by adding `DEEPL_API_KEY`
+- [ ] Configure menus

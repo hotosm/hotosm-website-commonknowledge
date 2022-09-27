@@ -2,6 +2,7 @@ import os
 import re
 
 import dj_database_url
+from django.conf.locale import LANG_INFO
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     "taggit",
     "wagtail.contrib.settings",
     "wagtail.contrib.styleguide",
+    "wagtail.contrib.modeladmin",
+    "wagtailmenus",
 ]
 
 MIDDLEWARE = [
@@ -80,6 +83,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
+                "wagtailmenus.context_processors.wagtailmenus",
             ],
         },
     },
@@ -138,9 +142,11 @@ USE_TZ = True
 
 WAGTAIL_I18N_ENABLED = True
 
+# Allow any language that Django supports
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
-    ("en", "English"),
-    ("fr", "French"),
+    (locale[0], locale[1]["name_local"] + " (" + locale[1]["name"] + ")")
+    for locale in LANG_INFO.items()
+    if locale[1].get("name_local", None) and locale[1].get("name", None)
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -206,9 +212,27 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
+WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", BASE_URL)
+
 
 # Wagtail
-
 WAGTAIL_SITE_NAME = "Humanitarian OpenStreetMap Team"
 WAGTAILIMAGES_IMAGE_MODEL = "app.CMSImage"
 WAGTAILDOCS_DOCUMENT_MODEL = "app.CMSDocument"
+
+# cms
+SETUP_DEMO_PAGES = os.getenv("SETUP_DEMO_PAGES", True)
+
+# wagtailmenus
+WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (("footer", "Footer"),)
+
+# wagtail-localize
+DEEPL_API_KEY = os.getenv("DEEPL_API_KEY", None)
+if DEEPL_API_KEY is not None:
+    WAGTAILLOCALIZE_MACHINE_TRANSLATOR = {
+        "CLASS": "wagtail_localize.machine_translators.deepl.DeepLTranslator",
+        "OPTIONS": {
+            "AUTH_KEY": DEEPL_API_KEY,
+        },
+    }

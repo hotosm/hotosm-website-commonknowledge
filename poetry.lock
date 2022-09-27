@@ -271,6 +271,19 @@ dev = ["flake8", "sphinx", "sphinx-rtd-theme", "tox", "twine", "wheel"]
 postal = ["cryptography"]
 
 [[package]]
+name = "django-cogwheels"
+version = "0.3"
+description = "A consistent, user-friendly solution for adding app-specific settings your Django package, reusable app or framework."
+category = "main"
+optional = false
+python-versions = ">=3.4"
+
+[package.extras]
+testing = ["coverage"]
+docs = ["sphinx-rtd-theme (>=0.3)", "sphinxcontrib-spelling (>=1.4)", "Sphinx (>=1.7.4)", "pyenchant (>=2.0)"]
+development = ["django-extensions", "werkzeug", "ipdb", "Django (>=2.0,<2.1)"]
+
+[[package]]
 name = "django-debug-toolbar"
 version = "3.6.0"
 description = "A configurable set of panels that display various debug information about the current request/response."
@@ -1149,7 +1162,7 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 
 [[package]]
 name = "wagtail"
-version = "4.0rc2"
+version = "4.0.2"
 description = "A Django content management system."
 category = "main"
 optional = false
@@ -1176,7 +1189,7 @@ Willow = ">=1.4,<1.5"
 xlsxwriter = ">=1.2.8,<4.0"
 
 [package.extras]
-docs = ["pyenchant (>=3.1.1,<4)", "sphinxcontrib-spelling (>=5.4.0,<6)", "Sphinx (>=1.5.2)", "sphinx-autobuild (>=0.6.0)", "sphinx-wagtail-theme (==5.1.1)", "myst-parser (==0.17.0)"]
+docs = ["pyenchant (>=3.1.1,<4)", "sphinxcontrib-spelling (>=5.4.0,<6)", "Sphinx (>=1.5.2)", "sphinx-autobuild (>=0.6.0)", "sphinx-wagtail-theme (==5.3.0)", "myst-parser (==0.17.0)"]
 testing = ["python-dateutil (>=2.7)", "pytz (>=2014.7)", "elasticsearch (>=5.0,<6.0)", "Jinja2 (>=3.0,<3.2)", "boto3 (>=1.16,<1.17)", "freezegun (>=0.3.8)", "openpyxl (>=2.6.4)", "azure-mgmt-cdn (>=5.1,<6.0)", "azure-mgmt-frontdoor (>=0.3,<0.4)", "django-pattern-library (>=0.7,<0.8)", "coverage (>=3.7.0)", "black (==22.3.0)", "flake8 (>=3.6.0)", "isort (==5.6.4)", "flake8-blind-except (==0.1.1)", "flake8-comprehensions (==3.8.0)", "flake8-print (==5.0.0)", "doc8 (==0.8.1)", "flake8-assertive (==2.0.0)", "curlylint (==0.13.1)", "djhtml (==1.4.13)", "polib (>=1.1,<2.0)"]
 
 [[package]]
@@ -1202,6 +1215,22 @@ testing = ["dj-database-url (==0.5.0)", "freezegun (==1.1.0)", "django-rq (>=2.5
 [package.source]
 type = "directory"
 url = "wagtail-localize"
+
+[[package]]
+name = "wagtailmenus"
+version = "3.1.2"
+description = "An app to help you manage menus in your Wagtail projects more consistently."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+django-cogwheels = "0.3"
+
+[package.extras]
+development = ["wagtail (>=2.15)", "django-debug-toolbar", "django-extensions", "ipdb", "werkzeug", "beautifulsoup4 (>=4.8,<4.10)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
+docs = ["pyenchant (>=2.0)", "Sphinx (>=1.7.4)", "sphinxcontrib-spelling (>=1.4)", "sphinx-rtd-theme (>=0.3)"]
+testing = ["beautifulsoup4 (>=4.8,<4.10)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
 
 [[package]]
 name = "webencodings"
@@ -1262,7 +1291,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "27baf7d6dad1a70963a5acca5ce6f01ad3c46521302357dcf586a325c52174ad"
+content-hash = "7e2ab88e6d3cf03fed08609f8d73f66402fa2f27b0b2e6e86f885ba9a4a341c1"
 
 [metadata.files]
 anyascii = [
@@ -1351,6 +1380,10 @@ django = [
 django-anymail = [
     {file = "django-anymail-8.6.tar.gz", hash = "sha256:783342d49dd07d68778b81dd12a94c86e1d217463a68a85450a0513fabe31345"},
     {file = "django_anymail-8.6-py3-none-any.whl", hash = "sha256:49d83d7c16316ca86a624097496881d59b7d71b16bf1c5211cffa5b19ef98d0c"},
+]
+django-cogwheels = [
+    {file = "django-cogwheels-0.3.tar.gz", hash = "sha256:848a4d9f2c96c582a4a4f2e7c276dfd95ab3905748cae13bb7c4b365a6717e94"},
+    {file = "django_cogwheels-0.3-py3-none-any.whl", hash = "sha256:197bd05e7114403d7301214b3f8a371c4fb6039cf21c811f099438b167b5ed21"},
 ]
 django-debug-toolbar = [
     {file = "django-debug-toolbar-3.6.0.tar.gz", hash = "sha256:95fc2fd29c56cc86678aae9f6919ececefe892f2a78c4004b193a223a8380c3d"},
@@ -1796,10 +1829,14 @@ virtualenv = [
     {file = "virtualenv-20.16.3.tar.gz", hash = "sha256:d86ea0bb50e06252d79e6c241507cb904fcd66090c3271381372d6221a3970f9"},
 ]
 wagtail = [
-    {file = "wagtail-4.0rc2-py3-none-any.whl", hash = "sha256:d1c12f2e76e0a94a1d1c16b104cc57b459229683b0ef21d3949d6f23a384a519"},
-    {file = "wagtail-4.0rc2.tar.gz", hash = "sha256:db618f004d1b615cd87bd21e5ad66a37333062e924b04b443dc040a142c13915"},
+    {file = "wagtail-4.0.2-py3-none-any.whl", hash = "sha256:2572068dcc6a3406c411eb8e81220471e2cb0578b6d86d401850f27c237942fa"},
+    {file = "wagtail-4.0.2.tar.gz", hash = "sha256:a106ef4d85aeb9858de5670f6501866be3f6c7e241828925eb1f777bdf4a7e64"},
 ]
 wagtail-localize = []
+wagtailmenus = [
+    {file = "wagtailmenus-3.1.2-py3-none-any.whl", hash = "sha256:1f5d9c7e620782d176f7c18c321c6b4358c6634425c586f58ddaf4c0474f1a42"},
+    {file = "wagtailmenus-3.1.2.tar.gz", hash = "sha256:7b357c2926c4b104a4a1cc9811965aad6d081c5103c72cc8895a7e8367571947"},
+]
 webencodings = [
     {file = "webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
