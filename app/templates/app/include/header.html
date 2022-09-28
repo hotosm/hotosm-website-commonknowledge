@@ -79,22 +79,20 @@
                     <div
                         data-modal-target="container"
                         data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard"
-                        class="hidden animated fadeIn fixed inset-0 overflow-y-auto z-[9999] bg-[#7b000073]">
+                        class="hidden animate-fadeIn fixed inset-0 overflow-y-auto z-[9999] bg-[#7b000073]">
                         <!-- Modal Inner Container -->
-                        <div class="w-full max-w-lg px-2 relative mt-5 mx-auto">
-                            <!-- Modal Card -->
-                            {% comment %} <div class="m-2 bg-white rounded shadow-md"> {% endcomment %}
-                                <form action="/search" method="GET">
-                                    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
-                                    <div class="relative">
-                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                            <svg aria-hidden="true" class="w-icon h-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                        </div>
-                                        <input name="query" tabindex="0" type="search" autocapitalize="off" aria-label="Search" id="default-search" class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search HOTOSM, people and resources" required>
-                                        <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button>
+                        <div class="w-full max-w-lg px-2 relative mt-5 mx-auto" data-controller="query-on-type combo-box-a11y" data-query-on-type-debounce-value="300" data-query-on-type-original-src-value="{% url 'search_frame' %}">
+                            <div class='my-4'>
+                                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+                                <div class="relative">
+                                    <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                                        <svg aria-hidden="true" class="w-icon h-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                     </div>
-                                </form>
-                            {% comment %} </div> {% endcomment %}
+                                    <input data-combo-box-a11y-target="item input" data-action="query-on-type#update" data-query-on-type-property-param="query" name="query" value="{{search_query|default:""}}" tabindex="0" type="search" autocapitalize="off" aria-label="Search" id="default-search" autocomplete="off" class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search HOTOSM, people and resources" required>
+                                    {% comment %} <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button> {% endcomment %}
+                                </div>
+                            </div>
+                            <turbo-frame id="search-results" src="{% url 'search_frame' %}" data-query-on-type-target="frame"></turbo-frame>
                         </div>
                     </div>
                 </li>

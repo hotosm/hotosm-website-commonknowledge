@@ -20,6 +20,11 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path("search/", SearchView.as_view(), name="search"),
+    path(
+        "frames/search/",
+        SearchView.as_view(template_name="app/frames/search.html"),
+        name="search_frame",
+    ),
     path("", include(wagtail_urls)),
 )
 

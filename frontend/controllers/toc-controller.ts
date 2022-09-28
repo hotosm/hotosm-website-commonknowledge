@@ -29,7 +29,6 @@ class CustomController extends Controller {
     readonly optionsValue!: tocbot.IStaticOptions;
 
     async connect() {
-        console.log(this.optionsValue);
         // @ts-ignore
         tocbot.init({
             // Where to render the table of contents.

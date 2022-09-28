@@ -55,6 +55,15 @@ module.exports = {
                 hotYellow: "#FCAB3C",
             },
             // "Barlow Condensed",sans-serif
+            keyframes: {
+                fadeIn: {
+                    "0%": { opacity: 0 },
+                    "100%": { opacity: 1 },
+                },
+            },
+            animation: {
+                fadeIn: "fadeIn 0.075s ease-in-out",
+            },
         },
     },
     plugins: [require("@tailwindcss/typography"), require("flowbite/plugin")],

@@ -94,6 +94,7 @@ class SearchView(TemplateView):
         current_page_number = max(
             1, min(paginator.num_pages, safe_to_int(self.request.GET.get("page"), 1))
         )
+        paginator_page = paginator.page(current_page_number)
 
         kwargs.update(
             {
@@ -106,12 +107,11 @@ class SearchView(TemplateView):
                             page.specific
                         ),
                     }
-                    for page in paginator.page(current_page_number)
+                    for page in paginator_page
                 ],
-                "pages": lambda: [
-                    page.specific for page in paginator.page(current_page_number)
-                ],
+                "pages": lambda: [page.specific for page in paginator_page],
                 "total_count": paginator.count,
+                "paginator_page": paginator_page,
                 "paginator": paginator,
             }
         )
