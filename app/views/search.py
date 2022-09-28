@@ -90,10 +90,8 @@ class SearchView(TemplateView):
     def get_context_data(self, **kwargs):
         scope = self.get_scope()
         search_results = list({p.localized for p in self.do_search()})
-
         paginator = Paginator(search_results, self.per_page)
-
-        page_num = max(
+        current_page_number = max(
             1, min(paginator.num_pages, safe_to_int(self.request.GET.get("page"), 1))
         )
 
@@ -108,12 +106,11 @@ class SearchView(TemplateView):
                             page.specific
                         ),
                     }
-                    for page in paginator.page(page_num)
+                    for page in paginator.page(current_page_number)
                 ],
-                "pages": lambda: [page.specific for page in paginator.page(page_num)],
-                "page": page_num,
-                "prev_page": max(1, min(paginator.num_pages, page_num - 1)),
-                "next_page": max(1, min(paginator.num_pages, page_num + 1)),
+                "pages": lambda: [
+                    page.specific for page in paginator.page(current_page_number)
+                ],
                 "total_count": paginator.count,
                 "paginator": paginator,
             }

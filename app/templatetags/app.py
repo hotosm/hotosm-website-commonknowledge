@@ -2,6 +2,7 @@ from urllib import parse
 
 from django import template
 from django.http.request import HttpRequest
+from django.urls import translate_url as _translate_url
 from wagtail.models import Page
 
 register = template.Library()
@@ -58,3 +59,20 @@ def querystring(context, **kwargs):
             params[key] = value
 
     return "?" + parse.urlencode(params)
+
+
+@register.simple_tag(takes_context=True)
+def translate_url(context, lang=None, *args, **kwargs):
+    """
+    Only works for named routes
+    """
+    path = context["request"].path
+    translated = _translate_url(path, lang)
+    return translated
+
+
+@register.simple_tag()
+def get_wagtail_locale_codes():
+    from wagtail.core.models import Locale
+
+    return list(locale.language_code for locale in Locale.objects.all())
