@@ -32,7 +32,7 @@ def is_ancestor(page: Page, current_page):
 def if_ancestor(
     page: Page,
     current_page,
-    ancestor_class: str = " text-hotRed ",
+    ancestor_class: str = " text-red ",
     unrelated_class: str = "  ",
 ):
     if highlighted_in_table_of_content(page, current_page):

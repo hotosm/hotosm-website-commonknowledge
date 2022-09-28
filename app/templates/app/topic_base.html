@@ -10,7 +10,7 @@
             <a class='
                 inline-block text-gray-700
                 py-3 border-b-2 -mb-[1px]
-                {% if_ancestor topic page "text-hotRed border-b-hotRed" "border-b-transparent" %}
+                {% if_ancestor topic page "text-red border-b-red" "border-b-transparent" %}
             ' href="{% pageurl topic %}">{{ topic.title }}</a>
         {% endfor %}
     </div>
@@ -21,7 +21,7 @@
     {% comment %} TODO: Collapsible {% endcomment %}
     <div class='py-4 px-2 sm:px-4 hidden lg:block !w-[240px] flex-shrink-0 flex-grow-0 border-r border-r-gray-200 overflow-y-auto overflow-x-hidden'>
         <ul class="list-unstyled space-y-2 text-gray-800 text-sm">
-            <li class='block {% if page.id == current_topic.id %}text-hotRed{% endif %}'>
+            <li class='block {% if page.id == current_topic.id %}text-red{% endif %}'>
                 <a href="{% pageurl current_topic %}">Overview</a>
             </li>
             {% for this_page in current_topic.get_children.live.public.in_menu %}

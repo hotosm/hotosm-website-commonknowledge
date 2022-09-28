@@ -6,7 +6,7 @@
     <div class="grid-cols-1 sm:grid-cols-2 grid gap-6 md:gap-8 lg:grid-cols-3">
         {% for link in value.links %}
             <a href="{% firstof link.url link.page.url %}" class="block no-underline border border-gray-200 p-3 rounded-md">
-                <div class="text-hotRed">{% firstof link.label link.page.title %}</div>
+                <div class="text-red">{% firstof link.label link.page.title %}</div>
                 {% if link.description %}<p class='mt-1'>{{ link.description }}</p>{% endif %}
             </a>
         {% endfor %}

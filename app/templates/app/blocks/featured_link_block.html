@@ -4,7 +4,7 @@
     <div class='flex flex-col justify-center mb-4'>
         <h2 class='text-xl font-bold mb-2'>{{ value.title }}</h2>
         <div class="mb-2">{{ value.description|richtext }}</div>
-        <a href="{% firstof value.link_url value.link_page.url %}" class="block no-underline text-hotRed">
+        <a href="{% firstof value.link_url value.link_page.url %}" class="block no-underline text-red">
             {% firstof value.link_label value.link_page.title %} &rarr;
         </a>
     </div>
