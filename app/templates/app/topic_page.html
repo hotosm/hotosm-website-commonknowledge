@@ -2,7 +2,8 @@
 {% load wagtailcore_tags app %}
 
 {% block topic_content %}
-    <ul class="my-4 px-2 sm:px-4 md:px-5 list-unstyled space-x-2 text-gray-400 text-sm mb-2">
+    {% if page.show_breadcrumb %}
+    <ul class="mt-4 px-2 sm:px-4 md:px-5 list-unstyled space-x-2 text-gray-600 text-sm">
         {% for page in self.get_ancestors %}
             {% if page.content_type.model == "topichomepage" %}
                 <li class='inline-block [&:not(:last-child)]:after:content-["/"] after:pl-2'><a href="{% pageurl page %}">Home</a></li>
@@ -12,8 +13,9 @@
             {% endif %}
         {% endfor %}
     </ul>
+    {% endif %}
 
-    <div class='flex flex-row flex-grow' data-controller="toc" data-toc-options-value='{
+    <div class='my-4 flex flex-row flex-grow {% if not page.show_section_navigation %} justify-center {% endif %}' data-controller="toc" data-toc-options-value='{
         "scrollContainer": "#doc-scrollable-area",
             {% comment %} // Main class to add to links. {% endcomment %}
         "linkClass": "toc-link",
@@ -36,15 +38,17 @@
             {% comment %} // Class to add to active list items. {% endcomment %}
         "activeListItemClass": ""
     }'>
-        <section class='flex-grow'>
+        <section class='{% if page.show_section_navigation %} flex-grow {% else %} max-w-prose w-full {% endif %}'>
             {{ block.super }}
         </section>
+        {% if page.show_table_of_contents %}
         <aside class='ml-4 hidden xl:block w-[220px] flex-shrink-0 flex-grow-0'>
             <div class='sticky top-5 mb-4 right-3 text-gray-800 text-sm'>
                 <div class='uppercase'>On this page</div>
                 <div class='-ml-3' data-toc-target="toc"></div>
             </div>
         </aside>
+        {% endif %}
     </div>
 
     {% comment %} TODO: Relevant signup / more info stuff in the footer, for this topic’s pages {% endcomment %}

@@ -12,9 +12,9 @@ from wagtail.documents import urls as wagtaildocs_urls
 from app.views.search import SearchView
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("django-admin/", admin.site.urls),
     path("__debug__/", include(debug_toolbar.urls)),
-    path("cms/", include(wagtailadmin_urls)),
+    path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
 ]
 

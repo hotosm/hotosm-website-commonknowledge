@@ -1,0 +1,14 @@
+{% load app i18n wagtailcore_tags menu_tags %}
+
+{% for item in menu_items %}
+    <li class='block'>
+        <a class='{% if_ancestor item page %}' href="{% pageurl item %}">{{ item.title }}</a>
+        <ul class="list-unstyled space-y-2 pl-3 my-2">
+        {% for subpage in item.get_children.live.public.in_menu %}
+            <li class='block'>
+                <a class='{% if_ancestor subpage page %}' href="{% pageurl subpage %}">{{ subpage.title }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </li>
+{% endfor %}

@@ -24,17 +24,25 @@ export default class QueryOnTypeController extends Controller {
         this.updateSrcDebounced = debounce(
             (property: string, value: string) => {
                 if (!this.frameTarget || !this.originalSrcValue) return;
-                const newURL = qs.stringifyUrl({
-                    url: this.originalSrcValue,
-                    query: {
-                        [property]: value.trim(),
-                    },
-                });
+                const newURL = this.stringifyUrl(
+                    this.originalSrcValue,
+                    property,
+                    value,
+                );
                 if (this.frameTarget.src === newURL) return;
                 this.frameTarget.src = newURL;
             },
             this.debounceValue,
         );
+    }
+
+    stringifyUrl(url: string, property: string, value: string) {
+        return qs.stringifyUrl({
+            url,
+            query: {
+                [property]: value.trim(),
+            },
+        });
     }
 
     update(e: any) {

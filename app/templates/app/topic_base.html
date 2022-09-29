@@ -17,9 +17,8 @@
 </nav>
 
 <div class='flex-grow flex flex-row md:overflow-hidden'>
-    {% comment %} Table of Contents {% endcomment %}
-    {% comment %} TODO: Collapsible {% endcomment %}
-    <div class='py-4 px-2 sm:px-4 hidden lg:block !w-[240px] flex-shrink-0 flex-grow-0 border-r border-r-gray-200 overflow-y-auto overflow-x-hidden'>
+    {% if page.show_section_navigation %}
+    <nav class='py-4 px-2 sm:px-4 hidden lg:block !w-[240px] flex-shrink-0 flex-grow-0 border-r border-r-gray-200 overflow-y-auto overflow-x-hidden'>
         <ul class="list-unstyled space-y-2 text-gray-800 text-sm">
             <li class='block {% if page.id == current_topic.id %}text-red{% endif %}'>
                 <a href="{% pageurl current_topic %}">Overview</a>
@@ -37,24 +36,25 @@
                 </li>
             {% endfor %}
         </ul>
-    </div>
-    <div class='flex-shrink flex-grow md:overflow-y-auto overflow-x-hidden flex flex-col' id='doc-scrollable-area'>
+    </nav>
+    {% endif %}
+    <main class='flex-shrink flex-grow md:overflow-y-auto overflow-x-hidden flex flex-col' id='doc-scrollable-area'>
         {% comment %} Page content {% endcomment %}
         {% block topic_content %}
-            <div class='mb-4 px-2 sm:px-4 md:px-5 flex-grow'>
-                <header class='mb-4'>
+            <div class='mb-4 px-2 sm:px-4 {% if page.show_section_navigation %} md:px-5 {% endif %} flex-grow'>
+                <header class='mb-5'>
                     <h1 class='font-bold text-3xl mb-2 text-black'>{{ page.title }}</h1>
-                    {% if page.short_description %}
-                        <div class='text-2xl'>{{ page.short_description }}</div>
+                    {% if page.short_summary %}
+                        <div class='text-2xl'>{{ page.short_summary }}</div>
                     {% endif %}
                 </header>
 
                 <div data-toc-target="content" class="space-y-5 flex flex-col">
-                    {% include "app/include/streamfield.html" with streamfield=page.layout %}
+                    {% include "app/include/streamfield.html" with streamfield=page.content %}
                 </div>
             </div>
         {% endblock %}
-    </div>
+    </main>
 </div>
 {% endblock %}
 

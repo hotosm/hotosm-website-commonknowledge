@@ -35,3 +35,5 @@ A starter repository for [Groundwork](https://groundwork.commonknowledge.coop) p
 - [ ] Configure locales in the Wagtail Admin UI
 - [ ] Configure DeepL by adding `DEEPL_API_KEY`
 - [ ] Configure menus
+  - [ ] Add links to Main Menu
+  - [ ] Create `footer` flat menu
