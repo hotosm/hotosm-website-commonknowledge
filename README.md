@@ -37,3 +37,17 @@ A starter repository for [Groundwork](https://groundwork.commonknowledge.coop) p
 - [ ] Configure menus
   - [ ] Add links to Main Menu
   - [ ] Create `footer` flat menu
+
+## Migration instructions
+
+1. Download the live HOTOSM repo to ./hotosm-website:
+
+```
+git clone https://github.com/hotosm/hotosm-website.git
+```
+
+2. Migrate the content into the CMS
+
+```
+python manage.py migrate_content --source ./hotosm-website --scratch True
+```
