@@ -35,6 +35,7 @@ marko = "1.2.2"
 PyYAML = "^6.0"
 Pillow = "^9.1.0"
 beautifulsoup4 = "^4.11.1"
+lxml = "^4.9.1"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"
