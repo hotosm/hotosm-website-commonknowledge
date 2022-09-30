@@ -56,6 +56,8 @@ class Command(BaseCommand):
 
         parser.add_argument("--source", dest="source", type=str)
 
+        parser.add_argument("--dir", action="append", default=[], dest="dir", type=str)
+
         parser.add_argument(
             "-H", "--host", dest="host", type=str, default=default_base_url.hostname
         )
@@ -307,11 +309,12 @@ class Command(BaseCommand):
         pages = []
 
         for path, config in content_map.items():
-            for path in self.source_dir.glob(path):
-                if path.suffix in {".md", ".markdown", ".mdx"}:
-                    page = self.create_page(path, config)
-                    if page:
-                        pages.append(page)
+            if len(options["dir"]) == 0 or path in options["dir"]:
+                for path in self.source_dir.glob(path):
+                    if path.suffix in {".md", ".markdown", ".mdx"}:
+                        page = self.create_page(path, config)
+                        if page:
+                            pages.append(page)
 
         for page in pages:
             self.set_page_content(*page)
@@ -384,14 +387,13 @@ class Command(BaseCommand):
         content: block.Document,
         page: Page,
     ):
+        if content is None:
+            return
         renderer = WagtailHtmlRenderer(self.path_mapping, self.image_mapping, page.url)
-        validated_html = BeautifulSoup(content, "html5lib").prettify()
-        # Fix html issues with OLs
-        # e.g. Malaria Elimination Mapping Continues
-        page.content = json.dumps(
-            [{"type": "richtext", "value": renderer.render(validated_html)}]
-        )
-        page.save()
+        wagtail_html = renderer.render(content)
+        if wagtail_html is not None and len(wagtail_html) > 0:
+            page.content = json.dumps([{"type": "richtext", "value": wagtail_html}])
+            page.save()
 
     def setup_root_pages(self, host: str, port: int):
         root = Page.get_first_root_node()
@@ -472,14 +474,23 @@ def read_md(src):
 
 
 class WagtailHtmlRenderer(HTMLRenderer):
+    # TODO: Fix html issues with OLs
+    # e.g. Malaria Elimination Mapping Continues
+
     def __init__(self, page_mapping: dict, image_mapping: dict, base: str):
         super().__init__()
         self.page_mapping = page_mapping
         self.image_mapping = image_mapping
         self.base = base
 
+    def render(self, element):
+        html = super().render(element)
+        if html is not None and len(html) > 0:
+            return BeautifulSoup(html, "html5lib").prettify()
+        return html
+
     def render_heading(self, element):
-        level = element.level - 1
+        level = element.level + 1
 
         return "<h{level}>{children}</h{level}>\n".format(
             level=level, children=self.render_children(element)
