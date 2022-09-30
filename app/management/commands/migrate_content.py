@@ -108,7 +108,15 @@ class Command(BaseCommand):
 
         # [x] ~Put all MD files in the repo~ (not anymore)
         content_map = {
-            "_disaster-services": {
+            "*": {
+                # "directories": ["_disaster_services"],
+                "page_type": StaticPage,
+                "parent": home,
+                "frontmatter_map": {
+                    "Intro Text": "short_summary",
+                },
+            },
+            "_disaster-services/*": {
                 # "directories": ["_disaster_services"],
                 "page_type": ActivationProjectPage,
                 "parent": disaster_services_page,
@@ -117,13 +125,13 @@ class Command(BaseCommand):
                     # TODO: Feature Image — file name
                 },
             },
-            "_partners": {
+            "_partners/*": {
                 # "directories": ["_partners"],
                 "page_type": OrganisationPage,
                 "parent": partners,
                 "static_field_values": {"category": ["Partner"]},
             },
-            "_people": {
+            "_people/*": {
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -131,7 +139,7 @@ class Command(BaseCommand):
                     # TODO: Job Title / Team -> related "job" manytomanyfield
                 },
             },
-            "_people/staff": {
+            "_people/staff/*": {
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -139,7 +147,7 @@ class Command(BaseCommand):
                     # TODO: Job Title / Team -> related "job" manytomanyfield
                 },
             },
-            "_people/voting-members": {
+            "_people/voting-members/*": {
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -147,7 +155,7 @@ class Command(BaseCommand):
                     # TODO: Job Title / Team -> related "job" manytomanyfield
                 },
             },
-            "_people/archive": {
+            "_people/archive/*": {
                 # "directories": ["_people/archive"],
                 "page_type": PersonPage,
                 "parent": people,
@@ -156,7 +164,7 @@ class Command(BaseCommand):
                     # TODO: Job Title / Team -> related "job" manytomanyfield
                 },
             },
-            "_posts": {
+            "_posts/*": {
                 "page_type": ArticlePage,
                 "parent": news,
                 "frontmatter_map": {
@@ -175,7 +183,7 @@ class Command(BaseCommand):
                     # TODO: Tool
                 },
             },
-            "_press-releases": {
+            "_press-releases/*": {
                 "page_type": ArticlePage,
                 "parent": news,
                 "frontmatter_map": {
@@ -194,7 +202,7 @@ class Command(BaseCommand):
                     # TODO: Tool
                 },
             },
-            "_tech-blog": {
+            "_tech-blog/*": {
                 "page_type": ArticlePage,
                 "parent": tech_blog,
                 "frontmatter_map": {
@@ -213,12 +221,12 @@ class Command(BaseCommand):
                     # TODO: Tool
                 },
             },
-            "_projects": {
+            "_projects/*": {
                 "page_type": ProjectPage,
                 "parent": projects,
                 "frontmatter_map": {"Project Summary Text": "short_summary"},
             },
-            "_volunteer-opportunities": {
+            "_volunteer-opportunities/*": {
                 "page_type": OpportunityPage,
                 "parent": opportunities,
                 "frontmatter_map": {
@@ -226,7 +234,7 @@ class Command(BaseCommand):
                     "Apply Form Link": "apply_form_url",
                 },
             },
-            "_rfps": {
+            "_rfps/*": {
                 "page_type": OpportunityPage,
                 "parent": rfps,
                 "frontmatter_map": {
@@ -234,7 +242,7 @@ class Command(BaseCommand):
                     "Apply Form Link": "apply_form_url",
                 },
             },
-            "_working-groups": {
+            "_working-groups/*": {
                 "page_type": OrganisationPage,
                 "parent": working_groups,
                 "frontmatter_map": {
@@ -251,7 +259,7 @@ class Command(BaseCommand):
             # Blog — URL
             #
             # TODO: what to do with Tools?
-            # "_tools": {
+            # "_tools/*": {
             #     # "directories": [,],
             #     "page_type": StaticPage,
             #     "parent": rfps
@@ -299,17 +307,20 @@ class Command(BaseCommand):
         pages = []
 
         for path, config in content_map.items():
-            glob_path = Path(path) / "*"
-            print(glob_path)
-            for path in self.source_dir.glob(str(glob_path)):
+            for path in self.source_dir.glob(path):
                 if path.suffix in {".md", ".markdown", ".mdx"}:
-                    pages.append(self.create_page(path, config))
+                    page = self.create_page(path, config)
+                    if page:
+                        pages.append(page)
 
         for page in pages:
             self.set_page_content(*page)
 
     def create_page(self, src: Path, config):
-        frontmatter, content = read_md(src)
+        content, frontmatter = read_md(src)
+
+        if frontmatter.get("title", None) is None:
+            return
 
         # Fields
         old_url = "".join(str(src).split(".")[:-1])
@@ -375,6 +386,8 @@ class Command(BaseCommand):
     ):
         renderer = WagtailHtmlRenderer(self.path_mapping, self.image_mapping, page.url)
         validated_html = BeautifulSoup(content, "html5lib").prettify()
+        # Fix html issues with OLs
+        # e.g. Malaria Elimination Mapping Continues
         page.content = json.dumps(
             [{"type": "richtext", "value": renderer.render(validated_html)}]
         )
@@ -450,12 +463,12 @@ def read_md(src):
 
     blocks = data.split("---")
     if len(blocks) < 3:
-        raise OSError(f"Unexpected format: {src}")
+        return data, {}
 
     frontmatter = yaml.safe_load(blocks[1])
     md = marko.parse("---".join(blocks[2:]))
 
-    return frontmatter, md
+    return md, frontmatter
 
 
 class WagtailHtmlRenderer(HTMLRenderer):
