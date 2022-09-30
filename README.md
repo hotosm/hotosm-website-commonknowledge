@@ -2,7 +2,7 @@
 
 The next Humanitarian OpenStreetMap Team website. 
 
-## Quickstart:
+## Quickstart
 
 ### Using Visual Studio Code development containers
 
@@ -21,9 +21,8 @@ The next Humanitarian OpenStreetMap Team website.
 
 - [Stimulus](https://stimulus.hotwired.dev/)
 - [Turbo](https://turbo.hotwired.dev/)
-- [Bootstrap](https://groundwork.commonknowledge.coop)
 
-## Deployment & CI stack
+## Deployment and CI stack
 
 - VSCode Development Containers
 - Github Actions
