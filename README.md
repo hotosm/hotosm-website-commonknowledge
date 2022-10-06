@@ -56,7 +56,10 @@ python manage.py migrate_content --source ./hotosm-website --scratch True
   - Create the web app: `fly apps create --name hotosm-staging`
   - Create the database: `fly postgres create --name hotosm-staging-pg`
   - Link the database to the web app: `fly postgres attach hotosm-staging-pg --app hotosm-staging`
-- Set environment secrets with `fly secrets set KEY="VALUE" KEY2="VALUE2" ...`
+- Set environment secrets with `fly secrets set KEY="VALUE" KEY2="VALUE2" ...`. The minimal settings you will require are:
+  ```
+  SECRET_KEY=## generate via https://djecrety.ir/
+  ```
 - After the first deploy has completed, you can run `fly ssh console --app hotosm-staging` to enter the app and run set up commands, etc.
   - Run `cd app` to enter the project root
   - Use `poetry run ...` to access the python environment
