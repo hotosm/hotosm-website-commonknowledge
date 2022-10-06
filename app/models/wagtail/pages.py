@@ -20,6 +20,7 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
 
 import app.models.wagtail.blocks as app_blocks
+from app.models.wagtail.mixins import SearchableDirectoryMixin
 
 from .cms import CMSImage
 
@@ -71,7 +72,7 @@ class HOTOSMTag(TagBase):
     pass
 
 
-class HomePage(Page):
+class HomePage(SearchableDirectoryMixin, Page):
     max_count_per_parent = 1
     page_description = "Website home page. Should only be one such page per locale."
     parent_page_type = []
@@ -90,10 +91,14 @@ class HomePage(Page):
     )
     content_panels = Page.content_panels + [FieldPanel("content")]
 
+    template = "app/directory.html"
+
 
 class PreviewablePage(Page):
     class Meta:
         abstract = True
+
+    template = "app/static_page.html"
 
     # Fields
     featured_image = models.ForeignKey(
@@ -142,8 +147,6 @@ class PreviewablePage(Page):
 class ContentPage(PreviewablePage):
     class Meta:
         abstract = True
-
-    template = "app/static_page.html"
 
     # Fields
     content = StreamField(
@@ -271,10 +274,12 @@ class ProjectPage(ContentSidebarPage):
     )
 
 
-class DirectoryPage(PreviewablePage):
+class DirectoryPage(SearchableDirectoryMixin, PreviewablePage):
     page_description = (
         "A directory to store lists of things, like projects or people or organisations"
     )
+
+    template = "app/directory.html"
 
 
 class PersonType(TagBase):

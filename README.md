@@ -47,7 +47,8 @@ git clone https://github.com/hotosm/hotosm-website.git
 2. Migrate the content into the CMS
 
 ```
-python manage.py migrate_content --source ./hotosm-website --scratch True
+git clone https://github.com/hotosm/hotosm-website ./old-cms-content --filter=blob:limit=5k
+python manage.py migrate_content --source ./old-cms-content --scratch True
 ```
 
 ## Staging env setup

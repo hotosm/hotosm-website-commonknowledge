@@ -2,61 +2,40 @@ from math import ceil
 
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
-from django.utils.html import format_html, format_html_join
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.views.generic import TemplateView
 from wagtail.core.models import Page
 from wagtail.search.models import Query
 
 from app.helpers import concat_html, safe_to_int
 
 
-class SearchView(TemplateView):
-    template_name = "app/search.html"
-    page_model = Page
+class SearchableDirectoryMixin(Page):
     search_highlight_field = "content"
     per_page = 9
 
-    def get_queryset(self):
-        qs = self.get_page_model().objects.live().public()
-        scope = self.get_scope()
+    class Meta:
+        abstract = True
 
-        if scope is None:
-            return qs
+    def get_search_query(self, request):
+        return request.GET.get("query")
 
-        return qs.descendant_of(scope)
-
-    def get_search_query(self):
-        return self.request.GET.get("query")
-
-    def get_scope(self):
-        scope_id = safe_to_int(self.request.GET.get("scope"))
-
-        if scope_id is None:
-            return
-
-        return self.get_page_model().objects.filter(pk=scope_id).first()
-
-    def get_page_model(self):
-        return self.page_model
-
-    def do_search(self):
-        search_query = self.get_search_query()
+    def do_search(self, request):
+        search_query = self.get_search_query(request)
 
         if search_query:
             query = Query.get(search_query)
             query.add_hit()
 
-            return self.get_queryset().search(search_query)
-
+            return self.get_children().live().public().search(search_query)
         else:
-            return self.get_queryset().none()
+            return self.get_children().live().public()
 
-    def get_search_highlight(self, page):
+    def get_search_highlight(self, request, page):
         if hasattr(page, self.search_highlight_field):
             highlighter = SearchHeadline(
                 self.search_highlight_field,
-                query=SearchQuery(self.get_search_query()),
+                query=SearchQuery(self.get_search_query(request)),
                 min_words=60,
                 max_words=80,
                 start_sel="<cksearch:hl>",
@@ -87,24 +66,23 @@ class SearchView(TemplateView):
 
             return concat_html(start, *highlights)
 
-    def get_context_data(self, **kwargs):
-        scope = self.get_scope()
-        search_results = list({p.localized for p in self.do_search()})
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        search_results = list({p.specific.localized for p in self.do_search(request)})
         paginator = Paginator(search_results, self.per_page)
         current_page_number = max(
-            1, min(paginator.num_pages, safe_to_int(self.request.GET.get("page"), 1))
+            1, min(paginator.num_pages, safe_to_int(request.GET.get("page"), 1))
         )
         paginator_page = paginator.page(current_page_number)
 
-        kwargs.update(
+        context.update(
             {
-                "scope": scope,
-                "search_query": self.get_search_query(),
+                "search_query": self.get_search_query(request),
                 "search_results": lambda: [
                     {
                         "page": page,
                         "search_highlight": lambda: self.get_search_highlight(
-                            page.specific
+                            request, page.specific
                         ),
                     }
                     for page in paginator_page
@@ -116,4 +94,4 @@ class SearchView(TemplateView):
             }
         )
 
-        return super().get_context_data(**kwargs)
+        return context
