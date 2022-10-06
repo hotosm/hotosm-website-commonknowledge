@@ -2,6 +2,7 @@ import os
 import re
 
 import dj_database_url
+import posthog
 from django.conf.locale import LANG_INFO
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -250,6 +251,7 @@ WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (("footer", "Footer"),)
 MAPBOX_PUBLIC_API_KEY = os.getenv("MAPBOX_PUBLIC_API_KEY", None)
 
 # Posthog
+
 POSTHOG_PUBLIC_TOKEN = os.getenv("POSTHOG_PUBLIC_TOKEN", None)
 POSTHOG_URL = os.getenv("POSTHOG_URL", "https://app.posthog.com")
 
