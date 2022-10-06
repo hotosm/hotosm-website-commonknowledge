@@ -272,9 +272,7 @@ FLY_APP_NAME = os.getenv("FLY_APP_NAME", None)
 SENTRY_DSN = os.getenv("SENTRY_DSN", None)
 SENTRY_ORG_SLUG = os.getenv("SENTRY_ORG_SLUG", None)
 SENTRY_PROJECT_ID = os.getenv("SENTRY_PROJECT_ID", None)
-STRIPE_TRACE_SAMPLE_RATE = float(
-    os.getenv("STRIPE_TRACE_SAMPLE_RATE", 0.3 if STRIPE_LIVE_MODE else 1.0)
-)
+SENTRY_TRACE_SAMPLE_RATE = float(os.getenv("SENTRY_TRACE_SAMPLE_RATE", 0.25))
 
 if SENTRY_DSN is not None:
     import sentry_sdk
@@ -300,7 +298,7 @@ if SENTRY_DSN is not None:
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
         # We recommend adjusting this value in production.
-        traces_sample_rate=STRIPE_TRACE_SAMPLE_RATE,
+        traces_sample_rate=SENTRY_TRACE_SAMPLE_RATE,
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
