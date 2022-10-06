@@ -46,6 +46,7 @@ class Command(BaseCommand):
             ensure_child_page(StaticPage(slug="about", title="About"))
 
     def setup_root_pages(self, host: str, port: int):
+        root = Page.get_first_root_node()
         try:
             site = Site.objects.get(
                 root_page__content_type=ContentType.objects.get_for_model(HomePage)
@@ -57,7 +58,6 @@ class Command(BaseCommand):
                 title=settings.WAGTAIL_SITE_NAME,
                 slug=slugify(settings.WAGTAIL_SITE_NAME),
             )
-            root = Page.get_first_root_node()
             root.add_child(instance=home)
 
             site = Site.objects.get_or_create(
