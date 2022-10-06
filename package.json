@@ -9,6 +9,7 @@
     "@tailwindcss/typography": "^0.5.7",
     "@types/lodash": "^4.14.185",
     "flowbite": "^1.5.2",
+    "focus-trap": "^7.0.0",
     "lodash": "^4.17.21",
     "query-string": "^7.1.1",
     "tailwindcss-stimulus-components": "^3.0.4",

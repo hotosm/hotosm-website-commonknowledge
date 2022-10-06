@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import qs from "query-string";
-import { debounce } from "lodash";
+import * as focusTrap from "focus-trap";
 
 /**
  * Obey the ComboBox spec: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
@@ -19,22 +18,54 @@ import { debounce } from "lodash";
 * Combine with tab-index="-1" for decorative elements
 * Combine with tab-index="0" for navigable elements
 */
-export default class ComboBoxA11yController extends Controller {
-    static targets = ["item", "input"];
+export default class ComboBoxA11yController extends Controller<HTMLElement> {
+    static targets = ["focusTrap", "item", "input"];
     readonly inputTarget?: HTMLInputElement;
     readonly itemTarget?: HTMLElement;
     readonly itemTargets!: HTMLElement[];
+    readonly focusTrapTarget?: HTMLElement;
+    private focusTrap?: focusTrap.FocusTrap;
+    private boundPressKeyHandler!: any;
+
+    initialize() {
+        this.boundPressKeyHandler = this.pressKey.bind(this);
+    }
 
     connect() {
-        this.element.addEventListener("keydown", (e) => this.pressKey(e));
+        if (!this.focusTrapTarget) return;
+        this.focusTrap = focusTrap.createFocusTrap(this.focusTrapTarget);
     }
 
     disconnect() {
-        this.element.addEventListener("keydown", (e) => this.pressKey(e));
+        this.blur();
+    }
+
+    focus() {
+        if (!this.focusTrapTarget) return;
+        this.focusTrapTarget.addEventListener(
+            "keydown",
+            this.boundPressKeyHandler,
+        );
+        this.focusTrap?.activate();
+    }
+
+    blur() {
+        if (!this.focusTrapTarget) return;
+        this.focusTrapTarget.removeEventListener(
+            "keydown",
+            this.boundPressKeyHandler,
+        );
+        this.focusTrap?.deactivate();
+    }
+
+    blurOnEscape(e: any) {
+        if (e.key === "Escape") {
+            this.blur();
+        }
     }
 
     pressKey(e: any) {
-        if (!this.itemTargets.length) return;
+        if (!this.itemTargets?.length) return;
         const currentFocus = document.activeElement;
         let cursor = currentFocus
             ? this.itemTargets.indexOf(currentFocus as any)
@@ -69,6 +100,8 @@ export default class ComboBoxA11yController extends Controller {
                     this.inputTarget.value.length,
                 );
             }
+        } else {
+            // Do nothing, normal key behaviour
         }
     }
 }
