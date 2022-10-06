@@ -1,6 +1,6 @@
 # Humanitarian OpenStreetMap Team website
 
-The next Humanitarian OpenStreetMap Team website. 
+The next Humanitarian OpenStreetMap Team website.
 
 ## Quickstart
 
@@ -49,3 +49,15 @@ git clone https://github.com/hotosm/hotosm-website.git
 ```
 python manage.py migrate_content --source ./hotosm-website --scratch True
 ```
+
+## Staging env setup
+
+- Github actions auto trigger deploys to fly. To enable deployments, manually create the required apps:
+  - Create the web app: `fly apps create --name hotosm-staging`
+  - Create the database: `fly postgres create --name hotosm-staging-pg`
+  - Link the database to the web app: `fly postgres attach hotosm-staging-pg --app hotosm-staging`
+- Set environment secrets with `fly secrets set KEY="VALUE" KEY2="VALUE2" ...`
+- After the first deploy has completed, you can run `fly ssh console --app hotosm-staging` to enter the app and run set up commands, etc.
+  - Run `cd app` to enter the project root
+  - Use `poetry run ...` to access the python environment
+    - E.g. `poetry run python manage.py createsuperuser`
