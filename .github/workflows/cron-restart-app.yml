@@ -7,7 +7,7 @@ env:
 jobs:
   deploy:
     environment:
-      name: production
+      name: staging
       url: https://hotosm-staging.fly.dev
     runs-on: ubuntu-latest
     steps:
