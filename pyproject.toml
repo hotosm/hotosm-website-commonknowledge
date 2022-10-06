@@ -46,7 +46,7 @@ bandit = "^1.7.0"
 black = {version = "^21.7b0", allow-prereleases = true}
 darglint = "^1.8.0"
 django-debug-toolbar = "*"
-django-livereload-server = "^0.3.2"
+django-livereload-server = "^0.4"
 isort = {extras = ["colors"], version = "^5.9.3"}
 pre-commit = "^2.14.0"
 pylint = "^2.10.2"
