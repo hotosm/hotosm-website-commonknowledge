@@ -95,12 +95,12 @@ WSGI_APPLICATION = "app.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+PLATFORM_DATABASE_URL = os.getenv("DATABASE_URL", None)
 
-if DATABASE_URL:
+if os.getenv("SKIP_DB") != "1" and isinstance(PLATFORM_DATABASE_URL, str):
     DATABASES = {
         "default": dj_database_url.parse(
-            re.sub(r"^postgres(ql)?", "postgis", DATABASE_URL),
+            re.sub(r"^postgres(ql)?", "postgis", PLATFORM_DATABASE_URL),
             conn_max_age=600,
             ssl_require=False,
         )
@@ -171,6 +171,7 @@ STATICFILES_DIRS = [
 # See https://docs.djangoproject.com/en/3.2/ref/contrib/staticfiles/#manifeststaticfilesstorage
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
+# The absolute path to the directory where collectstatic will collect static files for deployment.
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 
@@ -212,11 +213,10 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
+BASE_URL = re.sub(r"/$", "", os.getenv("BASE_URL", "http://localhost:8000"))
+
+# wagtail
 WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", BASE_URL)
-
-
-# Wagtail
 WAGTAIL_SITE_NAME = "Humanitarian OpenStreetMap Team"
 WAGTAILIMAGES_IMAGE_MODEL = "app.CMSImage"
 WAGTAILDOCS_DOCUMENT_MODEL = "app.CMSDocument"
@@ -236,3 +236,85 @@ if DEEPL_API_KEY is not None:
             "AUTH_KEY": DEEPL_API_KEY,
         },
     }
+
+# CSP
+X_FRAME_OPTIONS = "SAMEORIGIN"
+
+# cms
+SETUP_DEMO_PAGES = os.getenv("SETUP_DEMO_PAGES", True)
+
+# wagtailmenus
+WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (("footer", "Footer"),)
+
+# Mapbox
+MAPBOX_PUBLIC_API_KEY = os.getenv("MAPBOX_PUBLIC_API_KEY", None)
+
+# Posthog
+POSTHOG_PUBLIC_TOKEN = os.getenv("POSTHOG_PUBLIC_TOKEN", None)
+POSTHOG_URL = os.getenv("POSTHOG_URL", "https://app.posthog.com")
+
+if POSTHOG_PUBLIC_TOKEN is not None:
+    posthog.project_api_key = POSTHOG_PUBLIC_TOKEN
+    posthog.host = POSTHOG_URL
+    POSTHOG_DJANGO = {"distinct_id": lambda request: request.user and request.user.id}
+if POSTHOG_PUBLIC_TOKEN is None:
+    posthog.disabled = True
+
+# Github
+GIT_SHA = os.getenv("GIT_SHA", None)
+
+# Fly
+FLY_APP_NAME = os.getenv("FLY_APP_NAME", None)
+
+# Sentry
+SENTRY_DSN = os.getenv("SENTRY_DSN", None)
+SENTRY_ORG_SLUG = os.getenv("SENTRY_ORG_SLUG", None)
+SENTRY_PROJECT_ID = os.getenv("SENTRY_PROJECT_ID", None)
+STRIPE_TRACE_SAMPLE_RATE = float(
+    os.getenv("STRIPE_TRACE_SAMPLE_RATE", 0.3 if STRIPE_LIVE_MODE else 1.0)
+)
+
+if SENTRY_DSN is not None:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    integrations = [DjangoIntegration()]
+
+    if POSTHOG_PUBLIC_TOKEN is not None and SENTRY_PROJECT_ID is not None:
+        from posthog.sentry.posthog_integration import (
+            PostHogIntegration as PostHogSentryIntegration,
+        )
+
+        PostHogSentryIntegration.organization = SENTRY_ORG_SLUG
+        integrations += [PostHogSentryIntegration()]
+
+        MIDDLEWARE += [
+            "posthog.sentry.django.PosthogDistinctIdMiddleware",
+        ]
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=integrations,
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=STRIPE_TRACE_SAMPLE_RATE,
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+        environment=FLY_APP_NAME,
+        release=GIT_SHA,
+    )
+
+# debugging
+
+USE_SILK = os.getenv("USE_SILK", False) in (True, "True", "true", "t", 1)
+
+if USE_SILK:
+    MIDDLEWARE += [
+        "silk.middleware.SilkyMiddleware",
+    ]
+
+    INSTALLED_APPS += [
+        "silk",
+    ]

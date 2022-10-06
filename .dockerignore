@@ -4,3 +4,6 @@ node_modules/
 .github/
 build/
 **/__pycache__/
+app/settings/local.py
+app/settings/local_dev.py
+app/settings/local_prod.py

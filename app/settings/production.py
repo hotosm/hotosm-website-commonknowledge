@@ -4,40 +4,72 @@ from .base import *
 
 DEBUG = False
 SECRET_KEY = os.getenv("SECRET_KEY")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", BASE_URL).split(",")
 
-if os.getenv("BASE_URL"):
-    BASE_URL = re.sub(r"/$", "", os.getenv("BASE_URL"))
-    ALLOWED_HOSTS = [urlparse(BASE_URL).netloc]
-else:
-    BASE_URL = ""
-    ALLOWED_HOSTS = ["*"]
+
+MIDDLEWARE += [
+    "redirect_to_non_www.middleware.RedirectToNonWww",
+]
+
 
 if os.getenv("AWS_S3_REGION_NAME"):
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     AWS_S3_ADDRESSING_STYLE = "virtual"
+    # like `fra1`
     AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+    # like `hotosm`
     AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    # like `https://fra1.digitaloceanspaces.com`
     AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    # can be ignored
     AWS_S3_CUSTOM_DOMAIN = os.getenv("AWS_S3_CUSTOM_DOMAIN")
     MEDIA_URL = os.getenv("MEDIA_URL")
 else:
     MEDIA_ROOT = os.getenv(MEDIA_ROOT)
     MEDIA_URL = os.getenv("MEDIA_URL", "/media")
 
-if os.getenv("MAILGUN_API_URL"):
+
+if os.getenv("MAILJET_API_KEY"):
+    # if you don't already have this in settings
+    DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@hotosm.org")
+    # ditto (default from-email for Django errors)
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
+    ANYMAIL = {
+        "SEND_DEFAULTS": {"envelope_sender": DEFAULT_FROM_EMAIL},
+        "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY"),
+        "MAILJET_SECRET_KEY": os.getenv("MAILJET_SECRET_KEY"),
+    }
+    EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+elif os.getenv("MAILGUN_API_URL"):
     ANYMAIL = {
         "MAILGUN_API_URL": os.getenv("MAILGUN_API_URL"),
         "MAILGUN_API_KEY": os.getenv("MAILGUN_API_KEY"),
         "MAILGUN_SENDER_DOMAIN": os.getenv("MAILGUN_SENDER_DOMAIN"),
     }
-    # or sendgrid.EmailBackend, or...
     EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-    # if you don't already have this in settings
     DEFAULT_FROM_EMAIL = f"noreply@{ANYMAIL['MAILGUN_SENDER_DOMAIN']}"
+    ANYMAIL["SEND_DEFAULTS"] = {"envelope_sender": DEFAULT_FROM_EMAIL}
     # ditto (default from-email for Django errors)
     SERVER_EMAIL = f"admin@{ANYMAIL['MAILGUN_SENDER_DOMAIN']}"
+
+WAGTAILTRANSFER_SECRET_KEY = os.getenv("WAGTAILTRANSFER_SECRET_KEY")
+WAGTAILTRANSFER_SOURCES = {}
+
+if os.getenv("WAGTAILTRANSFER_SECRET_KEY_STAGING"):
+    WAGTAILTRANSFER_SOURCES["staging"] = {
+        "BASE_URL": "https://hotosm-staging.fly.dev/wagtail-transfer/",
+        "SECRET_KEY": os.getenv("WAGTAILTRANSFER_SECRET_KEY_STAGING"),
+    }
+
+if os.getenv("WAGTAILTRANSFER_SECRET_KEY_PRODUCTION"):
+    WAGTAILTRANSFER_SOURCES["production"] = {
+        "BASE_URL": "https://hotosm-production.fly.dev/wagtail-transfer/",
+        "SECRET_KEY": os.getenv("WAGTAILTRANSFER_SECRET_KEY_PRODUCTION"),
+    }
+
 
 try:
     from .local import *

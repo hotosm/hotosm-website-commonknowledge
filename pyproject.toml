@@ -36,6 +36,10 @@ PyYAML = "^6.0"
 Pillow = "^9.1.0"
 beautifulsoup4 = "^4.11.1"
 lxml = "^4.9.1"
+django-redirect-to-non-www = "^0.1.1"
+django-silk = "^5.0.1"
+posthog = "^2.1.2"
+sentry-sdk = "^1.9.10"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"
