@@ -76,16 +76,16 @@ class Command(BaseCommand):
 
     def ensure_child_page_factory(self, root_page: Page):
         def ensure_child_page(page_instance: Page, parent_page=root_page):
-            parent_page.add_child(instance=page_instance)
-            print("Created page", page_instance)
-            if (
-                page_instance.specific_class.objects.filter(slug=page_instance.slug)
-                .descendant_of(parent_page)
-                .exists()
-                is False
-            ):
+            existing = parent_page.get_children().filter(slug=page_instance.slug)
+            if not existing.exists():
                 parent_page.add_child(instance=page_instance)
             else:
+                model = existing.first().specific_class
+                if model != page_instance.specific_class:
+                    raise ValueError(
+                        f"Slug exists ({page_instance.slug}), but type {model} !== required type {page_instance.specific_class}. Manual intervention required."
+                    )
                 print("Already exists:", page_instance.specific_class, page_instance)
+            return page_instance
 
         return ensure_child_page

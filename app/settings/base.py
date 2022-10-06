@@ -223,7 +223,7 @@ WAGTAILIMAGES_IMAGE_MODEL = "app.CMSImage"
 WAGTAILDOCS_DOCUMENT_MODEL = "app.CMSDocument"
 
 # cms
-SETUP_DEMO_PAGES = os.getenv("SETUP_DEMO_PAGES", True)
+SETUP_DEMO_PAGES = os.getenv("SETUP_DEMO_PAGES", False)
 
 # wagtailmenus
 WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (("footer", "Footer"),)
@@ -241,17 +241,10 @@ if DEEPL_API_KEY is not None:
 # CSP
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
-# cms
-SETUP_DEMO_PAGES = os.getenv("SETUP_DEMO_PAGES", True)
-
-# wagtailmenus
-WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (("footer", "Footer"),)
-
 # Mapbox
 MAPBOX_PUBLIC_API_KEY = os.getenv("MAPBOX_PUBLIC_API_KEY", None)
 
 # Posthog
-
 POSTHOG_PUBLIC_TOKEN = os.getenv("POSTHOG_PUBLIC_TOKEN", None)
 POSTHOG_URL = os.getenv("POSTHOG_URL", "https://app.posthog.com")
 
