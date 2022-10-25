@@ -67,11 +67,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         default_base_url = urlparse(settings.BASE_URL)
 
-        parser.add_argument("--scratch", dest="scratch", type=bool, default=False)
+        parser.add_argument("--scratch", dest="scratch",
+                            type=bool, default=False)
 
         parser.add_argument("--source", dest="source", type=str)
 
-        parser.add_argument("--dir", action="append", default=[], dest="dir", type=str)
+        parser.add_argument("--dir", action="append",
+                            default=[], dest="dir", type=str)
 
         parser.add_argument(
             "-H", "--host", dest="host", type=str, default=default_base_url.hostname
@@ -96,6 +98,7 @@ class Command(BaseCommand):
         home, root, site = self.setup_root_pages(
             options.get("host"), options.get("port")
         )
+        self.site = site
         self.home = home
         self.root = root
         self.unset_demo_pages()
@@ -105,24 +108,29 @@ class Command(BaseCommand):
 
         # magazine = ensure_child_page(
         #     MagazineIndexPage(slug="magazine", title="Magazine"))
-        news = ensure_child_page(MagazineSection(slug="updates", title="Updates"))
+        news = ensure_child_page(MagazineSection(
+            slug="updates", title="Updates"))
         tech_blog = ensure_child_page(
             MagazineSection(slug="tech-blog", title="Tech Blog")
         )
         # news = ensure_child_page(MagazineSection(
         #     slug="tech-blog", title="Tech Blog"))
-        people = ensure_child_page(DirectoryPage(slug="people", title="People"))
+        people = ensure_child_page(
+            DirectoryPage(slug="people", title="People"))
         opportunities = ensure_child_page(
             DirectoryPage(slug="opportunities", title="Opportunities")
         )
-        partners = ensure_child_page(DirectoryPage(slug="partners", title="Partners"))
-        projects = ensure_child_page(DirectoryPage(slug="projects", title="Projects"))
+        partners = ensure_child_page(
+            DirectoryPage(slug="partners", title="Partners"))
+        projects = ensure_child_page(
+            DirectoryPage(slug="projects", title="Projects"))
         working_groups = ensure_child_page(
             DirectoryPage(slug="working-groups", title="Working Groups")
         )
         rfps = ensure_child_page(DirectoryPage(slug="rfps", title="RFPs"))
         disaster_services_page = ensure_child_page(
-            ActivationIndexPage(slug="disaster-services", title="Disaster Services")
+            ActivationIndexPage(slug="disaster-services",
+                                title="Disaster Services")
         )
 
         content_map = {
@@ -299,7 +307,8 @@ class Command(BaseCommand):
                         page = self.create_page(path, config)
                         if page:
                             pages.append(page)
-                            redirects += self.accrue_redirects(page, path, config)
+                            redirects += self.accrue_redirects(
+                                page, path, config)
 
         for page in pages:
             self.set_page_content(page)
@@ -371,7 +380,7 @@ class Command(BaseCommand):
             "frontmatter": frontmatter,
             "content": content,
             "page": page,
-            "old_path": old_path,
+            "old_path": old_path
         }
 
     def set_page_content(
@@ -383,17 +392,20 @@ class Command(BaseCommand):
 
         if content is None:
             return
-        renderer = WagtailHtmlRenderer(self.path_mapping, self.image_mapping, page.url)
+        renderer = WagtailHtmlRenderer(
+            self.path_mapping, self.image_mapping, page.url)
         wagtail_html = renderer.render(content)
         if wagtail_html is not None and len(wagtail_html) > 0:
-            page.content = json.dumps([{"type": "richtext", "value": wagtail_html}])
+            page.content = json.dumps(
+                [{"type": "richtext", "value": wagtail_html}])
             page.save()
 
     def setup_root_pages(self, host: str, port: int):
         root = Page.get_first_root_node()
         try:
             site = Site.objects.get(
-                root_page__content_type=ContentType.objects.get_for_model(HomePage)
+                root_page__content_type=ContentType.objects.get_for_model(
+                    HomePage)
             )
             home = site.root_page
             print("Site and homepage already set up", site, home)
@@ -404,7 +416,7 @@ class Command(BaseCommand):
             )
             root.add_child(instance=home)
 
-            site = Site.objects.get_or_create(
+            site, is_new = Site.objects.get_or_create(
                 hostname=host,
                 port=port,
                 is_default_site=True,
@@ -429,7 +441,8 @@ class Command(BaseCommand):
                     raise ValueError(
                         f"Slug exists ({page_instance.slug}), but type {model} !== required type {page_instance.specific_class}. Manual intervention required."
                     )
-                print("Already exists:", page_instance.specific_class, page_instance)
+                print("Already exists:",
+                      page_instance.specific_class, page_instance)
             return page_instance
 
         return ensure_child_page
@@ -481,7 +494,8 @@ class Command(BaseCommand):
 
     def create_redirects(self, redirects: List[RedirectData]):
         for redirect in redirects:
-            Redirect.add_redirect(redirect["old_path"], redirect["redirect_to"])
+            Redirect.add_redirect(
+                redirect["old_path"], redirect["redirect_to"], site=self.site)
 
 
 def to_date(x):
@@ -579,7 +593,8 @@ class WagtailHtmlRenderer(HTMLRenderer):
         if not hasattr(element, "children"):
             return ""
 
-        rendered = [self.render(child) for child in element.children]  # type: ignore
+        rendered = [self.render(child)
+                    for child in element.children]  # type: ignore
         return "".join(rendered)
 
 
