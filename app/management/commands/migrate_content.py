@@ -1,3 +1,5 @@
+from typing import List, TypedDict
+
 import json
 import re
 from datetime import date, datetime, time
@@ -18,6 +20,7 @@ from django.utils.text import slugify
 from marko import block, inline
 from marko.html_renderer import HTMLRenderer
 from PIL import Image as PImage
+from wagtail.contrib.redirects.models import Redirect
 from wagtail.core.rich_text import RichText
 from wagtail.images.models import Image
 from wagtail.models import Page, Site
@@ -36,6 +39,18 @@ from app.models.wagtail.pages import (
     ProjectPage,
     StaticPage,
 )
+
+
+class PageData(TypedDict):
+    frontmatter: dict
+    content: str
+    page: Page
+    old_path: str
+
+
+class RedirectData(TypedDict):
+    old_path: str
+    redirect_to: Page
 
 
 class Command(BaseCommand):
@@ -78,7 +93,9 @@ class Command(BaseCommand):
         self.image_mapping = dict()
 
         # Setup root pages
-        home, root = self.setup_root_pages(options.get("host"), options.get("port"))
+        home, root, site = self.setup_root_pages(
+            options.get("host"), options.get("port")
+        )
         self.home = home
         self.root = root
         self.unset_demo_pages()
@@ -108,7 +125,6 @@ class Command(BaseCommand):
             ActivationIndexPage(slug="disaster-services", title="Disaster Services")
         )
 
-        # [x] ~Put all MD files in the repo~ (not anymore)
         content_map = {
             "*": {
                 # "directories": ["_disaster_services"],
@@ -246,7 +262,9 @@ class Command(BaseCommand):
             },
             "_working-groups/*": {
                 "page_type": OrganisationPage,
+                # The community page was already created above
                 "parent": working_groups,
+                "redirect_from_dir": "/community/working-groups/",
                 "frontmatter_map": {
                     "Summary Text": "short_summary",
                     # TODO:
@@ -257,56 +275,22 @@ class Command(BaseCommand):
                     # Point of Contact: mailto:training@hotosm.org
                 },
                 "static_field_values": {"category": ["Working Group"]},
-            }
-            # Blog — URL
-            #
-            # TODO: what to do with Tools?
-            # "_tools/*": {
-            #     # "directories": [,],
-            #     "page_type": StaticPage,
-            #     "parent": rfps
+            },
+        }
+
+        pages: PageData = []
+
+        redirects: List[RedirectData] = [
+            # TODO:
+            # {
+            #     "old_path": "/community/working-groups/",
+            #     "/working-groups/",
             # },
-            ###
-        }
-
-        # TODO: Redirects
-        # TODO: create for each frontmatter `redirect_from` key, to new page location
-        # TODO: also create for ``permalink` key, when the path is different
-        # and a manual map
-        # TODO: /updates and /tech-blog -> /news/updates and /news/tech-blog
-        # TODO: run through these
-        redirects = {
-            # "/working-groups": "/working-groups/",
-            "/community/working-groups/": "/working-groups/",
-        }
-        # TODO: potentially also redirect whole classes of pages?
-        # In which case, specify a `redirect_from` key in the content_map:
-        # E.g. /updates/XXX -> /news/XXX
-        # Wagtail automatically creates permanent redirects for pages (and their descendants) when they are moved or their slug is changed. This helps to preserve SEO rankings of pages over time, and helps site visitors get to the right place when using bookmarks or using outdated links.
-
-        # Old migration script
-        # case_studies = self.source_dir / "content" / "work"
-        # articles = self.source_dir / "content" / "writing"
-
-        # TODO: get image folder sorted out
-        # images = self.source_dir / "assets"
-
-        # for image_file in images.glob("*"):
-        #     name = image_file.parts[-1]
-
-        #     try:
-        #         image = Image.objects.get(title=name)
-        #     except Image.DoesNotExist:
-        #         with PImage.open(image_file) as dims:
-        #             image = Image(title=name, width=dims.width, height=dims.height)
-
-        #         with open(image_file, "rb") as fd:
-        #             ts = datetime.now().timestamp()
-        #             image.file = ContentFile(fd.read(), name)
-        #             image.save()
-        #     self.image_mapping[name] = image
-
-        pages = []
+            # TODO:
+            # {
+            #     "/updates and /tech-blog -> /news/updates and /news/tech-blog"
+            # }
+        ]
 
         for path, config in content_map.items():
             if len(options["dir"]) == 0 or path in options["dir"]:
@@ -315,9 +299,13 @@ class Command(BaseCommand):
                         page = self.create_page(path, config)
                         if page:
                             pages.append(page)
+                            redirects += self.accrue_redirects(page, path, config)
 
         for page in pages:
-            self.set_page_content(*page)
+            self.set_page_content(page)
+
+        # Redirects
+        self.create_redirects(redirects)
 
     def create_page(self, src: Path, config):
         content, frontmatter = read_md(src)
@@ -326,8 +314,8 @@ class Command(BaseCommand):
             return
 
         # Fields
-        old_url = "".join(str(src).split(".")[:-1])
-        slug = slugify(old_url.split("/")[-1])
+        old_path = "".join(str(src).split(".")[:-1])
+        slug = slugify(old_path.split("/")[-1])
 
         # TODO:
         # if "featuredImage" in frontmatter:
@@ -341,7 +329,7 @@ class Command(BaseCommand):
             "title": frontmatter["title"],
             "slug": slug,
             "frontmatter": json.dumps(
-                {**frontmatter, "old_url": old_url, "path": src}, cls=DTEncoder
+                {**frontmatter, "old_path": old_path, "path": src}, cls=DTEncoder
             ),
             # "featured_image": image,
         }
@@ -377,16 +365,22 @@ class Command(BaseCommand):
         if frontmatter.get("published", True) == False:
             page.unpublish()
 
-        self.path_mapping[old_url] = page
+        self.path_mapping[old_path] = page
 
-        return frontmatter, content, page
+        return {
+            "frontmatter": frontmatter,
+            "content": content,
+            "page": page,
+            "old_path": old_path,
+        }
 
     def set_page_content(
         self,
-        frontmatter: dict,
-        content: block.Document,
-        page: Page,
+        page: PageData,
     ):
+        content = page["content"]
+        page = page["page"]
+
         if content is None:
             return
         renderer = WagtailHtmlRenderer(self.path_mapping, self.image_mapping, page.url)
@@ -417,7 +411,7 @@ class Command(BaseCommand):
                 site_name=settings.WAGTAIL_SITE_NAME,
                 root_page=home,
             )
-        return home, root
+        return home, root, site
 
     def unset_demo_pages(self):
         # Delete placeholders
@@ -439,6 +433,55 @@ class Command(BaseCommand):
             return page_instance
 
         return ensure_child_page
+
+    def accrue_redirects(self, page_data: PageData, path: Path, config: dict):
+        redirects: List[RedirectData] = []
+
+        # Leave a redirect if the page was moved by us
+        # if page_data["old_path"].lstrip(str(self.source_dir)).lstrip("/").rstrip("/") != page_data["page"].url.lstrip("/en/").rstrip("/"):
+        #     redirects.append({
+        #         "old_path": "/" + page_data["old_path"].lstrip(str(self.source_dir)),
+        #         "redirect_to": page_data["page"]
+        #     })
+
+        # Leave a redirect if all files in a dir have been relocated
+        if config["redirect_from_dir"]:
+            redirects.append(
+                {
+                    "old_path": "/"
+                    + config["redirect_from_dir"].lstrip("/").rstrip("/")
+                    + "/"
+                    + page_data["page"].slug,
+                    "redirect_to": page_data["page"],
+                }
+            )
+
+        # Leave redirects for the `redirect_from` property in frontmatter
+        if "redirect_from" in page_data["frontmatter"]:
+            redirects.append(
+                {
+                    "old_path": "/"
+                    + page_data["frontmatter"]["redirect_from"].lstrip("/"),
+                    "redirect_to": page_data["page"],
+                }
+            )
+
+        # Leave redirects for the `permalink` property in frontmatter
+        if "permalink" in page_data["frontmatter"] and page_data["frontmatter"][
+            "permalink"
+        ].lstrip("/").rstrip("/") != page_data["page"].url.lstrip("/en/").rstrip("/"):
+            redirects.append(
+                {
+                    "old_path": "/" + page_data["frontmatter"]["permalink"].lstrip("/"),
+                    "redirect_to": page_data["page"],
+                }
+            )
+
+        return redirects
+
+    def create_redirects(self, redirects: List[RedirectData]):
+        for redirect in redirects:
+            Redirect.add_redirect(redirect["old_path"], redirect["redirect_to"])
 
 
 def to_date(x):
