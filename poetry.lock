@@ -1338,7 +1338,7 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 
 [[package]]
 name = "wagtail"
-version = "4.0.2"
+version = "4.0.4"
 description = "A Django content management system."
 category = "main"
 optional = false
@@ -1370,7 +1370,7 @@ testing = ["python-dateutil (>=2.7)", "pytz (>=2014.7)", "elasticsearch (>=5.0,<
 
 [[package]]
 name = "wagtail-localize"
-version = "1.3a4"
+version = "1.3.1"
 description = "Translation plugin for Wagtail CMS"
 category = "main"
 optional = false
@@ -1383,13 +1383,13 @@ typing_extensions = ">=4.0"
 Wagtail = ">=2.15,<5.0"
 
 [package.extras]
-documentation = ["mkdocs (==1.1.2)", "mkdocs-material (==6.2.8)", "mkdocs-mermaid2-plugin (==0.5.1)", "mkdocstrings (==0.14.0)", "mkdocs-include-markdown-plugin (==2.8.0)", "pygments (==2.11.2)"]
+testing = ["django-rq (>=2.5,<3.0)", "freezegun (==1.1.0)", "dj-database-url (==0.5.0)"]
 google = ["google-cloud-translate (>=3.0.0)"]
-testing = ["dj-database-url (==0.5.0)", "freezegun (==1.1.0)", "django-rq (>=2.5,<3.0)"]
+documentation = ["pygments (==2.11.2)", "mkdocs-include-markdown-plugin (==2.8.0)", "mkdocstrings (==0.14.0)", "mkdocs-mermaid2-plugin (==0.5.1)", "mkdocs-material (==6.2.8)", "mkdocs (==1.1.2)"]
 
 [[package]]
 name = "wagtailmenus"
-version = "3.1.2"
+version = "3.1.3"
 description = "An app to help you manage menus in your Wagtail projects more consistently."
 category = "main"
 optional = false
@@ -1462,7 +1462,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "a85b15480dbb8d3e8915be9b807fa1b14b694638f10bfd828d481696240039e0"
+content-hash = "1a89e28ad691768a65d721fb3e5600e5a0578c0640917b054a56551d913231a3"
 
 [metadata.files]
 anyascii = [
@@ -2157,16 +2157,15 @@ virtualenv = [
     {file = "virtualenv-20.16.5.tar.gz", hash = "sha256:227ea1b9994fdc5ea31977ba3383ef296d7472ea85be9d6732e42a91c04e80da"},
 ]
 wagtail = [
-    {file = "wagtail-4.0.2-py3-none-any.whl", hash = "sha256:2572068dcc6a3406c411eb8e81220471e2cb0578b6d86d401850f27c237942fa"},
-    {file = "wagtail-4.0.2.tar.gz", hash = "sha256:a106ef4d85aeb9858de5670f6501866be3f6c7e241828925eb1f777bdf4a7e64"},
+    {file = "wagtail-4.0.4-py3-none-any.whl", hash = "sha256:43b35e8e29bcc83a3ddf60f08e8c22fea1e819f338bcba73a4b290771233809a"},
+    {file = "wagtail-4.0.4.tar.gz", hash = "sha256:8799c7550cc033c8e85aeeaf6f91b5343d7dee72fecd5d4093499af9d3aeaa1d"},
 ]
 wagtail-localize = [
-    {file = "wagtail-localize-1.3a4.tar.gz", hash = "sha256:978d365d9524b4d7f334197e04aa633faf7622e9885fc2056a7892f10a103f7f"},
-    {file = "wagtail_localize-1.3a4-py3-none-any.whl", hash = "sha256:12210c81ef8c098e3cb1b53da220a2ed9b144ec4a1abd06335633967afbaad9a"},
+    {file = "wagtail-localize-1.3.1.tar.gz", hash = "sha256:016056c77f18c7f6049269feebe64e50efb894e5e6ed1b33288b004f7d9eb281"},
+    {file = "wagtail_localize-1.3.1-py3-none-any.whl", hash = "sha256:a9f699e8bf32c3cfa95330cdc214d36a0bcff007a8263dafe3a7a4ac21c39696"},
 ]
 wagtailmenus = [
-    {file = "wagtailmenus-3.1.2-py3-none-any.whl", hash = "sha256:1f5d9c7e620782d176f7c18c321c6b4358c6634425c586f58ddaf4c0474f1a42"},
-    {file = "wagtailmenus-3.1.2.tar.gz", hash = "sha256:7b357c2926c4b104a4a1cc9811965aad6d081c5103c72cc8895a7e8367571947"},
+    {file = "wagtailmenus-3.1.3-py3-none-any.whl", hash = "sha256:0f5669f160d788b1ab8c2b412cb95411e9c07f83e4b52dddc92991752c6fa397"},
 ]
 webencodings = [
     {file = "webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},
