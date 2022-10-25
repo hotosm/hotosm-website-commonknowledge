@@ -16,6 +16,7 @@ from django.core import management
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.utils import IntegrityError
 from django.utils.text import slugify
 from marko import block, inline
 from marko.html_renderer import HTMLRenderer
@@ -45,7 +46,7 @@ class PageData(TypedDict):
     frontmatter: dict
     content: str
     page: Page
-    old_path: str
+    old_path: Path
 
 
 class RedirectData(TypedDict):
@@ -67,13 +68,11 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         default_base_url = urlparse(settings.BASE_URL)
 
-        parser.add_argument("--scratch", dest="scratch",
-                            type=bool, default=False)
+        parser.add_argument("--scratch", dest="scratch", type=bool, default=False)
 
         parser.add_argument("--source", dest="source", type=str)
 
-        parser.add_argument("--dir", action="append",
-                            default=[], dest="dir", type=str)
+        parser.add_argument("--dir", action="append", default=[], dest="dir", type=str)
 
         parser.add_argument(
             "-H", "--host", dest="host", type=str, default=default_base_url.hostname
@@ -108,34 +107,30 @@ class Command(BaseCommand):
 
         # magazine = ensure_child_page(
         #     MagazineIndexPage(slug="magazine", title="Magazine"))
-        news = ensure_child_page(MagazineSection(
-            slug="updates", title="Updates"))
+        news = ensure_child_page(MagazineSection(slug="updates", title="Updates"))
         tech_blog = ensure_child_page(
             MagazineSection(slug="tech-blog", title="Tech Blog")
         )
         # news = ensure_child_page(MagazineSection(
         #     slug="tech-blog", title="Tech Blog"))
-        people = ensure_child_page(
-            DirectoryPage(slug="people", title="People"))
+        people = ensure_child_page(DirectoryPage(slug="people", title="People"))
         opportunities = ensure_child_page(
             DirectoryPage(slug="opportunities", title="Opportunities")
         )
-        partners = ensure_child_page(
-            DirectoryPage(slug="partners", title="Partners"))
-        projects = ensure_child_page(
-            DirectoryPage(slug="projects", title="Projects"))
+        partners = ensure_child_page(DirectoryPage(slug="partners", title="Partners"))
+        projects = ensure_child_page(DirectoryPage(slug="projects", title="Projects"))
         working_groups = ensure_child_page(
             DirectoryPage(slug="working-groups", title="Working Groups")
         )
         rfps = ensure_child_page(DirectoryPage(slug="rfps", title="RFPs"))
         disaster_services_page = ensure_child_page(
-            ActivationIndexPage(slug="disaster-services",
-                                title="Disaster Services")
+            ActivationIndexPage(slug="disaster-services", title="Disaster Services")
         )
 
         content_map = {
             "*": {
                 # "directories": ["_disaster_services"],
+                "old_parent": "/",
                 "page_type": StaticPage,
                 "parent": home,
                 "frontmatter_map": {
@@ -143,6 +138,7 @@ class Command(BaseCommand):
                 },
             },
             "_disaster-services/*": {
+                "old_parent": "/disaster-services/",
                 # "directories": ["_disaster_services"],
                 "page_type": ActivationProjectPage,
                 "parent": disaster_services_page,
@@ -152,12 +148,14 @@ class Command(BaseCommand):
                 },
             },
             "_partners/*": {
+                "old_parent": "/partners/",
                 # "directories": ["_partners"],
                 "page_type": OrganisationPage,
                 "parent": partners,
                 "static_field_values": {"category": ["Partner"]},
             },
             "_people/*": {
+                "old_parent": "/people/",
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -166,6 +164,7 @@ class Command(BaseCommand):
                 },
             },
             "_people/staff/*": {
+                "old_parent": "/people/",
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -174,6 +173,7 @@ class Command(BaseCommand):
                 },
             },
             "_people/voting-members/*": {
+                "old_parent": "/people/",
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -182,6 +182,7 @@ class Command(BaseCommand):
                 },
             },
             "_people/archive/*": {
+                "old_parent": "/people/",
                 # "directories": ["_people/archive"],
                 "page_type": PersonPage,
                 "parent": people,
@@ -191,6 +192,7 @@ class Command(BaseCommand):
                 },
             },
             "_posts/*": {
+                "old_parent": "/updates/",
                 "page_type": ArticlePage,
                 "parent": news,
                 "frontmatter_map": {
@@ -210,6 +212,7 @@ class Command(BaseCommand):
                 },
             },
             "_press-releases/*": {
+                "old_parent": "/press-releases/",
                 "page_type": ArticlePage,
                 "parent": news,
                 "frontmatter_map": {
@@ -229,6 +232,7 @@ class Command(BaseCommand):
                 },
             },
             "_tech-blog/*": {
+                "old_parent": "/tech-blog/",
                 "page_type": ArticlePage,
                 "parent": tech_blog,
                 "frontmatter_map": {
@@ -248,11 +252,13 @@ class Command(BaseCommand):
                 },
             },
             "_projects/*": {
+                "old_parent": "/projects/",
                 "page_type": ProjectPage,
                 "parent": projects,
                 "frontmatter_map": {"Project Summary Text": "short_summary"},
             },
             "_volunteer-opportunities/*": {
+                "old_parent": "/volunteer-opportunities/",
                 "page_type": OpportunityPage,
                 "parent": opportunities,
                 "frontmatter_map": {
@@ -263,16 +269,17 @@ class Command(BaseCommand):
             "_rfps/*": {
                 "page_type": OpportunityPage,
                 "parent": rfps,
+                "old_parent": "/rfps/",
                 "frontmatter_map": {
                     "Deadline Date": "deadline_datetime",
                     "Apply Form Link": "apply_form_url",
                 },
             },
             "_working-groups/*": {
+                "old_parent": "/community/working-groups/",
                 "page_type": OrganisationPage,
                 # The community page was already created above
                 "parent": working_groups,
-                "redirect_from_dir": "/community/working-groups/",
                 "frontmatter_map": {
                     "Summary Text": "short_summary",
                     # TODO:
@@ -287,19 +294,9 @@ class Command(BaseCommand):
         }
 
         pages: PageData = []
+        redirects: List[RedirectData] = []
 
-        redirects: List[RedirectData] = [
-            # TODO:
-            # {
-            #     "old_path": "/community/working-groups/",
-            #     "/working-groups/",
-            # },
-            # TODO:
-            # {
-            #     "/updates and /tech-blog -> /news/updates and /news/tech-blog"
-            # }
-        ]
-
+        print("=== Creating empty pages ===")
         for path, config in content_map.items():
             if len(options["dir"]) == 0 or path in options["dir"]:
                 for path in self.source_dir.glob(path):
@@ -307,13 +304,15 @@ class Command(BaseCommand):
                         page = self.create_page(path, config)
                         if page:
                             pages.append(page)
-                            redirects += self.accrue_redirects(
-                                page, path, config)
+                            redirects += self.accrue_redirects(page, path, config)
 
-        for page in pages:
-            self.set_page_content(page)
+        print("=== Updating page content ===")
+        for page_data in pages:
+            print("Updating page content for", page_data["page"].url)
+            self.set_page_content(page_data)
 
         # Redirects
+        print("=== Creating redirects ===")
         self.create_redirects(redirects)
 
     def create_page(self, src: Path, config):
@@ -322,23 +321,48 @@ class Command(BaseCommand):
         if frontmatter.get("title", None) is None:
             return
 
-        # Fields
-        old_path = "".join(str(src).split(".")[:-1])
-        slug = slugify(old_path.split("/")[-1])
+        # Get page slug
+        # Initially from filename
+        old_slug = src.stem
+        dated_slug_match = re.search("^([0-9]{4}-[0-9]{2}-[0-9]{2})-(.*)", old_slug)
+        # There are some frontmatter things which override the slug / URL in general
+        if "permalink" in frontmatter and (
+            # Jekyll allowed slugs that included /, but this is off-limits to Wagtail
+            frontmatter["permalink"]
+            != "updates/2013-01-03_public/private_partnership_to_map_west_nusa_tenggara"
+            and frontmatter["permalink"]
+            != "updates/2013-11-11_remote_hot_activation_in_the_philippines_for_typhoon_yolanda/haiyan"
+        ):
+            permalink = Path(frontmatter["permalink"])
+            old_slug = permalink.stem
+        elif "urlname" in frontmatter:
+            old_slug = frontmatter["urlname"]
+        # Some articles have a date prefix, which is removed in the old system
+        elif dated_slug_match:
+            old_slug = dated_slug_match.group(2)
+        # Slugify the title to be sure it can be ingested by Wagtail.
+        # If there are any changes, a redirect will be created on comparison with the `old_path` (below)
+        slug = slugify(old_slug)
 
-        # TODO:
-        # if "featuredImage" in frontmatter:
-        #     image_slug = Path(frontmatter["featuredImage"]).parts[-1]
-        #     image = self.image_mapping.get(image_slug)
-        # else:
-        #     image = None
+        # Get original URL
+        if "permalink" in frontmatter:
+            old_path = Path(frontmatter["permalink"])
+        else:
+            # If there is no permalink, we can guess the URL based on the old site's structure and the slug
+            if "old_parent" in config:
+                old_parent_path = Path(config["old_parent"])
+            else:
+                old_parent_path = src.parent.relative_to(self.source_dir)
+            old_path = old_parent_path / old_slug
+
+        # Page fields
 
         # Standard fields
         args = {
             "title": frontmatter["title"],
             "slug": slug,
             "frontmatter": json.dumps(
-                {**frontmatter, "old_path": old_path, "path": src}, cls=DTEncoder
+                {**frontmatter, "old_path": str(old_path), "path": src}, cls=DTEncoder
             ),
             # "featured_image": image,
         }
@@ -374,13 +398,13 @@ class Command(BaseCommand):
         if frontmatter.get("published", True) == False:
             page.unpublish()
 
-        self.path_mapping[old_path] = page
+        self.path_mapping[str(old_path)] = page
 
         return {
             "frontmatter": frontmatter,
             "content": content,
             "page": page,
-            "old_path": old_path
+            "old_path": old_path,
         }
 
     def set_page_content(
@@ -392,20 +416,17 @@ class Command(BaseCommand):
 
         if content is None:
             return
-        renderer = WagtailHtmlRenderer(
-            self.path_mapping, self.image_mapping, page.url)
+        renderer = WagtailHtmlRenderer(self.path_mapping, self.image_mapping, page.url)
         wagtail_html = renderer.render(content)
         if wagtail_html is not None and len(wagtail_html) > 0:
-            page.content = json.dumps(
-                [{"type": "richtext", "value": wagtail_html}])
+            page.content = json.dumps([{"type": "richtext", "value": wagtail_html}])
             page.save()
 
     def setup_root_pages(self, host: str, port: int):
         root = Page.get_first_root_node()
         try:
             site = Site.objects.get(
-                root_page__content_type=ContentType.objects.get_for_model(
-                    HomePage)
+                root_page__content_type=ContentType.objects.get_for_model(HomePage)
             )
             home = site.root_page
             print("Site and homepage already set up", site, home)
@@ -441,8 +462,7 @@ class Command(BaseCommand):
                     raise ValueError(
                         f"Slug exists ({page_instance.slug}), but type {model} !== required type {page_instance.specific_class}. Manual intervention required."
                     )
-                print("Already exists:",
-                      page_instance.specific_class, page_instance)
+                print("Already exists:", page_instance.specific_class, page_instance)
             return page_instance
 
         return ensure_child_page
@@ -450,52 +470,45 @@ class Command(BaseCommand):
     def accrue_redirects(self, page_data: PageData, path: Path, config: dict):
         redirects: List[RedirectData] = []
 
-        # Leave a redirect if the page was moved by us
-        # if page_data["old_path"].lstrip(str(self.source_dir)).lstrip("/").rstrip("/") != page_data["page"].url.lstrip("/en/").rstrip("/"):
-        #     redirects.append({
-        #         "old_path": "/" + page_data["old_path"].lstrip(str(self.source_dir)),
-        #         "redirect_to": page_data["page"]
-        #     })
-
-        # Leave a redirect if all files in a dir have been relocated
-        if config["redirect_from_dir"]:
+        # Leave a redirect if the page was moved, either by us or by permalink
+        old = "/" + str(page_data["old_path"]).lstrip("/").rstrip("/")
+        new = "/" + page_data["page"].url.lstrip("/en/").lstrip("/").rstrip("/")
+        if old != new:
+            print("⚠️ Redirect required:", old, new)
             redirects.append(
                 {
                     "old_path": "/"
-                    + config["redirect_from_dir"].lstrip("/").rstrip("/")
-                    + "/"
-                    + page_data["page"].slug,
+                    + str(page_data["old_path"]).lstrip("/").rstrip("/"),
                     "redirect_to": page_data["page"],
                 }
             )
 
         # Leave redirects for the `redirect_from` property in frontmatter
         if "redirect_from" in page_data["frontmatter"]:
-            redirects.append(
-                {
-                    "old_path": "/"
-                    + page_data["frontmatter"]["redirect_from"].lstrip("/"),
-                    "redirect_to": page_data["page"],
-                }
+            redirect_from_list = (
+                page_data["frontmatter"]["redirect_from"]
+                if type(page_data["frontmatter"]["redirect_from"]) == list
+                else [page_data["frontmatter"]["redirect_from"]]
             )
-
-        # Leave redirects for the `permalink` property in frontmatter
-        if "permalink" in page_data["frontmatter"] and page_data["frontmatter"][
-            "permalink"
-        ].lstrip("/").rstrip("/") != page_data["page"].url.lstrip("/en/").rstrip("/"):
-            redirects.append(
-                {
-                    "old_path": "/" + page_data["frontmatter"]["permalink"].lstrip("/"),
-                    "redirect_to": page_data["page"],
-                }
-            )
+            for redirect_from in redirect_from_list:
+                redirects.append(
+                    {
+                        "old_path": "/" + redirect_from.lstrip("/").rstrip("/"),
+                        "redirect_to": page_data["page"],
+                    }
+                )
 
         return redirects
 
     def create_redirects(self, redirects: List[RedirectData]):
         for redirect in redirects:
-            Redirect.add_redirect(
-                redirect["old_path"], redirect["redirect_to"], site=self.site)
+            print("Creating redirect", redirect)
+            try:
+                Redirect.add_redirect(
+                    redirect["old_path"], redirect["redirect_to"], site=self.site
+                )
+            except IntegrityError:
+                pass
 
 
 def to_date(x):
@@ -593,8 +606,7 @@ class WagtailHtmlRenderer(HTMLRenderer):
         if not hasattr(element, "children"):
             return ""
 
-        rendered = [self.render(child)
-                    for child in element.children]  # type: ignore
+        rendered = [self.render(child) for child in element.children]  # type: ignore
         return "".join(rendered)
 
 
