@@ -1388,6 +1388,17 @@ google = ["google-cloud-translate (>=3.0.0)"]
 documentation = ["pygments (==2.11.2)", "mkdocs-include-markdown-plugin (==2.8.0)", "mkdocstrings (==0.14.0)", "mkdocs-mermaid2-plugin (==0.5.1)", "mkdocs-material (==6.2.8)", "mkdocs (==1.1.2)"]
 
 [[package]]
+name = "wagtail-seo"
+version = "2.3.0"
+description = "Search engine and social media optimization for Wagtail."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+wagtail = ">=3.0,<5.0"
+
+[[package]]
 name = "wagtailmenus"
 version = "3.1.3"
 description = "An app to help you manage menus in your Wagtail projects more consistently."
@@ -1462,7 +1473,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1a89e28ad691768a65d721fb3e5600e5a0578c0640917b054a56551d913231a3"
+content-hash = "46630dcdabc28ce865964937b58fdd6e5d07e4d00fc6bfa56ccc302272b05c2e"
 
 [metadata.files]
 anyascii = [
@@ -2163,6 +2174,10 @@ wagtail = [
 wagtail-localize = [
     {file = "wagtail-localize-1.3.1.tar.gz", hash = "sha256:016056c77f18c7f6049269feebe64e50efb894e5e6ed1b33288b004f7d9eb281"},
     {file = "wagtail_localize-1.3.1-py3-none-any.whl", hash = "sha256:a9f699e8bf32c3cfa95330cdc214d36a0bcff007a8263dafe3a7a4ac21c39696"},
+]
+wagtail-seo = [
+    {file = "wagtail-seo-2.3.0.tar.gz", hash = "sha256:cefd8c1b011d55a95dbe8b6c75a504fb441df089f594e2b06d92e3d5b95f3609"},
+    {file = "wagtail_seo-2.3.0-py3-none-any.whl", hash = "sha256:052c1cd56f13ad04ff8dd37c3937085f8f79677241e30ef5900a06c596c283c6"},
 ]
 wagtailmenus = [
     {file = "wagtailmenus-3.1.3-py3-none-any.whl", hash = "sha256:0f5669f160d788b1ab8c2b412cb95411e9c07f83e4b52dddc92991752c6fa397"},
