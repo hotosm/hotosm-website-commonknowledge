@@ -212,6 +212,13 @@ class ContentSidebarPage(ContentPage):
     )
 
 
+class CountryPage(ContentPage):
+    page_description = "Page for each country"
+    isoa2 = models.CharField(max_length=2, unique=True)
+    isoa3 = models.CharField(max_length=3, unique=True, blank=True, null=True)
+    continent = models.CharField(max_length=50, blank=True, null=True)
+
+
 class StaticPage(ContentSidebarPage):
     page_description = "General information page"
 

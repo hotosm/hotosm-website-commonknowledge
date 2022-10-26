@@ -30,6 +30,7 @@ from app.models.wagtail.pages import (
     ActivationIndexPage,
     ActivationProjectPage,
     ArticlePage,
+    CountryPage,
     DirectoryPage,
     HomePage,
     MagazineIndexPage,
@@ -123,13 +124,24 @@ class Command(BaseCommand):
             DirectoryPage(slug="working-groups", title="Working Groups")
         )
         rfps = ensure_child_page(DirectoryPage(slug="rfps", title="RFPs"))
+        where_we_work = ensure_child_page(
+            DirectoryPage(slug="where-we-work", title="Where We Work")
+        )
         disaster_services_page = ensure_child_page(
             ActivationIndexPage(slug="disaster-services", title="Disaster Services")
         )
 
+        def country_custom_fields(frontmatter, args, content):
+            new_args = {}
+            for value in frontmatter["names"]:
+                if len(value) == 2 and value.upper() == value:
+                    new_args["isoa2"] = value
+                if len(value) == 3 and value.upper() == value:
+                    new_args["isoa3"] = value
+            return new_args
+
         content_map = {
             "*": {
-                # "directories": ["_disaster_services"],
                 "old_parent": "/",
                 "page_type": StaticPage,
                 "parent": home,
@@ -137,9 +149,14 @@ class Command(BaseCommand):
                     "Intro Text": "short_summary",
                 },
             },
+            "_where-we-work/*": {
+                "old_parent": "/where-we-work/",  # fake
+                "page_type": CountryPage,
+                "parent": where_we_work,
+                "custom_fields": country_custom_fields,
+            },
             "_disaster-services/*": {
                 "old_parent": "/disaster-services/",
-                # "directories": ["_disaster_services"],
                 "page_type": ActivationProjectPage,
                 "parent": disaster_services_page,
                 "frontmatter_map": {
@@ -148,8 +165,7 @@ class Command(BaseCommand):
                 },
             },
             "_partners/*": {
-                "old_parent": "/partners/",
-                # "directories": ["_partners"],
+                "old_parent": "/partners/",  # fake
                 "page_type": OrganisationPage,
                 "parent": partners,
                 "static_field_values": {"category": ["Partner"]},
@@ -183,7 +199,6 @@ class Command(BaseCommand):
             },
             "_people/archive/*": {
                 "old_parent": "/people/",
-                # "directories": ["_people/archive"],
                 "page_type": PersonPage,
                 "parent": people,
                 "frontmatter_map": {
@@ -384,6 +399,10 @@ class Command(BaseCommand):
         for k, v in config.get("frontmatter_map", {}).items():
             if k in frontmatter:
                 args[v] = frontmatter[k]
+
+        # Custom manipulation
+        if "custom_fields" in config and callable(config["custom_fields"]):
+            args.update(config["custom_fields"](frontmatter, args, content))
 
         # Create
         q = config["parent"].get_children().filter(slug=slug)
