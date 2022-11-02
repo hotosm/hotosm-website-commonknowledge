@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
+from django.views.generic.base import TemplateView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -16,6 +17,10 @@ urlpatterns = [
     path("__debug__/", include(debug_toolbar.urls)),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="app/robots.txt", content_type="text/plain"),
+    ),
 ]
 
 urlpatterns += i18n_patterns(

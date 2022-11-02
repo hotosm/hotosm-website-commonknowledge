@@ -1,0 +1,7 @@
+User-Agent: *
+
+# Disallow everything for now
+Disallow: /
+
+# Sitemap files
+# Sitemap: https://{{request.site.hostname}}/sitemap.xml
