@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.styleguide",
     "wagtail.contrib.modeladmin",
     "wagtailmenus",
+    "django.contrib.sitemaps",
 ]
 
 MIDDLEWARE = [
