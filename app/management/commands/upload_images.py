@@ -98,23 +98,26 @@ class Command(BaseCommand):
                     url=f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{file_name}",
                     file_name=file_name,
                 )
-                if image:
-                    print("Stored image", item["Key"], image.file)
 
 
 def save_s3_image_to_db(url, file_name=None):
     print("Syncing", url)
     title = Path(file_name).stem
     try:
-        image = CMSImage.objects.get(file=file_name)
+        image = CMSImage.objects.get(title=url)
+        print("----Found")
         return image
     except CMSImage.DoesNotExist:
         if default_storage.exists(file_name):
-            s3_file = default_storage.open(file_name)
-            image = CMSImage(title=title)
-            image.file = s3_file
-            image.file._committed = True
-            image.save()
+            try:
+                s3_file = default_storage.open(file_name)
+                image = CMSImage(title=url)
+                image.file = s3_file
+                image.file._committed = True
+                image.save()
+                print("----Saved")
+            except IntegrityError:
+                print("-- Not an image!")
         else:
             pass
         # pil_image = None
