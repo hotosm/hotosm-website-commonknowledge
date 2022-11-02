@@ -146,3 +146,4 @@ docs/components
 wagtail-localize/
 ___wagtail-localize/
 hotosm-website-old/
+*.conf
