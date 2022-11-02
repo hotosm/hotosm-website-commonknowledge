@@ -18,6 +18,7 @@ from wagtail.admin.panels import (
 from wagtail.core.rich_text import RichText
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
+from wagtail.snippets.models import register_snippet
 
 import app.models.wagtail.blocks as app_blocks
 from app.models.wagtail.mixins import SearchableDirectoryMixin
@@ -68,6 +69,7 @@ def monkey_patch_richtext():
     RichText.__html__ = with_heading_ids
 
 
+@register_snippet
 class HOTOSMTag(TagBase):
     pass
 
@@ -79,11 +81,16 @@ class HomePage(SearchableDirectoryMixin, Page):
     show_in_menus_default = False
     content = StreamField(
         [
-            ("links_section", app_blocks.HomepageSectionBlock()),
-            ("map_section", app_blocks.HomepageMapBlock()),
-            ("magazine_section", app_blocks.HomepageMagazineBlock()),
-            ("summary_text", app_blocks.PageSummaryBlock()),
             ("richtext", blocks.RichTextBlock()),
+            ("html", app_blocks.HTMLBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("cta", app_blocks.CallToActionBlock()),
+            ("page_link", app_blocks.PageLinkBlock()),
+            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
+            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
+            ("people_gallery", app_blocks.RelatedPeopleBlock()),
         ],
         null=True,
         blank=True,
@@ -132,7 +139,7 @@ class PreviewablePage(Page):
             ],
             heading="Imagery",
         ),
-        FieldPanel("frontmatter"),
+        # FieldPanel("frontmatter"),
     ]
 
     edit_handler = TabbedInterface(
@@ -156,10 +163,15 @@ class ContentPage(PreviewablePage):
     content = StreamField(
         [
             ("richtext", blocks.RichTextBlock()),
-            ("embeddable_code", app_blocks.HTMLBlock()),
-            ("links_gallery", app_blocks.GuideSection()),
-            ("featured_link", app_blocks.FeaturedLinkBlock()),
-            ("simple_link", app_blocks.LinkBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("cta", app_blocks.CallToActionBlock()),
+            ("page_link", app_blocks.PageLinkBlock()),
+            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
+            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
+            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
+            ("people_gallery", app_blocks.RelatedPeopleBlock()),
+            ("html", app_blocks.HTMLBlock()),
         ],
         null=True,
         blank=True,
@@ -192,6 +204,10 @@ class ContentSidebarPage(ContentPage):
     sidebar = StreamField(
         [
             ("richtext", blocks.RichTextBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("page_link", app_blocks.PageLinkBlock()),
+            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
         ],
         null=True,
         blank=True,
@@ -269,6 +285,7 @@ class TaggedProject(ItemBase):
     )
 
 
+@register_snippet
 class ProjectPage(ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
@@ -317,6 +334,7 @@ class TaggedPerson(ItemBase):
     )
 
 
+@register_snippet
 class PersonPage(ContentPage):
     class Meta:
         ordering = ["title"]
@@ -378,6 +396,7 @@ class TaggedOpportunity(ItemBase):
     )
 
 
+@register_snippet
 class OpportunityPage(ContentPage):
     class Meta:
         ordering = ["-first_published_at"]
@@ -431,6 +450,7 @@ class MagazineSection(SearchableDirectoryMixin, PreviewablePage):
         return ArticlePage.objects.descendant_of(self).order_by("-first_published_at")
 
 
+@register_snippet
 class ArticlePage(ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
@@ -519,6 +539,7 @@ class TaggedTopic(ItemBase):
     )
 
 
+@register_snippet
 class TopicPage(TopicContextMixin, ContentPage):
     template = "app/topic_page.html"
 
@@ -565,6 +586,7 @@ class TaggedEvent(ItemBase):
     )
 
 
+@register_snippet
 class EventPage(ContentPage):
     template = "app/static_page.html"
     page_description = "Events, workshops, and other gatherings"
@@ -623,6 +645,7 @@ class ActivationIndexPage(PreviewablePage):
     ]
 
 
+@register_snippet
 class ActivationProjectPage(ContentPage):
     template = "app/static_page.html"
     parent_page_type = ["app.ActivationIndexPage"]

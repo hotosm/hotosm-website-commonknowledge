@@ -95,8 +95,8 @@ class Command(BaseCommand):
         if options.get("scratch"):
             Page.get_first_root_node().get_descendants().delete()
             Site.objects.all().delete()
-            if options.get("images"):
-                CMSImage.objects.all().delete()
+            # if options.get("images"):
+            #     CMSImage.objects.all().delete()
             management.call_command("fixtree")
 
         # Define paths
@@ -112,19 +112,21 @@ class Command(BaseCommand):
         self.home = home
         self.root = root
         self.unset_demo_pages()
+        management.call_command("fixtree")
 
         # Upload images from Git
         if options.get("images"):
             for path in self.image_dir.glob("*"):
-                file_name = "/" + str(
-                    Path(path).relative_to(self.source_dir)
-                ).removeprefix("_")
+                file_name = "/" + str(path.relative_to(self.source_dir)).removeprefix(
+                    "_"
+                )
                 print("---->", file_name)
                 # print("Uploading", file_name)
                 # name = file_name.parts[-1]
 
-                image = Image.objects.filter(
-                    Q(title=file_name) | Q(file=file_name)
+                cdn_url = "https://cdn.hotosm.org/website/" + path.name
+                image = CMSImage.objects.filter(
+                    Q(title=cdn_url) | Q(title=file_name) | Q(file=file_name)
                 ).first()
                 if image is not None:
                     print("Found image record", image)
@@ -512,7 +514,9 @@ class Command(BaseCommand):
         root = Page.get_first_root_node()
         try:
             site = Site.objects.get(
-                root_page__content_type=ContentType.objects.get_for_model(HomePage)
+                hostname=host,
+                port=port,
+                root_page__content_type=ContentType.objects.get_for_model(HomePage),
             )
             home = site.root_page
             print("Site and homepage already set up", site, home)
@@ -702,8 +706,24 @@ def get_image_by_reference(path):
     # and should also work for local images that were manually uploaded earlier in this script
     image = CMSImage.objects.filter(Q(title=path) | Q(file=path)).first()
     if image is not None:
+        print("Image was found!", path, image)
         return image
-    if "https://" in path or "http://" in path:
+    elif "/uploads/" in str(path):
+        cdn_filename = "https://cdn.hotosm.org/website/" + str(path).removeprefix(
+            "/uploads/"
+        )
+        image = CMSImage.objects.filter(Q(title=cdn_filename)).first()
+        if image is not None:
+            return image
+    elif "https://cdn.hotosm.org/website/" in str(path):
+        github_filename = "/uploads/" + str(path).removeprefix(
+            "https://cdn.hotosm.org/website/"
+        )
+        image = CMSImage.objects.filter(Q(title=github_filename)).first()
+        if image is not None:
+            return image
+    elif "https://" in path or "http://" in path:
+        print("Downloading image", path)
         """
         Download the image from the URL, then construct a CMSImage object
         """
@@ -718,6 +738,7 @@ def get_image_by_reference(path):
             image.file = file
             image.save()
 
+            print("Download complete", path, image)
             return image
         except IntegrityError:
             print("Image couldn't be created:", path)
