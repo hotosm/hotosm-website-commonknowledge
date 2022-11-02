@@ -8,7 +8,7 @@
             <a href="{% firstof link.url link.page.url %}" class="block no-underline border border-gray-200 p-3 rounded-md">
                 <div class="text-red text-lg leading-6">{% firstof link.label link.page.title %}</div>
                 {% if link.page.specific.short_summary %}
-                    <p class='mt-1 text-sm text-gray-600'>{{ link.page.specific.short_summary }}</p>
+                    <p class='mt-1 text-sm text-gray-600'>{{ link.page.specific.short_summary|richtext|truncatechars:200 }}</p>
                 {% endif %}
             </a>
         {% endfor %}

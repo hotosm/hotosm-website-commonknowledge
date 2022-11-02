@@ -75,6 +75,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         default_base_url = urlparse(settings.BASE_URL)
 
+        parser.add_argument("--images", dest="images", type=bool, default=False)
+
         parser.add_argument("--scratch", dest="scratch", type=bool, default=False)
 
         parser.add_argument("--source", dest="source", type=str)
@@ -88,12 +90,13 @@ class Command(BaseCommand):
             "-p", "--port", dest="port", type=int, default=default_base_url.port or 80
         )
 
-    @transaction.atomic
+    # @transaction.atomic
     def handle(self, *args, **options):
         if options.get("scratch"):
             Page.get_first_root_node().get_descendants().delete()
             Site.objects.all().delete()
-            CMSImage.objects.all().delete()
+            if options.get("images"):
+                CMSImage.objects.all().delete()
             management.call_command("fixtree")
 
         # Define paths
@@ -111,44 +114,50 @@ class Command(BaseCommand):
         self.unset_demo_pages()
 
         # Upload images from Git
-        for path in self.image_dir.glob("*"):
-            file_name = "/" + str(Path(path).relative_to(self.source_dir)).removeprefix(
-                "_"
-            )
-            print("---->", file_name)
-            # print("Uploading", file_name)
-            # name = file_name.parts[-1]
+        if options.get("images"):
+            for path in self.image_dir.glob("*"):
+                file_name = "/" + str(
+                    Path(path).relative_to(self.source_dir)
+                ).removeprefix("_")
+                print("---->", file_name)
+                # print("Uploading", file_name)
+                # name = file_name.parts[-1]
 
-            image = Image.objects.filter(Q(title=file_name) | Q(file=file_name)).first()
-            if image is not None:
-                print("Found image record", image)
-            else:
-                print("Creating image record")
-                # with PImage.open(file_name) as dims:
-                #     image = Image(title=name, width=dims.width,
-                #                   height=dims.height)
+                image = Image.objects.filter(
+                    Q(title=file_name) | Q(file=file_name)
+                ).first()
+                if image is not None:
+                    print("Found image record", image)
+                else:
+                    print("Creating image record")
+                    # with PImage.open(file_name) as dims:
+                    #     image = Image(title=name, width=dims.width,
+                    #                   height=dims.height)
 
-                # with open(file_name, "rb") as fd:
-                #     image.file = ContentFile(fd.read(), name)
-                #     image.save()
+                    # with open(file_name, "rb") as fd:
+                    #     image.file = ContentFile(fd.read(), name)
+                    #     image.save()
 
-                # Create image file
-                with open(path, "rb") as file_data:
-                    file = ImageFile(BytesIO(file_data.read()), name=file_name)
+                    # Create image file
+                    with open(path, "rb") as file_data:
+                        file = ImageFile(BytesIO(file_data.read()), name=file_name)
 
-                    if (
-                        file.width
-                        and file.height
-                        and file.width > 0
-                        and file.height > 0
-                    ):
-                        print("file", file.width, file.height)
-                        # Construct `CMSImage` object
-                        image = CMSImage(title=file_name)
-                        image.file = file
-                        image.save()
-                        if image is not None:
-                            print("image", image.pk, image.file)
+                        if (
+                            file.width
+                            and file.height
+                            and file.width > 0
+                            and file.height > 0
+                        ):
+                            try:
+                                print("file", file.width, file.height)
+                                # Construct `CMSImage` object
+                                image = CMSImage(title=file_name)
+                                image.file = file
+                                image.save()
+                                if image is not None:
+                                    print("image", image.pk, image.file)
+                            except IntegrityError:
+                                print("Image couldn't be created:", path)
 
         # Create pages
         ensure_child_page = self.ensure_child_page_factory(home)
@@ -435,12 +444,14 @@ class Command(BaseCommand):
             args["last_published_at"] = to_date(frontmatter["date"])
 
         if "Photo" in frontmatter:
-            args["featured_image"] = get_image_by_reference(frontmatter["Photo"])
+            image = get_image_by_reference(frontmatter["Photo"])
+            if image is not None:
+                args["featured_image"] = image
 
         if "Feature Image" in frontmatter:
-            args["featured_image"] = get_image_by_reference(
-                frontmatter["Feature Image"]
-            )
+            image = get_image_by_reference(frontmatter["Feature Image"])
+            if image is not None:
+                args["featured_image"] = image
 
         # Auto-mapped fields
         model_fields = config["page_type"]._meta.get_fields()
@@ -681,6 +692,7 @@ class WagtailHtmlRenderer(HTMLRenderer):
             return ""
 
         rendered = [self.render(child) for child in element.children]  # type: ignore
+        rendered = [x for x in rendered if x is not None]
         return "".join(rendered)
 
 
@@ -696,16 +708,19 @@ def get_image_by_reference(path):
         Download the image from the URL, then construct a CMSImage object
         """
 
-        # Construct `File` object
-        response = requests.get(path, stream=True)
-        file = ImageFile(BytesIO(response.content), name=path)
+        try:
+            # Construct `File` object
+            response = requests.get(path, stream=True)
+            file = ImageFile(BytesIO(response.content), name=path)
 
-        # Construct `CMSImage` object
-        image = CMSImage(title=path)
-        image.file = file
-        image.save()
+            # Construct `CMSImage` object
+            image = CMSImage(title=path)
+            image.file = file
+            image.save()
 
-        return image
+            return image
+        except IntegrityError:
+            print("Image couldn't be created:", path)
 
     #     pil_image = PImage.open(response.raw)
     # except PIL.UnidentifiedImageError:

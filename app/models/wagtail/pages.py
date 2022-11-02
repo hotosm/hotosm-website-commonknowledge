@@ -113,7 +113,7 @@ class PreviewablePage(Page):
         null=True,
         help_text="If set, this image will be used instead of the featured image.",
     )
-    short_summary = models.CharField(max_length=1500, blank=True, null=True)
+    short_summary = RichTextField(max_length=1500, blank=True, null=True)
     frontmatter = models.JSONField(
         blank=True, null=True, help_text="Metadata from the legacy site"
     )
@@ -217,6 +217,9 @@ class ContentSidebarPage(ContentPage):
 
 
 class CountryPage(ContentPage):
+    class Meta:
+        ordering = ["title"]
+
     template = "app/static_page.html"
     page_description = "Page for each country"
     isoa2 = models.CharField(max_length=2, unique=True)
@@ -225,6 +228,9 @@ class CountryPage(ContentPage):
 
 
 class StaticPage(ContentSidebarPage):
+    class Meta:
+        ordering = ["title"]
+
     page_description = "General information page"
 
     # Layout
@@ -264,6 +270,9 @@ class TaggedProject(ItemBase):
 
 
 class ProjectPage(ContentSidebarPage):
+    class Meta:
+        ordering = ["-first_published_at"]
+
     template = "app/static_page.html"
     page_description = "HOTOSM and third party projects"
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
@@ -309,6 +318,9 @@ class TaggedPerson(ItemBase):
 
 
 class PersonPage(ContentPage):
+    class Meta:
+        ordering = ["title"]
+
     template = "app/static_page.html"
     page_description = "Contributors, staff, and other people"
     category = ClusterTaggableManager(through=TaggedPerson, blank=True)
@@ -328,6 +340,9 @@ class TaggedOrganisation(ItemBase):
 
 
 class OrganisationPage(ContentPage):
+    class Meta:
+        ordering = ["title"]
+
     template = "app/static_page.html"
     page_description = "Internal and external organisations"
     tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
@@ -364,6 +379,9 @@ class TaggedOpportunity(ItemBase):
 
 
 class OpportunityPage(ContentPage):
+    class Meta:
+        ordering = ["-first_published_at"]
+
     template = "app/static_page.html"
     page_description = "Opportunities for people to get involved with HOT"
     deadline_datetime = models.DateTimeField(blank=True, null=True)
@@ -378,7 +396,7 @@ class OpportunityPage(ContentPage):
     ]
 
 
-class MagazineIndexPage(PreviewablePage):
+class MagazineIndexPage(SearchableDirectoryMixin, PreviewablePage):
     page_description = "Home page for the magazine section of the site"
     show_in_menus_default = True
     max_count_per_parent = 1
@@ -388,6 +406,9 @@ class MagazineIndexPage(PreviewablePage):
     ]
     # TODO: Featured articles
     # TODO: Sections
+
+    def get_queryset(self):
+        return ArticlePage.objects.descendant_of(self).order_by("-first_published_at")
 
 
 class TaggedArticle(ItemBase):
@@ -399,15 +420,21 @@ class TaggedArticle(ItemBase):
     )
 
 
-class MagazineSection(PreviewablePage):
-    template = "app/magazine_index_page.html"
+class MagazineSection(SearchableDirectoryMixin, PreviewablePage):
     page_description = "A section of the magazine"
-    parent_page_type = ["app.MagazineIndexPage"]
+    parent_page_type = ["app.MagazineIndexPage", "app.HomePage"]
     subpage_types = ["app.ArticlePage", "app.MagazineSection"]
     show_in_menus_default = True
+    template = "app/magazine_index_page.html"
+
+    def get_queryset(self):
+        return ArticlePage.objects.descendant_of(self).order_by("-first_published_at")
 
 
 class ArticlePage(ContentSidebarPage):
+    class Meta:
+        ordering = ["-first_published_at"]
+
     template = "app/static_page.html"
     page_description = "Blog posts, news reports, updates and so on"
     parent_page_type = ["app.MagazineIndexPage", "app.MagazineSection"]

@@ -14,7 +14,7 @@
             <li>
                 <a data-combo-box-a11y-target="item" tabindex="0" data-turbo-frame="_top" href="{{ page.url }}" role="status" class="block px-2 sm:px-4 hover:bg-gray-50 py-3 group">
                     <div class="mb-2 text-lg font-bold group-hover:text-red">{{ page.title }}</div>
-                    {% if page.short_summary %}<div>{{ page.short_summary }}</div>{% endif %}
+                    {% if page.short_summary %}<div>{{ page.short_summary|richtext|truncatechars:200 }}</div>{% endif %}
                 </a>
             </li>
             {% endfor %}

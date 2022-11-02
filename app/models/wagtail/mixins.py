@@ -20,6 +20,9 @@ class SearchableDirectoryMixin(Page):
     def get_search_query(self, request):
         return request.GET.get("query")
 
+    def get_queryset(self):
+        return self.get_children().live().public()
+
     def do_search(self, request):
         search_query = self.get_search_query(request)
 
@@ -27,9 +30,9 @@ class SearchableDirectoryMixin(Page):
             query = Query.get(search_query)
             query.add_hit()
 
-            return self.get_children().live().public().search(search_query)
+            return self.get_queryset().search(search_query)
         else:
-            return self.get_children().live().public()
+            return self.get_queryset()
 
     def get_search_highlight(self, request, page):
         if hasattr(page, self.search_highlight_field):

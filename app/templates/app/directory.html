@@ -25,7 +25,7 @@
     {% for page in pages %}
     <a href="{{ page.url }}" role="status" class="block">
         <div class="mb-2 text-xl font-bold">{{ page.title }}</div>
-        {% if page.short_summary %} <div class="mb-2.5">{{ page.short_summary }}</div>{% endif %}
+        {% if page.short_summary %} <div class="mb-2.5">{{ page.short_summary|richtext|truncatechars:200 }}</div>{% endif %}
     </a>
     {% endfor %}
 </main>
