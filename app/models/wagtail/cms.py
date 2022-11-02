@@ -8,10 +8,10 @@ class CMSImage(AbstractImage):
     # Making blank / null explicit because you *really* need alt text
     alt_text = models.CharField(
         max_length=1024,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         default="",
-        help_text="Describe this image as literally as possible. If you can close your eyes, have someone read the alt text to you, and imagine a reasonably accurate version of the image, you're on the right track.",
+        help_text="Describe this image as literally as possible. If you can close your eyes, have someone read the alt text to you, and imagine a reasonably accurate version of the image, you're on the right track. More info: https://axesslab.com/alt-texts/",
     )
 
     attribution = RichTextField(

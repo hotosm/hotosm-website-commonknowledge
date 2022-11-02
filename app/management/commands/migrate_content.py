@@ -3,19 +3,24 @@ from typing import List, TypedDict
 import json
 import re
 from datetime import date, datetime, time
+from io import BytesIO
 from multiprocessing.sharedctypes import Value
 from pathlib import Path
+from urllib import request
 from urllib.parse import urlparse
 
 import marko
+import requests
 import yaml
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core import management
 from django.core.files.base import ContentFile
+from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.utils.text import slugify
 from marko import block, inline
@@ -26,6 +31,7 @@ from wagtail.core.rich_text import RichText
 from wagtail.images.models import Image
 from wagtail.models import Page, Site
 
+from app.models.wagtail.cms import CMSImage
 from app.models.wagtail.pages import (
     ActivationIndexPage,
     ActivationProjectPage,
@@ -87,12 +93,13 @@ class Command(BaseCommand):
         if options.get("scratch"):
             Page.get_first_root_node().get_descendants().delete()
             Site.objects.all().delete()
+            CMSImage.objects.all().delete()
             management.call_command("fixtree")
 
         # Define paths
         self.source_dir = Path(options["source"])
+        self.image_dir = Path(self.source_dir / "_uploads")
         self.path_mapping = dict()
-        self.image_mapping = dict()
 
         # Setup root pages
         home, root, site = self.setup_root_pages(
@@ -102,6 +109,46 @@ class Command(BaseCommand):
         self.home = home
         self.root = root
         self.unset_demo_pages()
+
+        # Upload images from Git
+        for path in self.image_dir.glob("*"):
+            file_name = "/" + str(Path(path).relative_to(self.source_dir)).removeprefix(
+                "_"
+            )
+            print("---->", file_name)
+            # print("Uploading", file_name)
+            # name = file_name.parts[-1]
+
+            image = Image.objects.filter(Q(title=file_name) | Q(file=file_name)).first()
+            if image is not None:
+                print("Found image record", image)
+            else:
+                print("Creating image record")
+                # with PImage.open(file_name) as dims:
+                #     image = Image(title=name, width=dims.width,
+                #                   height=dims.height)
+
+                # with open(file_name, "rb") as fd:
+                #     image.file = ContentFile(fd.read(), name)
+                #     image.save()
+
+                # Create image file
+                with open(path, "rb") as file_data:
+                    file = ImageFile(BytesIO(file_data.read()), name=file_name)
+
+                    if (
+                        file.width
+                        and file.height
+                        and file.width > 0
+                        and file.height > 0
+                    ):
+                        print("file", file.width, file.height)
+                        # Construct `CMSImage` object
+                        image = CMSImage(title=file_name)
+                        image.file = file
+                        image.save()
+                        if image is not None:
+                            print("image", image.pk, image.file)
 
         # Create pages
         ensure_child_page = self.ensure_child_page_factory(home)
@@ -379,7 +426,6 @@ class Command(BaseCommand):
             "frontmatter": json.dumps(
                 {**frontmatter, "old_path": str(old_path), "path": src}, cls=DTEncoder
             ),
-            # "featured_image": image,
         }
 
         if "created" in frontmatter:
@@ -387,6 +433,14 @@ class Command(BaseCommand):
 
         if "date" in frontmatter:
             args["last_published_at"] = to_date(frontmatter["date"])
+
+        if "Photo" in frontmatter:
+            args["featured_image"] = get_image_by_reference(frontmatter["Photo"])
+
+        if "Feature Image" in frontmatter:
+            args["featured_image"] = get_image_by_reference(
+                frontmatter["Feature Image"]
+            )
 
         # Auto-mapped fields
         model_fields = config["page_type"]._meta.get_fields()
@@ -403,6 +457,8 @@ class Command(BaseCommand):
         # Custom manipulation
         if "custom_fields" in config and callable(config["custom_fields"]):
             args.update(config["custom_fields"](frontmatter, args, content))
+
+        # /Page fields
 
         # Create
         q = config["parent"].get_children().filter(slug=slug)
@@ -435,7 +491,7 @@ class Command(BaseCommand):
 
         if content is None:
             return
-        renderer = WagtailHtmlRenderer(self.path_mapping, self.image_mapping, page.url)
+        renderer = WagtailHtmlRenderer(self.path_mapping, page.url)
         wagtail_html = renderer.render(content)
         if wagtail_html is not None and len(wagtail_html) > 0:
             page.content = json.dumps([{"type": "richtext", "value": wagtail_html}])
@@ -566,10 +622,9 @@ class WagtailHtmlRenderer(HTMLRenderer):
     # TODO: Fix html issues with OLs
     # e.g. Malaria Elimination Mapping Continues
 
-    def __init__(self, page_mapping: dict, image_mapping: dict, base: str):
+    def __init__(self, page_mapping: dict, base: str):
         super().__init__()
         self.page_mapping = page_mapping
-        self.image_mapping = image_mapping
         self.base = base
 
     def render(self, element):
@@ -600,18 +655,18 @@ class WagtailHtmlRenderer(HTMLRenderer):
         body = self.render_children(element)
         return template.format(page.id, title, body)
 
-    # TODO:
-    # def render_image(self, element: inline.Image):
-    #     slug = Path(element.dest).relative_to("../../assets")
-    #     image = self.image_mapping[str(slug)]
-
-    #     template = '<embed embedtype="image" id="{}" alt="{}" format="left" />'
-    #     title = f' title="{self.escape_html(element.title)}"' if element.title else ""
-    #     render_func = self.render
-    #     self.render = self.render_plain_text
-    #     body = self.render_children(element)
-    #     self.render = render_func
-    #     return template.format(image.id, title or body)
+    def render_image(self, element: inline.Image):
+        image = get_image_by_reference(element.dest)
+        if image is not None:
+            template = '<embed embedtype="image" id="{}" alt="{}" format="fullwidth" />'
+            title = (
+                f' title="{self.escape_html(element.title)}"' if element.title else ""
+            )
+            render_func = self.render
+            self.render = self.render_plain_text
+            body = self.render_children(element)
+            self.render = render_func
+            return template.format(image.id, title or body)
 
     def render_plain_text(self, element):
         if hasattr(element, "children") and isinstance(element.children, str):
@@ -627,6 +682,58 @@ class WagtailHtmlRenderer(HTMLRenderer):
 
         rendered = [self.render(child) for child in element.children]  # type: ignore
         return "".join(rendered)
+
+
+def get_image_by_reference(path):
+    # See if it exists already
+    # should work for cdn.hotosm.org imagery, if you've run `upload_images` first
+    # and should also work for local images that were manually uploaded earlier in this script
+    image = CMSImage.objects.filter(Q(title=path) | Q(file=path)).first()
+    if image is not None:
+        return image
+    if "https://" in path or "http://" in path:
+        """
+        Download the image from the URL, then construct a CMSImage object
+        """
+
+        # Construct `File` object
+        response = requests.get(path, stream=True)
+        file = ImageFile(BytesIO(response.content), name=path)
+
+        # Construct `CMSImage` object
+        image = CMSImage(title=path)
+        image.file = file
+        image.save()
+
+        return image
+
+    #     pil_image = PImage.open(response.raw)
+    # except PIL.UnidentifiedImageError:
+    #     pass
+    # if pil_image is not None:
+    #     print("pil_image", pil_image)
+    #     image_file = ImageFile(BytesIO(response.content), name=file_name)
+    #     setattr(image_file, "_dimensions_cache", [
+    #             pil_image.width, pil_image.height])
+    #     print("image_file", image_file)
+    #     image = CMSImage(title=file_name, width=pil_image.width,
+    #                      height=pil_image.height, file=image_file, alt_text="No alt text",)
+    #     image.save()
+    #     print("image", image)
+
+    # result = request.urlretrieve(path)
+    # if result:
+    #     image_data = open(result[0], 'rb')
+    #     image = CMSImage(
+    #         title=key,
+    #         image=ImageFile(image_data, name=key)
+    #     )
+    #     image.save()
+    #     image_mapping[path] = image
+    #     # TODO: Add the image to the image_mapping
+    #     image = image_mapping[key]
+    #     return image
+    #     # TODO: third party URL
 
 
 def to_snake_case(name):
