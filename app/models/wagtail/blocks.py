@@ -141,6 +141,10 @@ class LinkStreamBlock(blocks.StreamBlock):
 
 
 class TaskManagerProjectBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/dummy_block.html"
+        icon = "fa fa-map-o"
+
     url = blocks.URLBlock(
         validators=[task_manager_project_url_validator], required=True
     )
@@ -164,13 +168,21 @@ class FeaturedContentBlock(blocks.StructBlock):
     featured_content = blocks.StreamBlock(
         [
             ("single_image", ImageChooserBlock()),
-            ("multiple_images", blocks.ListBlock(ImageChooserBlock())),
+            (
+                "multiple_images",
+                blocks.ListBlock(ImageChooserBlock(), icon="fa fa-picture-o"),
+            ),
             ("single_task_manager_project", TaskManagerProjectBlock()),
             (
                 "multiple_task_manager_projects",
-                blocks.ListBlock(TaskManagerProjectBlock()),
+                blocks.ListBlock(TaskManagerProjectBlock(), icon="fa fa-map-o"),
             ),
-            ("github_repo", blocks.URLBlock(validators=[github_repo_validator])),
+            (
+                "github_repo",
+                blocks.URLBlock(
+                    validators=[github_repo_validator], icon="fa fa-github"
+                ),
+            ),
         ],
         min_num=1,
         max_num=1,
