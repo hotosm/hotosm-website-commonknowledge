@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags menu_tags %}
+{% load wagtailcore_tags menu_tags wagtailimages_tags %}
 
 {% block content %}
     <div
@@ -61,8 +61,8 @@
         <main class='flex-shrink flex-grow flex flex-col max-w-3xl w-full'>
             <div class='mb-4 px-2 sm:px-4 lg:px-5 flex-grow'>
                 {% if page.show_header is not False %}
-                    <header class='mb-5'>
-                        {% if page.show_breadcrumb %}
+                    <header class='my-5'>
+                        {% if page.show_breadcrumb or True %}
                         <ul class="mt-4 list-unstyled space-x-2 text-gray-600 text-sm mb-2">
                             {% for ancestor in page.get_ancestors %}
                                 {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
@@ -71,11 +71,26 @@
                             {% endfor %}
                         </ul>
                         {% endif %}
-                        <h1 class='mt-4 font-bold text-3xl mb-2 text-black'>{{ page.title }}</h1>
+
+                        <div class='mt-4'>
+                            {% if page.label %}
+                                <div class="text-gray-500 capitalize text-sm">{{ page.label }}</div>
+                            {% endif %}
+                            <h1 class='font-bold text-3xl mb-2 text-black'>{{ page.title }}</h1>
+                        </div>
                         {% if page.short_summary %}
-                            <div class='text-2xl'>{{ page.short_summary }}</div>
+                            <p class='text-2xl'>{{ page.short_summary }}</p>
                         {% endif %}
                     </header>
+                {% endif %}
+
+                {% if page.featured_image %}
+                    <div class='my-4'>
+                        {% image page.featured_image width-800 class="w-full" alt=page.feature_image.alt_text %}
+                        {% if page.featured_image.attribution %}
+                            <div class='text-gray-600 text-sm italic'>{{ page.featured_image.attribution }}</div>
+                        {% endif %}
+                    </div>
                 {% endif %}
 
                 <div data-toc-target="content" class="space-y-5 flex flex-col">

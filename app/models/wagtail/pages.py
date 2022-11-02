@@ -118,6 +118,10 @@ class PreviewablePage(Page):
         blank=True, null=True, help_text="Metadata from the legacy site"
     )
 
+    @property
+    def label(self):
+        return self._meta.verbose_name.removesuffix(" page")
+
     # Editor
     content_panels = Page.content_panels + [
         FieldPanel("short_summary"),
@@ -213,6 +217,7 @@ class ContentSidebarPage(ContentPage):
 
 
 class CountryPage(ContentPage):
+    template = "app/static_page.html"
     page_description = "Page for each country"
     isoa2 = models.CharField(max_length=2, unique=True)
     isoa3 = models.CharField(max_length=3, unique=True, blank=True, null=True)
@@ -259,6 +264,7 @@ class TaggedProject(ItemBase):
 
 
 class ProjectPage(ContentSidebarPage):
+    template = "app/static_page.html"
     page_description = "HOTOSM and third party projects"
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
     # TODO: relations
@@ -303,6 +309,7 @@ class TaggedPerson(ItemBase):
 
 
 class PersonPage(ContentPage):
+    template = "app/static_page.html"
     page_description = "Contributors, staff, and other people"
     category = ClusterTaggableManager(through=TaggedPerson, blank=True)
     # TODO: relations
@@ -321,6 +328,7 @@ class TaggedOrganisation(ItemBase):
 
 
 class OrganisationPage(ContentPage):
+    template = "app/static_page.html"
     page_description = "Internal and external organisations"
     tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
 
@@ -356,6 +364,7 @@ class TaggedOpportunity(ItemBase):
 
 
 class OpportunityPage(ContentPage):
+    template = "app/static_page.html"
     page_description = "Opportunities for people to get involved with HOT"
     deadline_datetime = models.DateTimeField(blank=True, null=True)
     place_of_work = models.CharField(max_length=1000, blank=True, null=True)
@@ -391,6 +400,7 @@ class TaggedArticle(ItemBase):
 
 
 class MagazineSection(PreviewablePage):
+    template = "app/magazine_index_page.html"
     page_description = "A section of the magazine"
     parent_page_type = ["app.MagazineIndexPage"]
     subpage_types = ["app.ArticlePage", "app.MagazineSection"]
@@ -398,6 +408,7 @@ class MagazineSection(PreviewablePage):
 
 
 class ArticlePage(ContentSidebarPage):
+    template = "app/static_page.html"
     page_description = "Blog posts, news reports, updates and so on"
     parent_page_type = ["app.MagazineIndexPage", "app.MagazineSection"]
     show_in_menus_default = False
@@ -528,6 +539,7 @@ class TaggedEvent(ItemBase):
 
 
 class EventPage(ContentPage):
+    template = "app/static_page.html"
     page_description = "Events, workshops, and other gatherings"
 
     class Meta:
@@ -574,6 +586,7 @@ class EventPage(ContentPage):
 
 
 class ActivationIndexPage(PreviewablePage):
+    template = "app/static_page.html"
     page_description = "Home page for the activations section of the site"
     show_in_menus_default = True
     max_count_per_parent = 1
@@ -584,5 +597,6 @@ class ActivationIndexPage(PreviewablePage):
 
 
 class ActivationProjectPage(ContentPage):
+    template = "app/static_page.html"
     parent_page_type = ["app.ActivationIndexPage"]
     page_description = "Disaster Services activation projects"
