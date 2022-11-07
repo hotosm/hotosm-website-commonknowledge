@@ -8,7 +8,7 @@ The next Humanitarian OpenStreetMap Team website.
 
 1. In VSCode, run the command `Clone Repository in Remote Container Volume` and enter the URL of this repository.
 2. Wait for dependencies to install.
-3. Hit `F5` (or navigate to _Run & Debug_ and launch the _Start App_ configuration).
+3. In VSCode navigate to _Run & Debug_ and launch the _Start App_ configuration).
 4. Navigate to http://localhost:8000
 
 ## Application stack
