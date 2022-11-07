@@ -3,6 +3,11 @@
     body {
         // Base font size
         font-size: 16px;
-        @apply font-archivo text-gray-700;
+        @apply font-archivo text-gray-700 leading-normal;
+    }
+
+    * {
+        text-rendering: optimizeLegibility;
+        text-rendering: geometricPrecision;
     }
 }
