@@ -6,11 +6,12 @@ ENV PYTHONUNBUFFERED 1
 
 COPY Aptfile ./
 
-# Atempt to fix invalid Yarn keys
-# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-RUN apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
-
-# This causes the error
+# This fails without passing --allow-insecure-repositories, to allow installation without checking repository keys.
+#
+# Repository keys have fallen out of date from the creation of this Dockerfile and its current executions.
+#
+# While this is not ideal, the risk here is rather limited should consider if upstream this has been
+# fixed by Microsoft.
 RUN apt-get update --allow-insecure-repositories
 
 RUN cat Aptfile | xargs apt-get install --yes --quiet --no-install-recommends
