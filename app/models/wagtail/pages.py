@@ -115,11 +115,6 @@ class PreviewablePage(Page):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    image_url = models.URLField(
-        blank=True,
-        null=True,
-        help_text="If set, this image will be used instead of the featured image.",
-    )
     short_summary = RichTextField(max_length=1500, blank=True, null=True)
     frontmatter = models.JSONField(
         blank=True, null=True, help_text="Metadata from the legacy site"
@@ -132,13 +127,7 @@ class PreviewablePage(Page):
     # Editor
     content_panels = Page.content_panels + [
         FieldPanel("short_summary"),
-        MultiFieldPanel(
-            [
-                FieldPanel("featured_image"),
-                FieldPanel("image_url"),
-            ],
-            heading="Imagery",
-        ),
+        FieldPanel("featured_image"),
         # FieldPanel("frontmatter"),
     ]
 
