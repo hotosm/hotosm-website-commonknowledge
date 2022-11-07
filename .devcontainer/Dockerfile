@@ -11,7 +11,7 @@ COPY Aptfile ./
 RUN apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com
 
 # This causes the error
-RUN apt-get update
+RUN apt-get update --allow-unauthenticated
 
 # RUN cat Aptfile | xargs apt-get install --yes --quiet --no-install-recommends
 
