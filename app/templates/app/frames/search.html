@@ -1,4 +1,4 @@
-{% load app %}
+{% load app wagtailcore_tags %}
 
 <turbo-frame id="search-results">
     <div class='{% if search_query %}bg-white rounded-md py-4 space-y-3{% endif %}'>
@@ -14,7 +14,7 @@
             <li>
                 <a data-combo-box-a11y-target="item" tabindex="0" data-turbo-frame="_top" href="{{ page.url }}" role="status" class="block px-2 sm:px-4 hover:bg-gray-50 py-3 group">
                     <div class="mb-2 text-lg font-bold group-hover:text-red">{{ page.title }}</div>
-                    {% if page.short_summary %}<div>{{ page.short_summary|richtext|truncatechars:200 }}</div>{% endif %}
+                    {% if page.short_summary %}<div>{{ page.short_summary|richtext|striptags|truncatewords:50 }}</div>{% endif %}
                 </a>
             </li>
             {% endfor %}
