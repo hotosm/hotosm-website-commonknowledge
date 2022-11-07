@@ -4,9 +4,9 @@
 {% block content %}
 
 <header class="px-2 sm:px-4 my-4">
-    <h1 class='font-bold text-4xl mb-2 text-gray-900'>Search</h1>
+    <h1 class='font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none'>Search</h1>
     {% if search_query %}
-    <div class='text-2xl text-gray-800'>{{total_count}} results for "{{search_query}}"</div>
+    <div class='text-xl sm:text-2xl text-gray-800'>{{total_count}} results for "{{search_query}}"</div>
     {% endif %}
 </header>
 

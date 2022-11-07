@@ -43,9 +43,9 @@
         {% block topic_content %}
             <div class='mb-4 px-2 sm:px-4 {% if page.show_section_navigation %} md:px-5 {% endif %} flex-grow'>
                 <header class='mb-5'>
-                    <h1 class='font-bold text-4xl mb-2 text-gray-900'>{{ page.title }}</h1>
+                    <h1 class='font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none'>{{ page.title }}</h1>
                     {% if page.short_summary %}
-                        <div class='text-2xl text-gray-800'>{{ page.short_summary|richtext }}</div>
+                        <div class='text-xl sm:text-2xl text-gray-800'>{{ page.short_summary|richtext }}</div>
                     {% endif %}
                 </header>
 
