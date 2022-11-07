@@ -2,7 +2,14 @@
 
 {% for block in streamfield %}
     {% if block.block_type == 'richtext' %}
-        <div class='prose'>
+        <div class='
+          prose-lg
+          prose-headings:text-gray-900
+          prose-p:text-gray-800
+          prose-a:text-blue-500
+          prose-a:font-semibold
+          prose-a:underline
+        '>
             {% include_block block %}
         </div>
     {% elif block.block_type == 'simple_link' %}
