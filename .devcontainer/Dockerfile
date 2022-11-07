@@ -5,9 +5,9 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
 ENV PYTHONUNBUFFERED 1
 
 COPY Aptfile ./
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-RUN apt-get update
-RUN cat Aptfile | xargs apt-get install --yes --quiet --no-install-recommends
+# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+# RUN apt-get update
+# RUN cat Aptfile | xargs apt-get install --yes --quiet --no-install-recommends
 
 # Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
 ARG USER_UID=1000
