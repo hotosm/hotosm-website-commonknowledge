@@ -2537,6 +2537,11 @@ home-or-tmp@^2.0.0:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.1"
 
+hotkeys-js@>=3:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.10.0.tgz#2bbd13de4aa002fa916c34e3859239924311e35a"
+  integrity sha512-20xeVdOqcgTkMox0+BqFwADZP7+5dy/9CFPpAinSMh2d0s3b0Hs2V2D+lMh4Hphkf7VE9pwnOl58eP1te+REcg==
+
 html-encoding-sniffer@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/html-encoding-sniffer/-/html-encoding-sniffer-2.0.1.tgz#42a6dc4fd33f00281176e8b23759ca4e4fa185f3"
@@ -4031,6 +4036,20 @@ stack-utils@^2.0.3:
   integrity sha512-xrQcmYhOsn/1kX+Vraq+7j4oE2j/6BFscZ0etmYg81xuM8Gq0022Pxb8+IqgOFUIaxHs0KaSb7T1+OegiNrNFA==
   dependencies:
     escape-string-regexp "^2.0.0"
+
+stimulus-dropdown@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/stimulus-dropdown/-/stimulus-dropdown-2.0.0.tgz#3d401e418be21787f182c0de4bf0d2fd91cfbf8e"
+  integrity sha512-3VUZ4TI9qHvzw+sOEX1oQA8Pw8C/K5yI+oltr5B9DTwFzuJrFZRWR33OK3ERllzZep+quvHZZljIpIRifKCmCg==
+  dependencies:
+    stimulus-use "^0.50.0-2"
+
+stimulus-use@^0.50.0-2:
+  version "0.50.0"
+  resolved "https://registry.yarnpkg.com/stimulus-use/-/stimulus-use-0.50.0.tgz#0bae92fbb1fd961cbb23569f9edd12ae642ce4a6"
+  integrity sha512-9NScZQiOycQdzh8VZ15pxk6ep/a22fgha2halOvZFpJITC4nsTbWlO7D1hm+9LspFxa5b28tQhm3XkbH/qAlGw==
+  dependencies:
+    hotkeys-js ">=3"
 
 strict-uri-encode@^2.0.0:
   version "2.0.0"

@@ -58,7 +58,12 @@ def querystring(context, **kwargs):
         else:
             params[key] = value
 
-    return "?" + parse.urlencode(params)
+    args = parse.urlencode(params)
+
+    if len(args):
+        return "?" + args
+
+    return ""
 
 
 @register.simple_tag(takes_context=True)
