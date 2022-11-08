@@ -3,9 +3,7 @@
     <div class="p-2 sm:p-4">
         <div class="md:flex md:justify-between mx-auto">
             <div class="mb-6 md:mb-0">
-                {% pageurl page.get_site.root_page.localized as root_url %}
-                {% firstof root_url "/" as root_url %}
-                <a href="{{ root_url }}" class="flex items-center">
+                <a {# djlint:off #}href="/"{# djlint:on #} class="flex items-center">
                     <img src="{% static "app/logo.svg" %}"
                          class="mr-3 h-8"
                          alt="Humanitarian OpenStreetMap"/>
