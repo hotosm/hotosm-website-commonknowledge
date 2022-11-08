@@ -70,9 +70,9 @@
         {% endif %}
     </div>
     <div class="flex flex-wrap justify-between items-center mx-auto px-2 sm:px-4 py-2.5 border-b border-gray-200">
-        {% pageurl page.get_site.root_page.localized as root_url %}
-        {% firstof root_url "/" as root_url %}
-        <a href="{{ root_url }}" class="flex items-center">
+        {# djlint:off D018 #}
+        <a href="/" class="flex items-center">
+            {# djlint:on #}
             <img src="{% static "app/logo.svg" %}"
                  class="sm:mr-3 h-[30px] md:h-[55px]"
                  alt="Humanitarian OpenStreetMap"/>
