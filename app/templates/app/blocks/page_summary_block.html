@@ -1,14 +1,13 @@
-  <div class="max-w-none">
+<div class="max-w-none">
     <header class="home-header">
-      <h1 class="max-w-3xl">
-        {{ value.text }}
-      </h1>
-      <div class="home-cta">
-        {% for cta in value.buttons %}
-        <a href="{% firstof url page.url %}" class="btn btn-primary btn-lg btn-chevron btn-block">
-          {% firstof title page.title %}
-        </a>
-        {% endfor %}
-      </div>
+        <h1 class="max-w-4xl leading-tight sm:leading-none font-extrabold">{{ value.text }}</h1>
+        <div class="home-cta">
+            {% for cta in value.buttons %}
+                <a href="{% firstof url page.url %}"
+                   class="btn btn-primary btn-lg btn-chevron btn-block">
+                    {% firstof title page.title %}
+                </a>
+            {% endfor %}
+        </div>
     </header>
-  </div>
+</div>

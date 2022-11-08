@@ -1,0 +1,15 @@
+@layer base {
+    // Classes added here will only be bundled if referenced in templates
+
+    html,
+    body {
+        // Base font size
+        font-size: 16px;
+        @apply font-archivo text-gray-700 leading-normal;
+    }
+
+    * {
+        text-rendering: optimizeLegibility;
+        text-rendering: geometricPrecision;
+    }
+}

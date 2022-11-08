@@ -1,56 +1,63 @@
 {% extends "app/topic_base.html" %}
 {% load wagtailcore_tags app %}
-
 {% block topic_content %}
     {% if page.show_breadcrumb %}
-    <ul class="mt-4 px-2 sm:px-4 md:px-5 list-unstyled space-x-2 text-gray-600 text-sm">
-        {% for page in self.get_ancestors %}
-            {% if page.content_type.model == "topichomepage" %}
-                <li class='inline-block [&:not(:last-child)]:after:content-["/"] after:pl-2'><a href="{% pageurl page %}">Home</a></li>
-            {% endif %}
-            {% if page.content_type.model == "topicpage" %}
-                <li class='inline-block [&:not(:last-child)]:after:content-["/"] after:pl-2'><a href="{% pageurl page %}">{{ page.title }}</a></li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+        <ul class="mt-4 px-2 sm:px-4 md:px-5 list-unstyled space-x-2 text-gray-600 text-sm">
+            {% for page in self.get_ancestors %}
+                {% if page.content_type.model == "topichomepage" %}
+                    <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
+                        <a href="{% pageurl page %}">Home</a>
+                    </li>
+                {% endif %}
+                {% if page.content_type.model == "topicpage" %}
+                    <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
+                        <a href="{% pageurl page %}">{{ page.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     {% endif %}
-
-    <div class='my-4 flex flex-row flex-grow {% if not page.show_section_navigation %} justify-center {% endif %}' data-controller="toc" data-toc-options-value='{
-        "scrollContainer": "#doc-scrollable-area",
+    <div class="my-4 flex flex-row flex-grow {% if not page.show_section_navigation %} justify-center{% endif %}"
+        data-controller="toc"
+        {# djlint:off #}
+         data-toc-options-value='{
+            "scrollContainer": "#doc-scrollable-area",
             {% comment %} // Main class to add to links. {% endcomment %}
-        "linkClass": "toc-link",
+            "linkClass": "toc-link",
             {% comment %} // Extra classes to add to links. {% endcomment %}
-        "extraLinkClasses": "transition duration-150 ease-out hover:ease-in",
-            {% comment %} // Class to add to active links, {% endcomment %}
-            {% comment %} // the link corresponding to the top most heading on the page. {% endcomment %}
-        "activeLinkClass": "text-red",
+            "extraLinkClasses": "transition duration-150 ease-out hover:ease-in",
+            {% comment %}
+            // Class to add to active links,
+            // the link corresponding to the top most heading on the page.
+            {% endcomment %}
+            "activeLinkClass": "text-red",
             {% comment %} // Main class to add to lists. {% endcomment %}
-        "listClass": "pl-3",
+            "listClass": "pl-3",
             {% comment %} // Extra classes to add to lists. {% endcomment %}
-        "extraListClasses": "",
+            "extraListClasses": "",
             {% comment %} // Class that gets added when a list should be collapsed. {% endcomment %}
-        "isCollapsedClass": "hidden",
-            {% comment %} // Class that gets added when a list should be able {% endcomment %}
-            {% comment %} // to be collapsed but isn"t necessarily collapsed. {% endcomment %}
-        "collapsibleClass": "transition-all",
+            "isCollapsedClass": "hidden",
+            {% comment %} // Class that gets added when a list should be able {% endcomment %} {% comment %} // to be collapsed but isn"t necessarily collapsed. {% endcomment %}
+            "collapsibleClass": "transition-all",
             {% comment %} // Class to add to list items. {% endcomment %}
-        "listItemClass": "my-2",
-            {% comment %} // Class to add to active list items. {% endcomment %}
-        "activeListItemClass": ""
-    }'>
-        <section class='{% if page.show_section_navigation %} flex-grow {% else %} max-w-prose w-full {% endif %}'>
-            {{ block.super }}
-        </section>
-        {% if page.show_table_of_contents %}
-        <aside class='ml-4 hidden xl:block w-[220px] flex-shrink-0 flex-grow-0'>
-            <div class='sticky top-5 mb-4 right-3 text-gray-800 text-sm'>
-                <div class='uppercase'>On this page</div>
-                <div class='-ml-3' data-toc-target="toc"></div>
-            </div>
-        </aside>
-        {% endif %}
-    </div>
-
-    {% comment %} TODO: Relevant signup / more info stuff in the footer, for this topic’s pages {% endcomment %}
-    {% include "app/include/footer.html" %}
-{% endblock %}
+            "listItemClass": "my-2",
+            {% comment %} // Class to add to active list items. {% endcomment %
+            "activeListItemClass": ""
+          }'
+{# djlint:on #}
+>
+<section class="{% if page.show_section_navigation %} flex-grow {% else %} max-w-prose w-full {% endif %}">
+{{ block.super }}
+</section>
+{% if page.show_table_of_contents %}
+<aside class="ml-4 hidden xl:block w-[220px] flex-shrink-0 flex-grow-0">
+<div class="sticky top-5 mb-4 right-3 text-gray-800 text-sm">
+<div class="uppercase">On this page</div>
+<div class="-ml-3" data-toc-target="toc"></div>
+</div>
+</aside>
+{% endif %}
+</div>
+{% comment %} TODO: Relevant signup / more info stuff in the footer, for this topic’s pages {% endcomment %}
+{% include "app/include/footer.html" %}
+{% endblock topic_content %}

@@ -4,7 +4,8 @@
 </header>
 <div class="col-span-1 sm:col-span-2 grid gap-6 md:gap-8 md:grid-cols-3">
     {% for link in value.links %}
-        <a href="{% firstof link.url link.page.url %}" class="block no-underline">
+        <a href="{% firstof link.url link.page.url %}"
+           class="block no-underline">
             <div class="font-bold mb-2">{% firstof link.label link.page.title %}</div>
             <p>{{ link.description }}</p>
         </a>

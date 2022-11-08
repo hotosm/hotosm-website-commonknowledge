@@ -23,6 +23,18 @@ repos:
         types: [python]
         language: python
 
+  - repo: https://github.com/Riverside-Healthcare/djLint
+    rev: v1.19.6
+    hooks:
+      # Fixes indentation
+      - id: djlint-django
+        files: "app/"
+        args: [--reformat]
+      # Reports on quote mark misuse etc.
+      - id: djlint-django
+        files: "app/"
+        args: [--lint]
+
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
@@ -44,7 +56,7 @@ repos:
         language: python
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.0
+    rev: v3.0.0-alpha.4
     hooks:
       # Format JS
       - id: prettier

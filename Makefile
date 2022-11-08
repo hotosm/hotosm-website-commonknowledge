@@ -7,6 +7,7 @@ PYTHON := python
 
 .PHONY: install
 install:
+	poetry --version
 	poetry install -n
 	yarn
 
@@ -35,8 +36,10 @@ bootstrap: install pre-commit-install migrate setup-cms
 .PHONY: codestyle
 codestyle:
 	poetry run pyupgrade --exit-zero-even-if-changed --py38-plus **/*.py
+	poetry run djlint --version
+	poetry run djlint app/templates/ --reformat
 	poetry run isort --version
-	poetry run isort --settings-path ./pyproject.toml ./
+	poetry run isort --gitignore --settings-path ./pyproject.toml ./
 	poetry run black --version
 	poetry run black --config ./pyproject.toml ./
 	yarn prettier --write .
@@ -49,13 +52,15 @@ formatting: codestyle
 
 .PHONY: test
 test:
-	poetry run pytest
+	poetry run pytest app/
 	yarn test
 
 .PHONY: check-codestyle
 check-codestyle:
+	poetry run djlint --version
+	poetry run djlint app/templates/ --lint
 	poetry run isort --version
-	poetry run isort --diff --check-only --settings-path ./pyproject.toml ./
+	poetry run isort --diff --gitignore --check-only --settings-path ./pyproject.toml ./
 	poetry run black --version
 	poetry run black --diff --check --config pyproject.toml ./
 	poetry run darglint --docstring-style google --verbosity 2 pyck

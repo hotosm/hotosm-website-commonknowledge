@@ -1,13 +1,13 @@
-{% load wagtailcore_tags%}
-
+{% load wagtailcore_tags %}
 {% for block in streamfield %}
-    {% if block.block_type == 'richtext' %}
-        <div class='prose'>
+    {% if block.block_type == "richtext" %}
+        <div class=" prose-lg prose-headings:text-gray-900 prose-p:text-gray-800 prose-a:text-blue-500 prose-a:font-semibold prose-a:underline prose-p:leading-normal ">
             {% include_block block %}
         </div>
-    {% elif block.block_type == 'simple_link' %}
-        <a href="{% firstof block.value.url block.value.page.url %}" class="block no-underline text-red">
-            {% firstof block.value.label block.value.page.title %} &rarr;
+    {% elif block.block_type == "simple_link" %}
+        <a href="{% firstof block.value.url block.value.page.url %}"
+           class="block no-underline text-red">
+            {% firstof block.value.label block.value.page.title %} →
         </a>
     {% else %}
         {% include_block block %}

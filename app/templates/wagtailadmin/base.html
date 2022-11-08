@@ -1,8 +1,11 @@
 {% extends "wagtailadmin/base.html" %}
 {% load static %}
-
 {% block branding_logo %}
-  <div style="padding: 10px;">
-    <img src="https://hotosm.org/images/hot-logo-icon-white.svg" style="width: 100%" alt="Humanitarian OpenStreetMap" />
-  </div>
-{% endblock %}
+    {# djlint: off #}
+    <div style="padding: 10px;">
+    {# djlint: on #}
+    <img src="https://hotosm.org/images/hot-logo-icon-white.svg"
+         style="width: 100%"
+         alt="Humanitarian OpenStreetMap"/>
+</div>
+{% endblock branding_logo %}

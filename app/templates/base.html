@@ -1,57 +1,57 @@
 {% load static django_vite wagtailcore_tags wagtailuserbar menu_tags %}
-
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- <link rel="stylesheet" href="https://hotosm.org/css/main.css"> -->
-
-    <link rel="apple-touch-icon" sizes="180x180" href="https://hotosm.org/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://hotosm.org/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://hotosm.org/favicon-16x16.png">
-    {% comment %} <link rel="manifest" href="https://hotosm.org/site.webmanifest"> {% endcomment %}
-    <link rel="mask-icon" href="https://hotosm.org/safari-pinned-tab.svg" color="#d73f3f">
-    <meta name="msapplication-TileColor" content="#d73f3f">
-    <meta name="theme-color" content="#ffffff">
-
-    {% vite_hmr_client %}
-    <script>
-        document.documentElement.classList.remove('no-js')
-    </script>
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@300&family=Open+Sans:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-    {% vite_asset 'frontend/main.ts' %}
-
-    {% block extra_css %}
-    {% endblock %}
-</head>
-
-<body class="relative subpixel-antialiased text-hotGrey {% block body_class %}{% endblock %}">
-    {% wagtailuserbar %}
-
-    <div class="flex flex-col {% block screen_class %}min-h-screen{% endblock %}">
-        {% block header %}
-        {% if page.show_header is None or page.show_header is True %}
-            {% main_menu max_levels=1 template="app/include/header.html" %}
-        {% endif %}
-        {% endblock %}
-
-        <div class="flex-grow flex flex-col {% block content_class %}{% endblock %}">
-            {% block content %}
-            {% endblock %}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="" />
+        <title>Humanitarian OpenStreetMap</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- <link rel="stylesheet" href="https://hotosm.org/css/main.css"> -->
+        <link rel="apple-touch-icon"
+              sizes="180x180"
+              href="https://hotosm.org/apple-touch-icon.png"/>
+        <link rel="icon"
+              type="image/png"
+              sizes="32x32"
+              href="https://hotosm.org/favicon-32x32.png"/>
+        <link rel="icon"
+              type="image/png"
+              sizes="16x16"
+              href="https://hotosm.org/favicon-16x16.png"/>
+        {% comment %} <link rel="manifest" href="https://hotosm.org/site.webmanifest"> {% endcomment %}
+        <link rel="mask-icon"
+              href="https://hotosm.org/safari-pinned-tab.svg"
+              color="#d73f3f"/>
+        <meta name="msapplication-TileColor" content="#d73f3f" />
+        <meta name="theme-color" content="#ffffff" />
+        {% vite_hmr_client %}
+        <script>document.documentElement.classList.remove('no-js')</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@300&family=Open+Sans:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+              rel="stylesheet"/>
+        {% vite_asset 'frontend/main.ts' %}
+        {% block extra_css %}
+        {% endblock extra_css %}
+    </head>
+    <body class="relative subpixel-antialiased text-hotGrey {% block body_class %}{% endblock body_class %}">
+        {% wagtailuserbar %}
+        <div class="flex flex-col {% block screen_class %}min-h-screen{% endblock screen_class %}">
+            {% block header %}
+                {% if page.show_header is None or page.show_header is True %}
+                    {% main_menu max_levels=1 template="app/include/header.html" %}
+                {% endif %}
+            {% endblock header %}
+            <div class="flex-grow flex flex-col {% block content_class %}{% endblock content_class %}">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            {% block footer %}
+                {% if page.show_footer is None or page.show_footer is True %}
+                    {% flat_menu 'footer' max_levels=1 template="app/include/footer.html" %}
+                {% endif %}
+            {% endblock footer %}
         </div>
-
-        {% block footer %}
-            {% if page.show_footer is None or page.show_footer is True %}
-                {% flat_menu 'footer' max_levels=1 template="app/include/footer.html" %}
-            {% endif %}
-        {% endblock %}
-    </div>
-    {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.min.js"></script> {% endcomment %}
-</body>
+        {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.min.js"></script> {% endcomment %}
+    </body>
 </html>

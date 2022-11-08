@@ -1,15 +1,18 @@
 {% load wagtailcore_tags %}
 <section>
-    <header class='mb-4'>
-        <h2 class='text-lg font-bold mb-2'>{{ value.title }}</h2>
+    <header class="mb-4">
+        <h2 class="text-lg font-bold mb-2">{{ value.title }}</h2>
         <p>{{ value.description }}</p>
     </header>
     <div class="grid-cols-1 sm:grid-cols-2 grid gap-6 md:gap-8 xl:grid-cols-3">
         {% for link in value.links %}
-            <a href="{% firstof link.url link.page.url %}" class="block no-underline border border-gray-200 p-3 rounded-md">
+            <a href="{% firstof link.url link.page.url %}"
+               class="block no-underline border border-gray-200 p-3 rounded-sm">
                 <div class="text-red text-lg leading-6">{% firstof link.label link.page.title %}</div>
                 {% if link.page.specific.short_summary %}
-                    <p class='mt-1 text-sm text-gray-600'>{{ link.page.specific.short_summary|richtext|richtext|striptags|truncatewords:50 }}</p>
+                    <p class="mt-1 text-sm text-gray-600">
+                        {{ link.page.specific.short_summary|richtext|richtext|striptags|truncatewords:50 }}
+                    </p>
                 {% endif %}
             </a>
         {% endfor %}

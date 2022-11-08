@@ -1,0 +1,10 @@
+@layer components {
+    // Classes added here will only be bundled if referenced in templates
+}
+
+// From wagtail's RTF renderer
+// !important added in order to counteract inline styles
+.image-large {
+    width: 100% !important;
+    height: auto !important;
+}
