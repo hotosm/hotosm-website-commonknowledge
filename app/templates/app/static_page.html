@@ -38,17 +38,12 @@
                             <ul class="mt-4 list-unstyled space-x-2 text-gray-600 text-sm mb-2">
                                 {% for ancestor in page.get_ancestors %}
                                     {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
-                                        <li class="inline-block [&:not(:last-child)]:after:content-[" after pl-2>
+                                        <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
                                             <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
                                         </li>
                                     {% endif %}
                                 {% endfor %}
-                                {% if page.label %}
-                                    <li class="inline-block [&:not(:last-child)]:after:content-["
-                                        after
-                                        pl-2
-                                        capitalize>{{ page.label }}</li>
-                                {% endif %}
+                                {% if page.label %}<li class="inline-block capitalize">{{ page.label }}</li>{% endif %}
                             </ul>
                         {% endif %}
                         <div class="mt-4">
