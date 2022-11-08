@@ -7,6 +7,7 @@ PYTHON := python
 
 .PHONY: install
 install:
+	poetry --version
 	poetry install -n
 	yarn
 
