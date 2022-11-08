@@ -1,103 +1,76 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags menu_tags wagtailimages_tags %}
-
 {% block content %}
-    <div
-        class='flex-grow flex flex-row  {% if not page.show_table_of_contents and not page.sidebar %} justify-center {% endif %}'
-        {% if page.show_table_of_contents %}
-            data-controller="toc"
-            data-toc-options-value='{
-                "linkClass": "toc-link",
-                    {% comment %} // Extra classes to add to links. {% endcomment %}
-                "extraLinkClasses": "transition duration-150 ease-out hover:ease-in",
-                    {% comment %} // Class to add to active links, {% endcomment %}
-                    {% comment %} // the link corresponding to the top most heading on the page. {% endcomment %}
-                "activeLinkClass": "text-red",
-                    {% comment %} // Main class to add to lists. {% endcomment %}
-                "listClass": "pl-3",
-                    {% comment %} // Extra classes to add to lists. {% endcomment %}
-                "extraListClasses": "",
-                    {% comment %} // Class that gets added when a list should be collapsed. {% endcomment %}
-                "isCollapsedClass": "hidden",
-                    {% comment %} // Class that gets added when a list should be able {% endcomment %}
-                    {% comment %} // to be collapsed but isn"t necessarily collapsed. {% endcomment %}
-                "collapsibleClass": "transition-all",
-                    {% comment %} // Class to add to list items. {% endcomment %}
-                "listItemClass": "my-2",
-                    {% comment %} // Class to add to active list items. {% endcomment %}
-                "activeListItemClass": ""
-            }'
-        {% endif %}
-    >
+    <div class="flex-grow flex flex-row  {% if not page.show_table_of_contents and not page.sidebar %} justify-center{% endif %}"
+        {% if page.show_table_of_contents %} data-controller="toc" data-toc-options-value="{ "linkClass": "toc-link", {% comment %} // Extra classes to add to links. {% endcomment %} "extraLinkClasses": "transition duration-150 ease-out hover:ease-in", {% comment %} // Class to add to active links, {% endcomment %} {% comment %} // the link corresponding to the top most heading on the page. {% endcomment %} "activeLinkClass": "text-red", {% comment %} // Main class to add to lists. {% endcomment %} "listClass": "pl-3", {% comment %} // Extra classes to add to lists. {% endcomment %} "extraListClasses": "", {% comment %} // Class that gets added when a list should be collapsed. {% endcomment %} "isCollapsedClass": "hidden", {% comment %} // Class that gets added when a list should be able {% endcomment %} {% comment %} // to be collapsed but isn"t necessarily collapsed. {% endcomment %} "collapsibleClass": "transition-all", {% comment %} // Class to add to list items. {% endcomment %} "listItemClass": "my-2", {% comment %} // Class to add to active list items. {% endcomment %} "activeListItemClass": "" }" {% endif %}>
         {% comment %} Section navigation {% endcomment %}
         {% comment %} {% if page.show_section_navigation %}
-        <nav class='py-4 px-2 sm:px-4 hidden lg:block !w-[240px] flex-shrink-0 flex-grow-0'>
+        <nav class="py-4 px-2 sm:px-4 hidden lg:block !w-[240px] flex-shrink-0 flex-grow-0">
             <ul class="list-unstyled space-y-2 text-gray-800 text-sm">
                 {% section_menu max_levels=3 template="app/include/section_menu.html" %}
             </ul>
         </nav>
         {% endif %} {% endcomment %}
-
         {% if page.sidebar or page.show_table_of_contents %}
-        {% comment %} Page sidebar {% endcomment %}
-        <aside class='ml-4 hidden lg:block w-[220px] flex-shrink-0 flex-grow-0'>
-            {% if page.show_table_of_contents %}
-                <div class='sticky top-5 mt-5 mb-4 right-3 text-gray-800 text-sm'>
-                    <div class='uppercase'>On this page</div>
-                    <div class='-ml-3' data-toc-target="toc"></div>
-                </div>
-            {% endif %}
-            {% if page.sidebar %}
-                {% include "app/include/streamfield.html" with streamfield=page.sidebar %}
-                {% comment %} <div>{{ page.page_contact_title }}</div>
+            {% comment %} Page sidebar {% endcomment %}
+            <aside class="ml-4 hidden lg:block w-[220px] flex-shrink-0 flex-grow-0">
+                {% if page.show_table_of_contents %}
+                    <div class="sticky top-5 mt-5 mb-4 right-3 text-gray-800 text-sm">
+                        <div class="uppercase">On this page</div>
+                        <div class="-ml-3" data-toc-target="toc"></div>
+                    </div>
+                {% endif %}
+                {% if page.sidebar %}
+                    {% include "app/include/streamfield.html" with streamfield=page.sidebar %}
+                    {% comment %} <div>{{ page.page_contact_title }}</div>
                 <a href="mailto:{{page.page_contact_contact_email}}" class="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 mr-2 mb-2">
                     {{ page.page_contact_link_label }}
-                </a> {% endcomment %}
-            {% endif %}
-        </aside>
+                    </a> {% endcomment %}
+                {% endif %}
+            </aside>
         {% endif %}
-
         {% comment %} Page content {% endcomment %}
-        <main class='flex-shrink flex-grow flex flex-col max-w-3xl w-full'>
-            <div class='mb-4 px-2 sm:px-4 lg:px-5 flex-grow'>
+        <main class="flex-shrink flex-grow flex flex-col max-w-3xl w-full">
+            <div class="mb-4 px-2 sm:px-4 lg:px-5 flex-grow">
                 {% if page.show_header is not False %}
-                    <header class='my-5'>
+                    <header class="my-5">
                         {% if page.show_breadcrumb or True %}
-                        <ul class="mt-4 list-unstyled space-x-2 text-gray-600 text-sm mb-2">
-                            {% for ancestor in page.get_ancestors %}
-                                {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
-                                    <li class='inline-block [&:not(:last-child)]:after:content-["/"] after:pl-2'><a href="{% pageurl ancestor %}">{{ ancestor.title }}</a></li>
+                            <ul class="mt-4 list-unstyled space-x-2 text-gray-600 text-sm mb-2">
+                                {% for ancestor in page.get_ancestors %}
+                                    {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
+                                        <li class="inline-block [&:not(:last-child)]:after:content-[" after pl-2>
+                                            <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if page.label %}
+                                    <li class="inline-block [&:not(:last-child)]:after:content-["
+                                        after
+                                        pl-2
+                                        capitalize>{{ page.label }}</li>
                                 {% endif %}
-                            {% endfor %}
-                            {% if page.label %}
-                                <li class='inline-block [&:not(:last-child)]:after:content-["/"] after:pl-2 capitalize'>{{ page.label }}</li>
-                            {% endif %}
-                        </ul>
+                            </ul>
                         {% endif %}
-
-                        <div class='mt-4'>
-                            <h1 class='font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none'>{{ page.title }}</h1>
+                        <div class="mt-4">
+                            <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
                         </div>
                         {% if page.short_summary %}
-                            <p class='text-xl sm:text-2xl text-gray-800'>{{ page.short_summary|richtext }}</p>
+                            <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
                         {% endif %}
                     </header>
                 {% endif %}
-
                 {% if page.featured_image %}
-                    <div class='my-4'>
+                    <div class="my-4">
                         {% image page.featured_image width-800 class="w-full" alt=page.feature_image.alt_text %}
                         {% if page.featured_image.attribution %}
-                            <div class='text-gray-600 text-sm italic'>{{ page.featured_image.attribution }}</div>
+                            <div class="text-gray-600 text-sm italic">{{ page.featured_image.attribution }}</div>
                         {% endif %}
                     </div>
                 {% endif %}
-
                 <div data-toc-target="content" class="space-y-5 flex flex-col">
                     {% include "app/include/streamfield.html" with streamfield=page.content %}
                 </div>
             </div>
         </main>
     </div>
-
-{% endblock %}
+{% endblock content %}

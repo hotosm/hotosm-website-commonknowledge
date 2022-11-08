@@ -1,39 +1,57 @@
-{% load app i18n wagtailcore_tags menu_tags %}
-
+{% load static app i18n wagtailcore_tags menu_tags %}
 <nav class="bg-white w-full z-20 top-0 left-0">
-    <div class='text-xs sm:text-sm text-right space-x-3 px-2 sm:px-4 py-2.5 border-b border-gray-200'>
+    <div class="text-xs sm:text-sm text-right space-x-3 px-2 sm:px-4 py-2.5 border-b border-gray-200">
         {% if page %}
-            <svg aria-hidden="true" class="align-middle w-icon h-icon inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+            <svg aria-hidden="true"
+                 class="align-middle w-icon h-icon inline"
+                 fill="none"
+                 stroke="currentColor"
+                 viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
             {% get_language_info for page.locale.language_code as current_lang %}
-            <span class='text-black capitalize align-middle'>{{ current_lang.name_local }}</span>
+            <span class="text-black capitalize align-middle">{{ current_lang.name_local }}</span>
             {% for translation in page.get_translations.live %}
                 {% get_language_info for translation.locale.language_code as lang %}
-                <a href="{% pageurl translation %}{% querystring %}" rel="alternate" hreflang="{{ language_code }}" class="align-middle capitalize">
+                <a href="{% pageurl translation %}{% querystring %}"
+                   rel="alternate"
+                   hreflang="{{ language_code }}"
+                   class="align-middle capitalize">
                     {{ lang.name_local }}
                 </a>
             {% endfor %}
         {% else %}
-            <svg aria-hidden="true" class="align-middle w-icon h-icon inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+            <svg aria-hidden="true"
+                 class="align-middle w-icon h-icon inline"
+                 fill="none"
+                 stroke="currentColor"
+                 viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
             {% get_current_language as current_lang_code %}
             {% get_language_info for current_lang_code as current_lang %}
-            <span class='text-black capitalize align-middle'>{{ current_lang.name_local }}</span>
+            <span class="text-black capitalize align-middle">{{ current_lang.name_local }}</span>
             {% get_wagtail_locale_codes as all_locales %}
             {% for language_code in all_locales %}
                 {% if language_code != current_lang_code %}
-                {% get_language_info for language_code as lang %}
-                <a href="{% translate_url language_code %}{% querystring %}" rel="alternate" hreflang="{{ language_code }}" class="align-middle capitalize">
-                    {{ lang.name_local }}
-                </a>
+                    {% get_language_info for language_code as lang %}
+                    <a href="{% translate_url language_code %}{% querystring %}"
+                       rel="alternate"
+                       hreflang="{{ language_code }}"
+                       class="align-middle capitalize">
+                        {{ lang.name_local }}
+                    </a>
                 {% endif %}
             {% endfor %}
-
             {% comment %} Dropdown version {% endcomment %}
             {% comment %} ---------------- {% endcomment %}
             {% comment %} {% get_current_language as current_lang_code %}
             {% get_language_info for current_lang_code as current_lang %}
             <button id="languagePickerDropdownButton" data-dropdown-toggle="languagePickerDropdown" data-dropdown-placement="bottom" class="space-x-1 flex items-center font-medium text-gray-900 hover:text-blue-600 dark:hover:text-blue-500 md:mr-0" type="button">
                 <svg aria-hidden="true" class="align-middle w-icon h-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
-                <span class='capitalize'>{{ current_lang.name_local }}</span>
+                <span class="capitalize">{{ current_lang.name_local }}</span>
                 <svg class="w-icon h-icon" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
             <div id="languagePickerDropdown" class="hidden z-[9999] w-60 bg-white rounded shadow dark:bg-gray-700">
@@ -41,7 +59,7 @@
                     {% get_wagtail_locale_codes as all_locales %}
                     {% for language_code in all_locales %}
                         {% get_language_info for language_code as lang %}
-                        <li class='flex items-center pl-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600'>
+                        <li class="flex items-center pl-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                             <a href="{% translate_url language_code %}{% querystring %}" rel="alternate" hreflang="{{ language_code }}" class="capitalize flex items-center pl-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                                 {{ lang.name_local }}
                             </a>
@@ -52,48 +70,97 @@
         {% endif %}
     </div>
     <div class="flex flex-wrap justify-between items-center mx-auto px-2 sm:px-4 py-2.5 border-b border-gray-200">
-        <a href="/" class="flex items-center">
-            <img src="https://hotosm.org/images/hot-logo.svg" class="sm:mr-3 h-[30px] md:h-[55px]" alt="Humanitarian OpenStreetMap">
+        {% pageurl page.get_site.root_page.localized as root_url %}
+        {% firstof root_url "/" as root_url %}
+        <a href="{{ root_url }}" class="flex items-center">
+            <img src="{% static "app/logo.svg" %}"
+                 class="sm:mr-3 h-[30px] md:h-[55px]"
+                 alt="Humanitarian OpenStreetMap"/>
         </a>
         <div class="flex md:order-2">
             {% comment %} <button type="button" class="text-white bg-red focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0">Start Mapping</button> {% endcomment %}
-            <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   " aria-controls="navbar-sticky" aria-expanded="false">
+            <button data-collapse-toggle="navbar-sticky"
+                    type="button"
+                    class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   "
+                    aria-controls="navbar-sticky"
+                    aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
-                <svg class="w-icon h-icon" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                <svg class="w-icon h-icon"
+                     aria-hidden="true"
+                     fill="currentColor"
+                     viewBox="0 0 20 20"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                </svg>
             </button>
         </div>
-        <div class="ml-auto hidden justify-between items-end w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+        <div class="ml-auto hidden justify-between items-end w-full md:flex md:w-auto md:order-1"
+             id="navbar-sticky">
             <ul class="flex flex-col py-4 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:font-medium md:border-0 md:bg-white ">
                 {% for item in menu_items %}
                     <li class="{{ item.active_class }}">
-                        <a href="{{ item.href }}" class="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0" {% if active_class != "" %} aria-current="page" {% endif %}>{{ item.text }}</a>
+                        <a href="{{ item.href }}"
+                           class="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0"
+                           {% if active_class != "" %} aria-current="page"{% endif %}>{{ item.text }}</a>
                     </li>
                 {% endfor %}
                 <li data-controller="modal combo-box-a11y">
-                    <a href="#" data-action="click->modal#open click->combo-box-a11y#focus" class="nowrap block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0" {% if active_class != "" %} aria-current="page" {% endif %}>
-                        <svg class="align-middle w-icon h-icon inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        <span class='align-middle'>Search</span>
+                    <a href="#"
+                       data-action="click->modal#open click->combo-box-a11y#focus"
+                       class="nowrap block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0"
+                       {% if active_class != "" %} aria-current="page"{% endif %}>
+                        <svg class="align-middle w-icon h-icon inline-block"
+                             fill="none"
+                             stroke="currentColor"
+                             viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span class="align-middle">Search</span>
                     </a>
-
                     <!-- Modal Container -->
-                    <div
-                        data-modal-target="container"
-                        data-combo-box-a11y-target="focusTrap"
-                        data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard click->combo-box-a11y#blur keyup->combo-box-a11y#blurOnEscape"
-                        class="hidden animate-fadeIn fixed inset-0 overflow-y-auto z-[9999] bg-[#7b000073]">
+                    <div data-modal-target="container"
+                         data-combo-box-a11y-target="focusTrap"
+                         data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard click->combo-box-a11y#blur keyup->combo-box-a11y#blurOnEscape"
+                         class="hidden animate-fadeIn fixed inset-0 overflow-y-auto z-[9999] bg-[#7b000073]">
                         <!-- Modal Inner Container -->
-                        <div class="w-full max-w-lg px-2 relative mt-5 mx-auto" data-controller="query-on-type" data-query-on-type-debounce-value="300" data-query-on-type-original-src-value="{% url 'search_frame' %}">
-                            <div class='my-4'>
-                                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+                        <div class="w-full max-w-lg px-2 relative mt-5 mx-auto"
+                             data-controller="query-on-type"
+                             data-query-on-type-debounce-value="300"
+                             data-query-on-type-original-src-value="{% url "search_frame" %}">
+                            <div class="my-4">
+                                <label for="default-search"
+                                       class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
                                 <div class="relative">
                                     <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                        <svg aria-hidden="true" class="w-icon h-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                        <svg aria-hidden="true"
+                                             class="w-icon h-icon text-gray-500"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             viewBox="0 0 24 24"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
                                     </div>
-                                    <input data-combo-box-a11y-target="item input" data-action="query-on-type#update" data-query-on-type-property-param="query" name="query" value="{{search_query|default:""}}" tabindex="0" type="search" autocapitalize="off" aria-label="Search" id="default-search" autocomplete="off" class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search HOTOSM, people and resources" required>
-                                    {% comment %} <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button> {% endcomment %}
+                                    <input data-combo-box-a11y-target="item input"
+                                           data-action="query-on-type#update"
+                                           data-query-on-type-property-param="query"
+                                           name="query"
+                                           value="{{ search_query|default:"" }}"
+                                           tabindex="0"
+                                           type="search"
+                                           autocapitalize="off"
+                                           aria-label="Search"
+                                           id="default-search"
+                                           autocomplete="off"
+                                           class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Search HOTOSM, people and resources"
+                                           required/>
+                                    {% comment %} <button type="submit"
+         class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button> {% endcomment %}
                                 </div>
                             </div>
-                            <turbo-frame id="search-results" src="{% url 'search_frame' %}" data-query-on-type-target="frame"></turbo-frame>
+                            <turbo-frame id="search-results" src="{% url "search_frame" %}" data-query-on-type-target="frame"></turbo-frame>
                         </div>
                     </div>
                 </li>

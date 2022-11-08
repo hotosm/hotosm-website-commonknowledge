@@ -1,41 +1,59 @@
 {% load app wagtailcore_tags %}
-
 <turbo-frame id="search-results">
-    <div class='{% if search_query %}bg-white rounded-md py-4 space-y-3{% endif %}'>
-        <header class="px-2 sm:px-4" tabindex="-1">
-            {% if search_query %}
-            <div class='text-sm text-gray-600'>{{total_count}} result{{ total_count|pluralize }} for "{{search_query}}"</div>
-            {% endif %}
-        </header>
-
-        {% if pages|length %}
+<div class="{% if search_query %}bg-white rounded-md py-4 space-y-3{% endif %}">
+    <header class="px-2 sm:px-4" tabindex="-1">
+        {% if search_query %}
+            <div class="text-sm text-gray-600">{{ total_count }} result{{ total_count|pluralize }} for "{{ search_query }}"</div>
+        {% endif %}
+    </header>
+    {% if pages|length %}
         <ul>
             {% for page in pages %}
-            <li>
-                <a data-combo-box-a11y-target="item" tabindex="0" data-turbo-frame="_top" href="{{ page.url }}" role="status" class="block px-2 sm:px-4 hover:bg-gray-50 py-3 group">
-                    <div class="mb-2 text-lg font-bold group-hover:text-red">{{ page.title }}</div>
-                    {% if page.short_summary %}<div>{{ page.short_summary|richtext|striptags|truncatewords:50 }}</div>{% endif %}
-                </a>
-            </li>
+                <li>
+                    <a data-combo-box-a11y-target="item"
+                       tabindex="0"
+                       data-turbo-frame="_top"
+                       href="{{ page.url }}"
+                       role="status"
+                       class="block px-2 sm:px-4 hover:bg-gray-50 py-3 group">
+                        <div class="mb-2 text-lg font-bold group-hover:text-red">{{ page.title }}</div>
+                        {% if page.short_summary %}<div>{{ page.short_summary|richtext|striptags|truncatewords:50 }}</div>{% endif %}
+                    </a>
+                </li>
             {% endfor %}
         </ul>
-        {% endif %}
-
-        {% if paginator_page.has_previous or paginator_page.has_next %}
-        <div class='px-2 sm:px-4 border-t border-t-gray-300 pt-3'>
+    {% endif %}
+    {% if paginator_page.has_previous or paginator_page.has_next %}
+        <div class="px-2 sm:px-4 border-t border-t-gray-300 pt-3">
             {% if paginator_page.has_previous %}
-            <a data-turbo-frame="_self" href="{% url "search_frame" %}{% querystring page=paginator_page.previous_page_number %}" class="inline-flex items-center py-2 px-4 mr-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                <svg aria-hidden="true" class="mr-2 w-icon h-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
-                Previous results
-            </a>
+                <a data-turbo-frame="_self"
+                   href="{% url "search_frame" %}{% querystring page=paginator_page.previous_page_number %}"
+                   class="inline-flex items-center py-2 px-4 mr-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <svg aria-hidden="true"
+                         class="mr-2 w-icon h-icon"
+                         fill="currentColor"
+                         viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Previous results
+                </a>
             {% endif %}
             {% if paginator_page.has_next %}
-            <a data-turbo-frame="_self" href="{% url "search_frame" %}{% querystring page=paginator_page.next_page_number %}" class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                More results
-                <svg aria-hidden="true" class="ml-2 w-icon h-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            </a>
+                <a data-turbo-frame="_self"
+                   href="{% url "search_frame" %}{% querystring page=paginator_page.next_page_number %}"
+                   class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    More results
+                    <svg aria-hidden="true"
+                         class="ml-2 w-icon h-icon"
+                         fill="currentColor"
+                         viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
             {% endif %}
         </div>
-        {% endif %}
-    </div>
+    {% endif %}
+</div>
 </turbo-frame>

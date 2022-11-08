@@ -1,14 +1,8 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags %}
-
-
-
 {% block content %}
-
-<div class="home">
-    <p class="text-3xl">{{ page.description }}</p>
-
-    {% include "app/include/streamfield.html" with streamfield=page.content %}
-</div>
-
-{% endblock %}
+    <div class="home">
+        <p class="text-3xl">{{ page.description }}</p>
+        {% include "app/include/streamfield.html" with streamfield=page.content %}
+    </div>
+{% endblock content %}

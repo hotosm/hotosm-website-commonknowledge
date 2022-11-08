@@ -1,58 +1,76 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags app wagtailimages_tags %}
-
 {% block content %}
-
-<header class="px-2 sm:px-4 my-4">
-  <h1 class='font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none'>{{ page.title }}</h1>
-  <div class='text-xl sm:text-2xl text-gray-800'>
-      {{total_count}} sub page{{ total_count|pluralize }} {% if search_query %}for "{{search_query}}"{% endif %}
-  </div>
-</header>
-
-<form class='px-2 sm:px-4 my-4' method="GET">
-    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
-    <div class="relative">
-        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-            <svg aria-hidden="true" class="w-icon h-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    <header class="px-2 sm:px-4 my-4">
+        <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
+        <div class="text-xl sm:text-2xl text-gray-800">
+            {{ total_count }} sub page{{ total_count|pluralize }}
+            {% if search_query %}for "{{ search_query }}"{% endif %}
         </div>
-        <input name="query" value="{{search_query|default:""}}" tabindex="0" type="search" autocapitalize="off" aria-label="Search" id="default-search" class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search sub pages" required>
-        <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button>
-    </div>
-</form>
-
-<main class="my-4 px-2 sm:px-4 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-  {% for article in pages %}
-  <a href="{{ article.url }}" role="status" class="block">
-      {% if article.featured_image %}
-          {% image article.featured_image width-500 as img %}
-          <div class="mb-4 h-48 rounded overflow-hidden bg-cover bg-center" style="background-image: url('{{img.url}}')"></div>
-      {% else %}
-      <div class="mb-4 h-48 bg-gray-300 rounded"></div>
-      {% endif %}
-      <div class="mb-4">{{ article.title }}</div>
-      <div class="mb-4">{{ article.first_published_at|date:"D d M Y" }}</div>
-      {% if article.short_summary %}
-        <div class="mb-2.5">{{ article.short_summary|richtext|richtext|striptags|truncatewords:50 }}</div>
-      {% endif %}
-      {% comment %} <div class="flex items-center mt-4 space-x-3">
+    </header>
+    <form class="px-2 sm:px-4 my-4" method="get">
+        <label for="default-search"
+               class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+        <div class="relative">
+            <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                <svg aria-hidden="true"
+                     class="w-icon h-icon text-gray-500"
+                     fill="none"
+                     stroke="currentColor"
+                     viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input name="query"
+                   value="{{ search_query|default:"" }}"
+                   tabindex="0"
+                   type="search"
+                   autocapitalize="off"
+                   aria-label="Search"
+                   id="default-search"
+                   class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                   placeholder="Search sub pages"
+                   required/>
+            <button type="submit"
+                    class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
+                Search
+            </button>
+        </div>
+    </form>
+    <main class="my-4 px-2 sm:px-4 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {% for article in pages %}
+            <a href="{{ article.url }}" role="status" class="block">
+                {% if article.featured_image %}
+                    {% image article.featured_image width-500 as img %}
+                    <div class="mb-4 h-48 rounded overflow-hidden bg-cover bg-center"
+                         style="background-image: url('{{ img.url }}')"></div>
+                {% else %}
+                    <div class="mb-4 h-48 bg-gray-300 rounded"></div>
+                {% endif %}
+                <div class="mb-4">{{ article.title }}</div>
+                <div class="mb-4">{{ article.first_published_at|date:"D d M Y" }}</div>
+                {% if article.short_summary %}
+                    <div class="mb-2.5">{{ article.short_summary|richtext|richtext|striptags|truncatewords:50 }}</div>
+                {% endif %}
+                {% comment %} <div class="flex items-center mt-4 space-x-3">
           <svg class="w-14 h-14 text-gray-200 " aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
           <div>
               <div class="h-2.5 bg-gray-200 rounded-full  w-32 mb-2"></div>
               <div class="w-48 h-2 bg-gray-200 rounded-full "></div>
           </div>
-      </div> {% endcomment %}
-    </a>
-    <!-- <div class="news-index-item">
+                </div> {% endcomment %}
+            </a>
+            <!-- <div class="news-index-item">
         <div class="news-list-summary">
             <div class="news-list-summary-text with-image">
                 <a href="{{ item.url }}">
                     <h3>{{ item.title }}</h3>
                 </a>
-                <p> {{ item.text|truncatechars:200 }}... </p>
+                <p>{{ item.text|truncatechars:200 }}...</p>
                 <div class="news-list-meta">
                     <p class="news-index-author">{{ item.first_published_at|date:"D d M Y" }}</p>
-                    <p class="news-index-country"> Global </p>
+                    <p class="news-index-country">Global</p>
                 </div>
             </div>
             <div class="news-list-image-sm">
@@ -62,23 +80,35 @@
             </div>
         </div>
     </div> -->
-  {% endfor %}
-</main>
-
-<!-- Previous Button -->
-<div class='my-4 px-2 sm:px-4'>
-    {% if paginator_page.has_previous %}
-    <a href="{% querystring page=paginator_page.previous_page_number %}" class="inline-flex items-center py-2 px-4 mr-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        <svg aria-hidden="true" class="mr-2 w-icon h-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
-        Previous results
-    </a>
-    {% endif %}
-    {% if paginator_page.has_next %}
-    <a href="{% querystring page=paginator_page.next_page_number %}" class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        More results
-        <svg aria-hidden="true" class="ml-2 w-icon h-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-    </a>
-    {% endif %}
-</div>
-
-{% endblock %}
+        {% endfor %}
+    </main>
+    <!-- Previous Button -->
+    <div class="my-4 px-2 sm:px-4">
+        {% if paginator_page.has_previous %}
+            <a href="{% querystring page=paginator_page.previous_page_number %}"
+               class="inline-flex items-center py-2 px-4 mr-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <svg aria-hidden="true"
+                     class="mr-2 w-icon h-icon"
+                     fill="currentColor"
+                     viewBox="0 0 20 20"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Previous results
+            </a>
+        {% endif %}
+        {% if paginator_page.has_next %}
+            <a href="{% querystring page=paginator_page.next_page_number %}"
+               class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                More results
+                <svg aria-hidden="true"
+                     class="ml-2 w-icon h-icon"
+                     fill="currentColor"
+                     viewBox="0 0 20 20"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        {% endif %}
+    </div>
+{% endblock content %}

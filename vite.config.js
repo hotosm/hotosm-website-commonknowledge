@@ -6,57 +6,61 @@ import postcssImport from "postcss-import";
 import autoprefixer from "autoprefixer";
 
 const BUNDLE_ENTRYPOINTS = {
-  main: "./frontend/main.ts",
+    main: "./frontend/main.ts",
 };
 
 export default defineConfig((command) => {
-  return {
-    base: "/static/",
-    optimizeDeps: {
-      entries: Object.values(BUNDLE_ENTRYPOINTS),
-    },
-    build: {
-      manifest: true,
-      emptyOutDir: true,
-      polyfillModulePreload: false,
-      rollupOptions: {
-        output: {
-          dir: "vite/",
+    return {
+        base: "/static/",
+        optimizeDeps: {
+            entries: Object.values(BUNDLE_ENTRYPOINTS),
         },
-        input: BUNDLE_ENTRYPOINTS,
-      },
-    },
-    server: {
-      hmr: {
-        clientPort: 3000,
-      },
-      port: 3000,
-      strictPort: true,
-      host: "localhost",
-    },
-    css:
-      command === "build"
-        ? {
-            postcss: {
-              plugins: [
-                postcssImport,
-                tailwindNesting,
-                tailwindcss,
-                autoprefixer,
-                // purgecss({
-                //   content: [
-                //     "./app/**/*.{py,html,js,ts}",
-                //     "./frontend/**/*.{html,js,ts}",
-                //     "./static/**/*.{html,js,ts}",
-                //   ],
-                // }),
-              ],
+        build: {
+            manifest: true,
+            emptyOutDir: true,
+            polyfillModulePreload: false,
+            rollupOptions: {
+                output: {
+                    dir: "vite/",
+                },
+                input: BUNDLE_ENTRYPOINTS,
             },
-          }
-        : {
-            postcss: {
-              plugins: [postcssImport, tailwindNesting, tailwindcss],
+        },
+        server: {
+            hmr: {
+                clientPort: 3000,
             },
-          },
-  };
+            port: 3000,
+            strictPort: true,
+            host: "localhost",
+        },
+        css:
+            command === "build"
+                ? {
+                      postcss: {
+                          plugins: [
+                              postcssImport,
+                              tailwindNesting,
+                              tailwindcss,
+                              autoprefixer,
+                              // purgecss({
+                              //   content: [
+                              //     "./app/**/*.{py,html,js,ts}",
+                              //     "./frontend/**/*.{html,js,ts}",
+                              //     "./static/**/*.{html,js,ts}",
+                              //   ],
+                              // }),
+                          ],
+                      },
+                  }
+                : {
+                      postcss: {
+                          plugins: [
+                              postcssImport,
+                              tailwindNesting,
+                              tailwindcss,
+                          ],
+                      },
+                  },
+    };
 });
