@@ -5,7 +5,16 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
 ENV PYTHONUNBUFFERED 1
 
 COPY Aptfile ./
-RUN apt-get update && cat Aptfile | xargs apt-get install --yes --quiet --no-install-recommends
+
+# This fails without passing --allow-insecure-repositories, to allow installation without checking repository keys.
+#
+# Repository keys have fallen out of date from the creation of this Dockerfile and its current executions.
+#
+# While this is not ideal, the risk here is rather limited should consider if upstream this has been
+# fixed by Microsoft.
+RUN apt-get update --allow-insecure-repositories
+
+RUN cat Aptfile | xargs apt-get install --yes --quiet --no-install-recommends
 
 # Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
 ARG USER_UID=1000
