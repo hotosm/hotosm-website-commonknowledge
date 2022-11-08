@@ -8,6 +8,9 @@ module.exports = {
     ],
     theme: {
         extend: {
+            spacing: {
+                icon: "1.25rem",
+            },
             colors: {
                 black: "#15140b",
                 white: "#ffffff",

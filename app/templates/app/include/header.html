@@ -78,10 +78,10 @@
                  alt="Humanitarian OpenStreetMap"/>
         </a>
         <div class="flex md:order-2">
-            {% comment %} <button type="button" class="text-white bg-red focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0">Start Mapping</button> {% endcomment %}
+            {% comment %} <button type="button" class="text-white bg-red focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center mr-3 md:mr-0">Start Mapping</button> {% endcomment %}
             <button data-collapse-toggle="navbar-sticky"
                     type="button"
-                    class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   "
+                    class="inline-flex items-center p-2 text-sm text-gray-500 rounded-sm md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   "
                     aria-controls="navbar-sticky"
                     aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
@@ -96,7 +96,7 @@
         </div>
         <div class="ml-auto hidden justify-between items-end w-full md:flex md:w-auto md:order-1"
              id="navbar-sticky">
-            <ul class="flex flex-col py-4 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:font-medium md:border-0 md:bg-white ">
+            <ul class="flex flex-col py-4 mt-4 bg-gray-50 rounded-sm border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:font-medium md:border-0 md:bg-white ">
                 {% for item in menu_items %}
                     <li class="{{ item.active_class }}">
                         <a href="{{ item.href }}"
@@ -153,11 +153,11 @@
                                            aria-label="Search"
                                            id="default-search"
                                            autocomplete="off"
-                                           class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                           class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                            placeholder="Search HOTOSM, people and resources"
                                            required/>
                                     {% comment %} <button type="submit"
-         class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button> {% endcomment %}
+         class="text-white absolute right-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm px-4 py-2">Search</button> {% endcomment %}
                                 </div>
                             </div>
                             <turbo-frame id="search-results" src="{% url "search_frame" %}" data-query-on-type-target="frame"></turbo-frame>
