@@ -10,6 +10,7 @@ RUN mkdir -p /app && chown -R app /app
 ENV POETRY_HOME=/usr/local
 RUN curl -sSL https://install.python-poetry.org | python3 -
 USER app
+RUN poetry self update
 RUN poetry config virtualenvs.create true
 RUN poetry config virtualenvs.in-project true
 
