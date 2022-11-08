@@ -52,7 +52,7 @@ formatting: codestyle
 
 .PHONY: test
 test:
-	poetry run pytest
+	poetry run pytest app/
 	yarn test
 
 .PHONY: check-codestyle
