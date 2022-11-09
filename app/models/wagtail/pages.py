@@ -91,6 +91,7 @@ class HomePage(SearchableDirectoryMixin, Page):
             ("page_gallery", app_blocks.PageLinkGalleryBlock()),
             ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
+            ("carousel", app_blocks.CarouselBlock()),
         ],
         null=True,
         blank=True,

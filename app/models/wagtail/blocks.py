@@ -263,3 +263,22 @@ class RelatedPeopleBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         features=["italic", "bold", "link"], required=False
     )
+
+
+class CarouselBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/carousel_block.html"
+
+    title = blocks.CharBlock(required=True)
+
+    cards = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("image", ImageChooserBlock(required=True)),
+                ("heading", blocks.CharBlock(required=True, max_length=100)),
+                ("blurb", blocks.TextBlock(required=True, max_length=400)),
+                ("author", blocks.TextBlock(required=False, max_length=200)),
+                ("date", blocks.DateTimeBlock(required=False)),
+            ]
+        )
+    )

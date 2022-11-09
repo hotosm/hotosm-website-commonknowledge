@@ -1,0 +1,17 @@
+{% load wagtailimages_tags %}
+<h1>{{ self.title }}</h1>
+{% comment %} We will generate this url based on type of data passed to template {% endcomment %}
+<a href="">
+    <button>View all</button>
+</a>
+{% for card in self.cards %}
+    {% image card.image fill-300x200 as img %}
+    <img src="{{ img.url }}" alt="{{ img.alt }}" />
+    {% if card.date %}<p>{{ card.date }}</p>{% endif %}
+    <h4>{{ card.heading }}</h4>
+    <h5>{{ card.sub_heading }}</h5>
+    <p>{{ card.blurb }}</p>
+    {% if card.author %}<p>{{ card.author }}</p>{% endif %}
+{% endfor %}
+</div>
+</div>
