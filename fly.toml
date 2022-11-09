@@ -8,11 +8,11 @@ kill_timeout = 5
   strategy = "rolling"
 
 [env]
-  PORT = "8080"
+  PORT = "80"
   BASE_URL = "https://hotosm-staging.fly.dev"
 
 [[services]]
-  internal_port = 8080
+  internal_port = 80
   protocol = "tcp"
 
   [services.concurrency]
@@ -31,12 +31,12 @@ kill_timeout = 5
   [[services.http_checks]]
     method = "get"
     path = "/"
+    protocol = "https"
     tls_skip_verify = true
     grace_period = "60s"
     interval = 30000
     timeout = 3000
     restart_limit = 6
-    [services.http_checks.headers]
 
 [[statics]]
   guest_path = "/app/static"
