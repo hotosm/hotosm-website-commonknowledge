@@ -1,4 +1,4 @@
-{% load static menu_tags wagtailcore_tags %}
+{% load static wagtailcore_tags %}
 <footer class="bg-background-tint">
     <div class="py-16 px-4 lg:px-16">
         <div class="grid gap-8 lg:grid-cols-2">
@@ -11,9 +11,7 @@
                          class="mr-3 h-[60px] lg:h-[70px] w-auto"
                          alt="Humanitarian OpenStreetMap Team"/>
                 </a>
-                <div class="text-gray-500 lg:text-gray-700">
-                    Humanitarian OpenStreetMap Team (HOT) sits at the nexus of participatory mapping, community-led development, humanitarian response, open data and tech.
-                </div>
+                <div class="text-gray-500 lg:text-gray-700">{{ settings.app.FooterSetting.description }}</div>
                 {% comment %} Social links {% endcomment %}
                 <div class="flex flex-row justify-between items-center lg:justify-start lg:space-x-5">
                     <a href="https://twitter.com/hotosm">
@@ -45,48 +43,18 @@
             </div>
             {% comment %} Footer nav links {% endcomment %}
             <nav class="grid gap-8 sm:grid-flow-col w-full">
-                <section>
-                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase font-inter">Start Mapping</h2>
-                    <ul class="text-gray-600 space-y-4">
-                        <li>
-                            <a class="hover:underline">Opportunities</a>
-                        </li>
-                        <li>
-                            <a class="hover:underline">Getting started</a>
-                        </li>
-                        <li>
-                            <a class="hover:underline">Community</a>
-                        </li>
-                    </ul>
-                </section>
-                <section>
-                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase font-inter">Work With Us</h2>
-                    <ul class="text-gray-600 space-y-4">
-                        <li>
-                            <a class="hover:underline ">Partnerships</a>
-                        </li>
-                        <li>
-                            <a class="hover:underline">Projects</a>
-                        </li>
-                        <li>
-                            <a class="hover:underline">Using GIS data</a>
-                        </li>
-                    </ul>
-                </section>
-                <section>
-                    <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase font-inter">Our Mission</h2>
-                    <ul class="text-gray-600 space-y-4">
-                        <li>
-                            <a href="#" class="hover:underline">About</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:underline">Strategy</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:underline">Donate</a>
-                        </li>
-                    </ul>
-                </section>
+                {% for section in settings.app.FooterSetting.navigation %}
+                    <section>
+                        <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase font-inter">{{ section.value.title }}</h2>
+                        <ul class="text-gray-600 space-y-4">
+                            {% for item in section.value.links %}
+                                <li>
+                                    <a href="{{ item.value.url }}" class="hover:underline">{{ item.value.text }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endfor %}
             </nav>
         </div>
         <hr class="my-8 lg:mt-16 border-gray-500 lg:border-gray-300" />

@@ -1,4 +1,4 @@
-{% load static django_vite wagtailcore_tags wagtailuserbar menu_tags %}
+{% load static django_vite wagtailcore_tags wagtailuserbar %}
 <!DOCTYPE html>
 <html class="no-js" lang="en">
     <head>
@@ -39,7 +39,7 @@
         <div class="flex flex-col {% block screen_class %}min-h-screen{% endblock screen_class %}">
             {% block header %}
                 {% if page.show_header is None or page.show_header is True %}
-                    {% main_menu max_levels=1 template="app/include/header.html" %}
+                    {% include "app/include/header.html" %}
                 {% endif %}
             {% endblock header %}
             <div class="flex-grow flex flex-col {% block content_class %}{% endblock content_class %}">
@@ -48,7 +48,7 @@
             </div>
             {% block footer %}
                 {% if page.show_footer is None or page.show_footer is True %}
-                    {% flat_menu 'footer' max_levels=1 template="app/include/footer.html" %}
+                    {% include "app/include/footer.html" %}
                 {% endif %}
             {% endblock footer %}
         </div>
