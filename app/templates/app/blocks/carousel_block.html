@@ -4,14 +4,22 @@
 <a href="">
     <button>View all</button>
 </a>
-{% for card in self.cards %}
-    {% image card.image fill-300x200 as img %}
-    <img src="{{ img.url }}" alt="{{ img.alt }}" />
-    {% if card.date %}<p>{{ card.date }}</p>{% endif %}
-    <h4>{{ card.heading }}</h4>
-    <h5>{{ card.sub_heading }}</h5>
-    <p>{{ card.blurb }}</p>
-    {% if card.author %}<p>{{ card.author }}</p>{% endif %}
-{% endfor %}
-</div>
+<div data-controller="carousel"
+     class="swiper"
+     data-carousel-options-value='{ "navigation": { "nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev" } }'>
+    <div class="swiper-wrapper">
+        {% for card in self.cards %}
+            <div class="swiper-slide">
+                {% image card.image fill-300x200 as img %}
+                <img src="{{ img.url }}" alt="{{ img.alt }}" />
+                {% if card.date %}<p>{{ card.date }}</p>{% endif %}
+                <h4>{{ card.heading }}</h4>
+                <h5>{{ card.sub_heading }}</h5>
+                <p>{{ card.blurb }}</p>
+                {% if card.author %}<p>{{ card.author }}</p>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
 </div>
