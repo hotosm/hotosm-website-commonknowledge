@@ -280,5 +280,6 @@ class CarouselBlock(blocks.StructBlock):
                 ("author", blocks.TextBlock(required=False, max_length=200)),
                 ("date", blocks.DateTimeBlock(required=False)),
             ]
-        )
+        ),
+        max_num=3,
     )
