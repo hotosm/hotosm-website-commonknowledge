@@ -6,7 +6,7 @@
 </a>
 <div data-controller="carousel"
      class="swiper"
-     data-carousel-options-value='{ "navigation": { "nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev" } }'>
+     data-carousel-options-value='{"slidesPerView": 3, "navigation": { "nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev" } }'>
     <div class="swiper-wrapper">
         {% for card in self.cards %}
             <div class="swiper-slide">
