@@ -45,8 +45,6 @@ posthog = "^2.1.2"
 sentry-sdk = "^1.9.10"
 wagtail-seo = "^2.3.0"
 Wand = "^0.6.10"
-djlint = "^1.19.6"
-setuptools = "^65.5.1"
 wheel = "^0.38"
 
 [tool.poetry.dev-dependencies]
@@ -54,6 +52,8 @@ bandit = "^1.7.0"
 black = {version = "^22.10", allow-prereleases = true}
 darglint = "^1.8.0"
 django-debug-toolbar = "*"
+djlint = "^1.19.6"
+setuptools = "^65.5.1"
 django-livereload-server = "^0.3.2"
 isort = {extras = ["colors"], version = "^5.9.3"}
 pre-commit = "^2.14.0"

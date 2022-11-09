@@ -194,7 +194,7 @@ unicode-backport = ["unicodedata2"]
 name = "click"
 version = "8.1.3"
 description = "Composable command line interface toolkit"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -224,7 +224,7 @@ test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 name = "cssbeautifier"
 version = "1.14.7"
 description = "CSS unobfuscator and beautifier."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -487,7 +487,7 @@ djangorestframework = ">=3.9"
 name = "djlint"
 version = "1.19.7"
 description = "HTML Template Linter and Formatter"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7.2,<4.0.0"
 
@@ -538,7 +538,7 @@ testing = ["beautifulsoup4 (>=4.4.1,<5)", "coverage (>=4.1.0)", "flake8 (>=3.2.0
 name = "editorconfig"
 version = "0.12.3"
 description = "EditorConfig File Locator and Interpreter for Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -626,7 +626,7 @@ tornado = ["tornado (>=0.2)"]
 name = "html-tag-names"
 version = "0.1.2"
 description = "List of known HTML tag names"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 
@@ -634,7 +634,7 @@ python-versions = ">=3.7,<4.0"
 name = "html-void-elements"
 version = "0.1.0"
 description = "List of HTML void tag names."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 
@@ -679,7 +679,7 @@ python-versions = ">=3.5"
 name = "importlib-metadata"
 version = "5.0.0"
 description = "Read metadata from Python packages"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -742,7 +742,7 @@ python-versions = ">=3.7"
 name = "jsbeautifier"
 version = "1.14.7"
 description = "JavaScript unobfuscator and beautifier."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -865,7 +865,7 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 name = "pathspec"
 version = "0.10.1"
 description = "Utility library for gitignore style pattern matching of file paths."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -1118,7 +1118,7 @@ python-versions = ">=3.6"
 name = "regex"
 version = "2022.10.31"
 description = "Alternative regular expression module, to replace re."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 
@@ -1372,7 +1372,7 @@ python-versions = ">= 3.7"
 name = "tqdm"
 version = "4.64.1"
 description = "Fast, Extensible Progress Meter"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 
@@ -1546,7 +1546,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 name = "zipp"
 version = "3.10.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -1557,7 +1557,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f66720c7099b9814466cf4cc227dfa9aadf1f7794d2d1e1ae337d0c5fa8d2f16"
+content-hash = "921f910fa9dbc972ead9ffbb56f3cbcec390ff6847d50477ee633b82081a29c0"
 
 [metadata.files]
 anyascii = [
