@@ -196,7 +196,6 @@ class ContentSidebarPage(ContentPage):
             ("image", app_blocks.ImageBlock()),
             ("page_link", app_blocks.PageLinkBlock()),
             ("featured_content", app_blocks.FeaturedContentBlock()),
-            ("metrics", app_blocks.MetricsBlock()),
         ],
         null=True,
         blank=True,
