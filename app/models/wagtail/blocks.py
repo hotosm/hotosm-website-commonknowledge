@@ -98,6 +98,7 @@ class MetricsBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/metric_block.html"
         icon = "fa fa-list-ol"
+        help_text = "Block that displays numbers with a description under them."
 
     metrics = blocks.ListBlock(
         blocks.StructBlock(
