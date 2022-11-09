@@ -1,4 +1,4 @@
-{% load app i18n wagtailcore_tags menu_tags %}
+{% load app i18n wagtailcore_tags %}
 {% for item in menu_items %}
     <li class="block">
         <a class="{% if_ancestor item page %}" href="{% pageurl item %}">{{ item.title }}</a>

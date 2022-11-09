@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
+from wagtail.core.blocks import StructValue
 from wagtail.images.blocks import ImageChooserBlock
 
 from app.utils.github import github_repo_validator
@@ -120,24 +121,46 @@ class ImageBlock(blocks.StructBlock):
     caption = blocks.CharBlock(required=False)
 
 
+class InternalLinkValue(StructValue):
+    def url(self):
+        return self.get("page").localized.url
+
+    def text(self):
+        if len(self.get("label")):
+            return self.get("label")
+        return self.get("page").localized.title
+
+
+class InternalLinkBlock(blocks.StructBlock):
+    page = blocks.PageChooserBlock(required=True)
+    label = blocks.CharBlock(
+        required=False, help_text="If set this replaces the page title"
+    )
+
+    class Meta:
+        value_class = InternalLinkValue
+
+
+class ExternalLinkValue(StructValue):
+    def text(self):
+        return self.get("label")
+
+
+class ExternalLinkBlock(blocks.StructBlock):
+    url = blocks.URLBlock(required=True)
+    label = blocks.CharBlock(required=True)
+
+    class Meta:
+        value_class = ExternalLinkValue
+
+
 class LinkStreamBlock(blocks.StreamBlock):
-    internal_link = blocks.StructBlock(
-        [
-            ("page", blocks.PageChooserBlock(required=True)),
-            (
-                "label",
-                blocks.CharBlock(
-                    required=False, help_text="If set this replaces the page title"
-                ),
-            ),
-        ]
-    )
-    external_link = blocks.StructBlock(
-        [
-            ("url", blocks.URLBlock(required=True)),
-            ("label", blocks.CharBlock(required=True)),
-        ]
-    )
+    internal_link = InternalLinkBlock()
+    external_link = ExternalLinkBlock()
+
+    def link(self, *args, **kwargs):
+        print("Called", args, kwargs)
+        return None
 
 
 class TaskManagerProjectBlock(blocks.StructBlock):
