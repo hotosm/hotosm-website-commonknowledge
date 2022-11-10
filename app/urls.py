@@ -15,7 +15,6 @@ from app.views.search import SearchView
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
-    path("__debug__/", include(debug_toolbar.urls)),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("sitemap.xml", sitemap),
@@ -39,3 +38,8 @@ if settings.DEBUG:
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG_TOOLBAR_ENABLED:
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]

@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     "groundwork.core",
     "groundwork.geo",
     "livereload",
-    "debug_toolbar",
     "django_vite",
     "django.contrib.gis",
     "django.contrib.admin",
@@ -60,7 +59,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "livereload.middleware.LiveReloadScript",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     # wagtail-localize
