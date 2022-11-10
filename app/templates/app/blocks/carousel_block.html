@@ -1,23 +1,38 @@
 {% load wagtailimages_tags %}
-<h1>{{ self.title }}</h1>
-{% comment %} We will generate this url based on type of data passed to template {% endcomment %}
-<a href="">
-    <button>View all</button>
-</a>
-<div data-controller="carousel"
+<h1 class="font-extrabold sm:text-2xl md:text-4xl text-gray-900 leading-tight px-4 mt-4">{{ self.title }}</h1>
+{% if self.impact_area %}
+    <h2 class="font-extrabold leading-tight sm:text-2xl text-gray-500 px-4">{{ self.impact_area }}</h2>
+{% endif %}
+<div data-controller="carousel max-w-[343px]"
      class="swiper"
      data-carousel-options-value='{"slidesPerView": 3, "navigation": { "nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev" } }'>
-    <div class="swiper-wrapper">
+    <div class="swiper-wrapper pb-10 my-8">
         {% for card in self.cards %}
-            <div class="swiper-slide">
-                {% image card.image fill-300x200 as img %}
-                <img src="{{ img.url }}" alt="{{ img.alt }}" />
-                {% if card.date %}<p>{{ card.date }}</p>{% endif %}
-                <h4>{{ card.heading }}</h4>
-                <h5>{{ card.sub_heading }}</h5>
-                <p>{{ card.blurb }}</p>
-                {% if card.author %}<p>{{ card.author }}</p>{% endif %}
-            </div>
+            <div class="swiper-slide flex flex-col px-4">
+                <a href="{{ card.url }}">
+                    {% image card.image fill-300x200 as img %}
+                    <img src="{{ img.url }}" alt="{{ img.alt }}" class="rounded-xl mb-4"/>
+                    <div class="flex flex-row gap-2 items-center text-sm font-medium text-gray-700 mb-4">
+                        {{ card.category }}
+                        <svg class="xmlns"
+                             None="http://www.w3.org/2000/svg"
+                             width="4"
+                             height="5"
+                             viewBox="0 0 4 5"
+                             fill="none">
+                            <path d="M1.99141 4.35869C1.64608 4.35869 1.33808 4.28402 1.06741 4.13469C0.806081 3.97602 0.596081 3.76602 0.437414 3.50469C0.288081 3.23402 0.213414 2.92602 0.213414 2.58069C0.213414 2.22602 0.288081 1.91802 0.437414 1.65669C0.596081 1.38602 0.806081 1.17602 1.06741 1.02669C1.33808 0.868023 1.64608 0.78869 1.99141 0.78869C2.34608 0.78869 2.65408 0.868023 2.91541 1.02669C3.18608 1.17602 3.39608 1.38602 3.54541 1.65669C3.70408 1.91802 3.78341 2.22602 3.78341 2.58069C3.78341 2.92602 3.70408 3.23402 3.54541 3.50469C3.39608 3.76602 3.18608 3.97602 2.91541 4.13469C2.65408 4.28402 2.34608 4.35869 1.99141 4.35869Z" fill="#5F5F5F"/>
+                        </svg>
+                        {% comment %} The metadata we display here will depend on the post category {% endcomment %}
+                        {% if self.impact_area %}{{ self.impact_area }}{% endif %}
+                        {% if card.date %}{{ card.date | date:"d M Y" }}{% endif %}
+                    </div>
+                    <h4 class="font-semibold leading-tight sm:text-xl md:text-2xl text-gray-900 mb-4">{{ card.heading }}</h4>
+                    <p class="text-base font-normal text-gray-700 mb-4">{{ card.blurb }}</p>
+                    {% comment %} The metadata we display here will depend on the post category {% endcomment %}
+                    {% if card.organisation %}<p class="text-base font-semibold text-gray-900 mb-7">{{ card.organisation }}</p>{% endif %}
+                    {% if card.author %}<p class="text-base font-semibold text-gray-900 mb-7">{{ card.author }}</p>{% endif %}
+                </div>
+            </a>
         {% endfor %}
     </div>
     <svg class="swiper-button-next"
@@ -77,3 +92,9 @@
         </defs>
     </svg>
 </div>
+{% comment %} We will generate this url based on the post category passed to template {% endcomment %}
+<a href="">
+    <button class="bg-background-tint  rounded-sm px-5 py-3 w-[343px] ml-4 text-base font-medium align-middle text-gray-900">
+        View all
+    </button>
+</a>
