@@ -97,17 +97,31 @@ class HomepageMagazineBlock(blocks.StructBlock):
 
 class MetricsBlock(blocks.StructBlock):
     class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
-        icon = "fa fa-trophy"
+        template = "app/blocks/metric_block.html"
+        icon = "fa fa-list-ol"
+        help_text = "Block that displays numbers with a description under them."
 
     metrics = blocks.ListBlock(
         blocks.StructBlock(
             [
-                ("value", blocks.CharBlock()),
-                ("label", blocks.CharBlock()),
+                (
+                    "value",
+                    blocks.CharBlock(
+                        required=True,
+                        help_text="The metric to display, usually a number. For example: 45",
+                    ),
+                ),
+                (
+                    "label",
+                    blocks.CharBlock(
+                        required=True,
+                        help_text="The name of the metric. For example: areas mapped",
+                    ),
+                ),
             ]
-        )
+        ),
+        max_num=4,
+        min_number=1,
     )
 
 
