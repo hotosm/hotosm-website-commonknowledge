@@ -1,5 +1,6 @@
 import { MapConfigController } from "groundwork-django";
 import { Map } from "mapbox-gl";
+import { debounce } from "lodash";
 
 export default class FloatingMapController extends MapConfigController {
     // Modes
@@ -29,6 +30,14 @@ export default class FloatingMapController extends MapConfigController {
     connect() {
         super.connect?.();
         this.updateUI();
+    }
+
+    containerTargetConnected() {
+        this.setupResizeListeners();
+    }
+
+    containerTargetDisconnected(): void {
+        this.teardownResizeListeners();
     }
 
     connectMap(map: Map): void | Promise<void> {
@@ -73,24 +82,57 @@ export default class FloatingMapController extends MapConfigController {
         container.classList.add(...newClasses);
 
         // Camera logic etc.
+        const interactions = [
+            "scrollZoom",
+            "boxZoom",
+            "dragRotate",
+            "dragPan",
+            "keyboard",
+            "doubleClickZoom",
+            "touchZoomRotate",
+        ];
+
         if (this.modeValue === "minimap") {
-            // Camera
             // @ts-ignore
             this.map?.setProjection("globe");
             this.map?.setZoom(0);
 
-            // Interactivity
-            this.map?.boxZoom.disable();
-            this.map?.doubleClickZoom.disable();
-            this.map?.scrollZoom.disable();
+            for (const interaction of interactions) {
+                // @ts-ignore
+                this.map?.[interaction]?.disable();
+            }
         } else if (this.modeValue === "expanded") {
             // @ts-ignore
             this.map?.setProjection("mercator");
 
-            // Interactivity
-            this.map?.boxZoom?.enable();
-            this.map?.doubleClickZoom.disable();
-            this.map?.scrollZoom.enable();
+            for (const interaction of interactions) {
+                // @ts-ignore
+                this.map?.[interaction]?.enable();
+            }
         }
+    }
+
+    resizeMap = debounce(() => {
+        requestAnimationFrame(() => {
+            this.map?.resize();
+        });
+    });
+
+    public resizeObserver?: ResizeObserver;
+
+    setupResizeListeners() {
+        if (!this.containerTarget) return;
+
+        this.resizeObserver = new ResizeObserver(() => {
+            this.resizeMap();
+        });
+
+        this.resizeObserver?.observe(this.containerTarget);
+    }
+
+    teardownResizeListeners() {
+        if (!this.containerTarget) return;
+
+        this.resizeObserver?.unobserve(this.containerTarget);
     }
 }
