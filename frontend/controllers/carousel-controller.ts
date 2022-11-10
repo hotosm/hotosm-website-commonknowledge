@@ -25,6 +25,21 @@ export default class extends Controller {
     }
 
     get defaultOptions(): SwiperOptions {
-        return {};
+        return {
+            breakpoints: {
+                0: {
+                    slidesPerView: 1,
+                    spaceBetween: 30,
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+            },
+        };
     }
 }
