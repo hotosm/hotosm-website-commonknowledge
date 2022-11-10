@@ -279,6 +279,7 @@ class CarouselBlock(blocks.StructBlock):
                 ("heading", blocks.CharBlock(required=True, max_length=100)),
                 ("blurb", blocks.TextBlock(required=True, max_length=400)),
                 ("category", blocks.TextBlock(required=True, max_length=100)),
+                ("url", blocks.URLBlock(required=True)),
                 ("organisation", blocks.TextBlock(required=False, max_length=200)),
                 ("author", blocks.TextBlock(required=False, max_length=200)),
                 ("date", blocks.DateTimeBlock(required=False)),
