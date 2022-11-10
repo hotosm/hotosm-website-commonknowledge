@@ -1,8 +1,18 @@
 {% load wagtailimages_tags %}
-<h1 class="font-extrabold sm:text-2xl md:text-4xl text-gray-900 leading-tight px-4 mt-4">{{ self.title }}</h1>
-{% if self.impact_area %}
-    <h2 class="font-extrabold leading-tight sm:text-2xl text-gray-500 px-4">{{ self.impact_area }}</h2>
-{% endif %}
+<div class="md:flex justify-between px-4 pt-16">
+    <div class="lg:flex gap-4">
+        <h1 class="font-extrabold sm:text-2xl md:text-4xl text-gray-900 leading-tight">{{ self.title }}</h1>
+        {% if self.impact_area %}
+            <h2 class="font-extrabold leading-tight sm:text-2xl md:text-4xl text-gray-500">{{ self.impact_area }}</h2>
+        {% endif %}
+    </div>
+    {% comment %} We will generate this url based on the post category passed to template {% endcomment %}
+    <a href="">
+        <button class="bg-background-tint rounded-sm text-lg font-semibold  text-gray-700 px-3 py-5 hidden md:block w-[103px] ">
+            View all
+        </button>
+    </a>
+</div>
 <div data-controller="carousel max-w-[343px]"
      class="swiper"
      data-carousel-options-value='{"slidesPerView": 3, "navigation": { "nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev" } }'>
@@ -94,7 +104,7 @@
 </div>
 {% comment %} We will generate this url based on the post category passed to template {% endcomment %}
 <a href="">
-    <button class="bg-background-tint  rounded-sm px-5 py-3 w-[343px] ml-4 text-base font-medium align-middle text-gray-900">
+    <button class="bg-background-tint rounded-sm px-5 py-3 w-[343px] ml-4 text-base font-medium text-gray-900 md:hidden">
         View all
     </button>
 </a>
