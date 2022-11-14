@@ -1,62 +1,65 @@
-{% load wagtailcore_tags %}
-<form class="bg-red-500 text-white px-4 py-8">
-    <fieldset class="flex flex-col">
-        <legend class="leading-tight text-2xl font-extrabold mb-8">
-            Subscribe for updates and announcements
-        </legend>
-        <div class="text-base font-normal mb-8">
-            We’ll send monthly updates on projects and community information, links to relevant news articles, information about upcoming events and opportunities to get more involved
-        </div>
-        <div class="mb-8">
-            <div class="flex items-center mb-2">
-                <input checked=""
-                       id="checked-checkbox"
-                       type="checkbox"
-                       value=""
-                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
-                <label for="checked-checkbox" class="ml-2">All Newsletters</label>
-            </div>
-            <div class="flex items-center mb-2">
-                <input id="default-checkbox"
-                       type="checkbox"
-                       value=""
-                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
-                <label for="default-checkbox" class="ml-2">West & Northern Africa</label>
-            </div>
-            <div class="flex items-center mb-2">
-                <input id="default-checkbox"
-                       type="checkbox"
-                       value=""
-                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
-                <label for="default-checkbox" class="ml-2">East & Southern Africa</label>
-            </div>
-            <div class="flex items-center mb-2">
-                <input id="default-checkbox"
-                       type="checkbox"
-                       value=""
-                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
-                <label for="default-checkbox" class="ml-2">Asia Pacific</label>
-            </div>
-            <div class="flex items-center mb-2">
-                <input id="default-checkbox"
-                       type="checkbox"
-                       value=""
-                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
-                <label for="default-checkbox" class="ml-2">Latin America</label>
+<form class="bg-red-500 lg:rounded-xl text-white px-4 py-8 lg:p-16">
+    <fieldset class="flex flex-col lg:flex-row lg:justify-between">
+        <div class="lg:max-w-xl">
+            <legend class="leading-tight text-2xl md:text-4xl font-extrabold mb-8">
+                Subscribe for updates and announcements
+            </legend>
+            <div class="text-base md:text-xl font-normal mb-8">
+                We’ll send monthly updates on projects and community information, links to relevant news articles, information about upcoming events and opportunities to get more involved
             </div>
         </div>
-        <input type="email"
-               name="email"
-               class="rounded-sm mb-3"
-               placeholder="Enter your email"/>
-        <button name='subscribe'
-                value='subscribe'
-                type="submit"
-                class="bg-red-800 rounded-sm text-base font-medium py-3 px-5 mb-3">
-            Subscribe
-        </button>
-        <div class="leading-none text-sm font-normal">
-            We care about the protection of your data. Read our <a href="" target="_blank">Privacy policy.</a>
+        <div class="lg:max-w-xl">
+            <div class="flex items-center mb-2">
+                <input checked
+                       id="all-newsletters"
+                       type="checkbox"
+                       value="all-newsletters"
+                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
+                <label for="all-newsletters" class="ml-2">All Newsletters</label>
+            </div>
+            <div class="flex lg:inline-flex items-center mb-2">
+                <input id="west-and-northern-africa"
+                       type="checkbox"
+                       value="west-and-northern-africa"
+                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
+                <label for="west-and-northern-africa" class="ml-2 lg:mr-8">West & Northern Africa</label>
+            </div>
+            <div class="flex lg:inline-flex  items-center mb-2">
+                <input id="asia-pacific"
+                       type="checkbox"
+                       value="west-and-northern-africa"
+                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
+                <label for="asia-pacific" class="ml-2 lg:mr-8">Asia Pacific</label>
+            </div>
+            <div class="flex lg:inline-flex items-center mb-2">
+                <input id="east-and-southern-africa"
+                       type="checkbox"
+                       value="east-and-southern-africa"
+                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
+                <label for="east-and-southern-africa" class="ml-2 lg:mr-8">East & Southern Africa</label>
+            </div>
+            <div class="flex lg:inline-flex items-center mb-2">
+                <input id="latin-america"
+                       type="checkbox"
+                       value="latin-america"
+                       class="rounded bg-white checked:bg-red-800 focus:ring-0 focus:ring-offset-0"/>
+                <label for="latin-america" class="ml-2 lg:mr-8">Latin America</label>
+            </div>
+            <div class="mt-8">
+                <input type="email"
+                       name="email"
+                       class="rounded-sm lg:rounded-tr-none lg:rounded-br-none mb-3 bg-background text-base font-normal text-gray-700 focus:ring-0 focus:ring-offset-0 focus:border-none border border-solid border-gray-300 min-w-full lg:min-w-[409px]"
+                       placeholder="Enter your email"/>
+                <button name='subscribe'
+                        value='subscribe'
+                        type="submit"
+                        class="bg-red-800 rounded-sm lg:rounded-tl-none lg:rounded-bl-none lg:-ml-1 text-base font-medium py-3 px-5 mb-3 min-w-full lg:min-w-[104px]">
+                    Subscribe
+                </button>
+            </div>
+            <div class="leading-none text-sm font-normal">
+                We care about the protection of your data. Read our <a href="" target="_blank" class="underline">Privacy Policy.</a>
+            </div>
         </div>
     </fieldset>
 </form>
