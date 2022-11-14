@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "wagtail.contrib.styleguide",
     "wagtail.contrib.modeladmin",
     "django.contrib.sitemaps",
+    "wagtailautocomplete",
+    "mapwidgets",
 ]
 
 MIDDLEWARE = [
@@ -237,6 +239,12 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Mapbox
 MAPBOX_PUBLIC_API_KEY = os.getenv("MAPBOX_PUBLIC_API_KEY", None)
+
+# for django-map-widgets
+MAP_WIDGETS = {
+    "MapboxPointFieldWidget": (("access_token", MAPBOX_PUBLIC_API_KEY),),
+    "MAPBOX_API_KEY": MAPBOX_PUBLIC_API_KEY,
+}
 
 # Posthog
 POSTHOG_PUBLIC_TOKEN = os.getenv("POSTHOG_PUBLIC_TOKEN", None)

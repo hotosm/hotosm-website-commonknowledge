@@ -1,5 +1,6 @@
 import json
 import re
+from unicodedata import lookup
 
 import pycountry
 from bs4 import BeautifulSoup
@@ -9,22 +10,23 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import get_language_from_request
 from modelcluster.contrib.taggit import ClusterTaggableManager
-from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from taggit.models import ItemBase, TagBase
 from wagtail import blocks
-from wagtail.admin.panels import (
-    FieldPanel,
-    MultiFieldPanel,
-    ObjectList,
-    TabbedInterface,
-)
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, ObjectList, TabbedInterface
 from wagtail.core.rich_text import RichText
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 import app.models.wagtail.blocks as app_blocks
-from app.models.wagtail.mixins import SearchableDirectoryMixin
+from app.models.wagtail.mixins import (
+    ContentPage,
+    ContentSidebarPage,
+    GeocodedMixin,
+    PreviewablePage,
+    SearchableDirectoryMixin,
+)
 from app.utils.cache import django_cached
 from app.utils.geo import geolocator
 
@@ -106,135 +108,69 @@ class HomePage(SearchableDirectoryMixin, Page):
     template = "app/directory.html"
 
 
-class PreviewablePage(Page):
-    class Meta:
-        abstract = True
-
-    template = "app/static_page.html"
-
-    # Fields
-    featured_image = models.ForeignKey(
-        CMSImage,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-    short_summary = RichTextField(max_length=1500, blank=True, null=True)
-    frontmatter = models.JSONField(
-        blank=True, null=True, help_text="Metadata from the legacy site"
-    )
-
-    @property
-    def label(self):
-        return self._meta.verbose_name.removesuffix(" page")
-
-    # Editor
-    content_panels = Page.content_panels + [
-        FieldPanel("short_summary"),
-        FieldPanel("featured_image"),
-        # FieldPanel("frontmatter"),
-    ]
-
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(content_panels, heading="Content"),
-            ObjectList(Page.promote_panels, heading="Sharing"),
-            ObjectList(
-                Page.settings_panels,
-                heading="Publishing Schedule",
-                classname="settings",
-            ),
-        ]
-    )
+def validate_genuine_isoa2_code(value):
+    country = pycountry.countries.get(alpha_2=value)
+    if country is None:
+        raise ValidationError("Must be a valid ISO Alpha 2 country code")
 
 
-class ContentPage(PreviewablePage):
-    class Meta:
-        abstract = True
-
-    # Fields
-    content = StreamField(
-        [
-            ("richtext", blocks.RichTextBlock()),
-            ("image", app_blocks.ImageBlock()),
-            ("cta", app_blocks.CallToActionBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
-            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
-            ("metrics", app_blocks.MetricsBlock()),
-            ("people_gallery", app_blocks.RelatedPeopleBlock()),
-            ("html", app_blocks.HTMLBlock()),
-        ],
-        null=True,
-        blank=True,
-        use_json_field=True,
-    )
-
-    # Editor
-    content_panels = PreviewablePage.content_panels + [
-        FieldPanel("content"),
-    ]
-
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(content_panels, heading="Content"),
-            ObjectList(Page.promote_panels, heading="Sharing"),
-            ObjectList(
-                Page.settings_panels,
-                heading="Publishing Schedule",
-                classname="settings",
-            ),
-        ]
-    )
+def validate_genuine_isoa3_code(value):
+    if value is None or value == "":
+        return
+    country = pycountry.countries.get(alpha_3=value)
+    if country is None:
+        raise ValidationError("Must be a valid ISO Alpha 3 country code")
 
 
-class ContentSidebarPage(ContentPage):
-    class Meta:
-        abstract = True
-
-    # Fields
-    sidebar = StreamField(
-        [
-            ("richtext", blocks.RichTextBlock()),
-            ("image", app_blocks.ImageBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
-        ],
-        null=True,
-        blank=True,
-        use_json_field=True,
-    )
-
-    # Editor
-    content_panels = ContentPage.content_panels + [
-        FieldPanel("sidebar"),
-    ]
-
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(content_panels, heading="Content"),
-            ObjectList(Page.promote_panels, heading="Sharing"),
-            ObjectList(
-                Page.settings_panels,
-                heading="Publishing Schedule",
-                classname="settings",
-            ),
-        ]
-    )
-
-
+@register_snippet
 class CountryPage(ContentPage):
     class Meta:
         ordering = ["title"]
 
-    template = "app/static_page.html"
+    parent_page_type = ["app.DirectoryPage"]
     page_description = "Page for each country"
-    isoa2 = models.CharField(max_length=2, unique=True)
-    isoa3 = models.CharField(max_length=3, unique=True, blank=True, null=True)
+    isoa2 = models.CharField(
+        max_length=2,
+        unique=True,
+        validators=[validate_genuine_isoa2_code],
+        help_text="ISO Alpha 2 country code",
+    )
+    isoa3 = models.CharField(
+        max_length=3,
+        unique=True,
+        validators=[validate_genuine_isoa3_code],
+        blank=True,
+        null=True,
+        help_text="ISO Alpha 3 country code",
+    )
     continent = models.CharField(max_length=50, blank=True, null=True)
 
+    # Editor
+    content_panels = Page.content_panels + [
+        FieldRowPanel(
+            [
+                FieldPanel("isoa2"),
+                FieldPanel("isoa3"),
+                FieldPanel("continent"),
+            ],
+            heading="Metadata",
+        ),
+        FieldPanel("featured_image"),
+        FieldPanel("content"),
+    ]
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+    # Methods
     @property
     def metadata(self):
         return pycountry.countries.get(alpha_2=self.isoa2)
@@ -266,18 +202,25 @@ class CountryPage(ContentPage):
             featuretype="country",
         )
 
-    # TODO: Cache this
     @property
     @django_cached("country_coordinates", get_key=lambda self: self.isoa2)
     def centroid(self):
         # TODO: More intelligent centroids available from https://raw.githubusercontent.com/gavinr/world-countries-centroids/29c9d1ec9013b6b36e3f6cf3634daaffd8afb2ea/dist/countries.geojson
         return Point(self.geo.longitude, self.geo.latitude, self.geo.altitude)
 
-    # TODO: Cache this
     @property
     @django_cached("country_geometry", get_key=lambda self: self.isoa2)
     def geometry(self):
         return GEOSGeometry(json.dumps(self.geo.raw.get("geojson")))
+
+    @property
+    def emoji_flag(self):
+        return lookup(f"REGIONAL INDICATOR SYMBOL LETTER {self.isoa2[0]}") + lookup(
+            f"REGIONAL INDICATOR SYMBOL LETTER {self.isoa2[1]}"
+        )
+
+    def autocomplete_label(self):
+        return f"{self.emoji_flag} {self.title}"
 
 
 class StaticPage(ContentSidebarPage):
@@ -323,18 +266,20 @@ class TaggedProject(ItemBase):
 
 
 @register_snippet
-class ProjectPage(ContentSidebarPage):
+class ProjectPage(GeocodedMixin, ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
 
+    parent_page_type = ["app.DirectoryPage"]
     template = "app/static_page.html"
     page_description = "HOTOSM and third party projects"
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
-    # TODO: relations
     # TODO: project status
 
+    # Editor
     content_panels = ContentSidebarPage.content_panels + [
         FieldPanel("tags"),
+        *GeocodedMixin.content_panels,
     ]
 
     edit_handler = TabbedInterface(
@@ -372,15 +317,32 @@ class TaggedPerson(ItemBase):
 
 
 @register_snippet
-class PersonPage(ContentPage):
+class PersonPage(GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
+    parent_page_type = ["app.DirectoryPage"]
+
+    # Editor
     template = "app/static_page.html"
     page_description = "Contributors, staff, and other people"
     category = ClusterTaggableManager(through=TaggedPerson, blank=True)
     # TODO: relations
     # TODO: external links
+
+    content_panels = ContentPage.content_panels + [*GeocodedMixin.content_panels]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
 
 
 class TaggedOrganisation(ItemBase):
@@ -394,16 +356,19 @@ class TaggedOrganisation(ItemBase):
     )
 
 
-class OrganisationPage(ContentPage):
+class OrganisationPage(GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
+    parent_page_type = ["app.DirectoryPage"]
     template = "app/static_page.html"
     page_description = "Internal and external organisations"
     tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
 
+    # Editor
     content_panels = ContentPage.content_panels + [
         FieldPanel("tags"),
+        *GeocodedMixin.content_panels,
     ]
 
     edit_handler = TabbedInterface(
@@ -434,10 +399,11 @@ class TaggedOpportunity(ItemBase):
 
 
 @register_snippet
-class OpportunityPage(ContentPage):
+class OpportunityPage(GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["-first_published_at"]
 
+    parent_page_type = ["app.DirectoryPage"]
     template = "app/static_page.html"
     page_description = "Opportunities for people to get involved with HOT"
     deadline_datetime = models.DateTimeField(blank=True, null=True)
@@ -445,10 +411,12 @@ class OpportunityPage(ContentPage):
     apply_form_url = models.URLField(blank=True, null=True)
     category = ClusterTaggableManager(through=TaggedOpportunity, blank=True)
 
+    # Editor
     content_panels = ContentPage.content_panels + [
         FieldPanel("deadline_datetime"),
         FieldPanel("place_of_work"),
         FieldPanel("apply_form_url"),
+        *GeocodedMixin.content_panels,
     ]
 
 
@@ -488,7 +456,7 @@ class MagazineSection(SearchableDirectoryMixin, PreviewablePage):
 
 
 @register_snippet
-class ArticlePage(ContentSidebarPage):
+class ArticlePage(GeocodedMixin, ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
 
@@ -499,13 +467,13 @@ class ArticlePage(ContentSidebarPage):
 
     tags = ClusterTaggableManager(through=TaggedArticle, blank=True)
 
-    content_panels = ContentSidebarPage.content_panels + [
-        FieldPanel("tags"),
-    ]
+    # Editor
+    metadata_panels = [FieldPanel("tags"), *GeocodedMixin.content_panels]
 
     edit_handler = TabbedInterface(
         [
-            ObjectList(content_panels, heading="Content"),
+            ObjectList(ContentSidebarPage.content_panels, heading="Content"),
+            ObjectList(metadata_panels, heading="Metadata"),
             ObjectList(Page.promote_panels, heading="Sharing"),
             ObjectList(
                 Page.settings_panels,
@@ -624,7 +592,7 @@ class TaggedEvent(ItemBase):
 
 
 @register_snippet
-class EventPage(ContentPage):
+class EventPage(GeocodedMixin, ContentPage):
     template = "app/static_page.html"
     page_description = "Events, workshops, and other gatherings"
 
@@ -638,13 +606,14 @@ class EventPage(ContentPage):
 
     # Editor
     content_panels = ContentPage.content_panels + [
-        MultiFieldPanel(
+        FieldRowPanel(
             [
                 FieldPanel("start_datetime"),
                 FieldPanel("end_datetime"),
             ],
-            heading="Event Details",
+            heading="Scheduling",
         ),
+        *GeocodedMixin.content_panels,
         FieldPanel("tags"),
     ]
 
@@ -654,7 +623,7 @@ class EventPage(ContentPage):
             ObjectList(Page.promote_panels, heading="Sharing"),
             ObjectList(
                 Page.settings_panels,
-                heading="Publishing Schedule",
+                heading="Page publishing schedule",
                 classname="settings",
             ),
         ]
