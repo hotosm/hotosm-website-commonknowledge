@@ -594,7 +594,7 @@ python-versions = ">=2.7"
 
 [[package]]
 name = "groundwork-django"
-version = "0.1.5"
+version = "0.2.0"
 description = "An integrated Django and Javascript framework for people who build tools for organisers."
 category = "main"
 optional = false
@@ -980,6 +980,17 @@ description = "Python style guide checker"
 category = "main"
 optional = false
 python-versions = ">=3.6"
+
+[[package]]
+name = "pycountry"
+version = "22.3.5"
+description = "ISO country, subdivision, language, currency and script definitions and their translations"
+category = "main"
+optional = false
+python-versions = ">=3.6, <4"
+
+[package.dependencies]
+setuptools = "*"
 
 [[package]]
 name = "pydocstyle"
@@ -1557,7 +1568,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "921f910fa9dbc972ead9ffbb56f3cbcec390ff6847d50477ee633b82081a29c0"
+content-hash = "12a37512e8461b19416bee14bcd3bdec45e83880e314a2c68a0acd1c9845f339"
 
 [metadata.files]
 anyascii = [
@@ -1768,8 +1779,8 @@ gprof2dot = [
     {file = "gprof2dot-2022.7.29.tar.gz", hash = "sha256:45b4d298bd36608fccf9511c3fd88a773f7a1abc04d6cd39445b11ba43133ec5"},
 ]
 groundwork-django = [
-    {file = "groundwork-django-0.1.5.tar.gz", hash = "sha256:d6e1f0702d0110288c3979bc4693c81d7c419f93b7c1826b96ff2b78018e060b"},
-    {file = "groundwork_django-0.1.5-py3-none-any.whl", hash = "sha256:2a8387e9c6daa793ccf6bd089bf3f8c9f98c522947f439c6811ea0ae97c3a095"},
+    {file = "groundwork_django-0.2.0-py3-none-any.whl", hash = "sha256:611a24395666d233df3ae874f4b024b0089f4def2cdaf60a23273cf4473fd778"},
+    {file = "groundwork_django-0.2.0.tar.gz", hash = "sha256:629fee311d4de6b8d540d18e8e2f53e628d4ae599cf626059270d18b039d4f83"},
 ]
 gunicorn = [
     {file = "gunicorn-20.1.0-py3-none-any.whl", hash = "sha256:9dcc4547dbb1cb284accfb15ab5667a0e5d1881cc443e0677b4882a4067a807e"},
@@ -2098,6 +2109,9 @@ py = [
 pycodestyle = [
     {file = "pycodestyle-2.9.1-py2.py3-none-any.whl", hash = "sha256:d1735fc58b418fd7c5f658d28d943854f8a849b01a5d0a1e6f3f3fdd0166804b"},
     {file = "pycodestyle-2.9.1.tar.gz", hash = "sha256:2c9607871d58c76354b697b42f5d57e1ada7d261c261efac224b664affdc5785"},
+]
+pycountry = [
+    {file = "pycountry-22.3.5.tar.gz", hash = "sha256:b2163a246c585894d808f18783e19137cb70a0c18fb36748dc01fc6f109c1646"},
 ]
 pydocstyle = [
     {file = "pydocstyle-6.1.1-py3-none-any.whl", hash = "sha256:6987826d6775056839940041beef5c08cc7e3d71d63149b48e36727f70144dc4"},

@@ -1,5 +1,6 @@
 import re
 
+import pycountry
 from bs4 import BeautifulSoup
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -229,6 +230,26 @@ class CountryPage(ContentPage):
     isoa2 = models.CharField(max_length=2, unique=True)
     isoa3 = models.CharField(max_length=3, unique=True, blank=True, null=True)
     continent = models.CharField(max_length=50, blank=True, null=True)
+
+    @property
+    def metadata(self):
+        return pycountry.countries.get(alpha_2=self.isoa2)
+
+    @classmethod
+    def search_fuzzy(cls, name_or_code: str):
+        results = pycountry.countries.search_fuzzy(name_or_code)
+        if len(results) > 0:
+            return results[0]
+
+    @classmethod
+    def create_for_code(cls, isoa2: str):
+        metadata = pycountry.countries.get(alpha_2=isoa2)
+        return CountryPage(
+            title=metadata.name,
+            slug=slugify(metadata.name),
+            isoa2=metadata.alpha_2,
+            isoa3=metadata.alpha_3,
+        )
 
 
 class StaticPage(ContentSidebarPage):

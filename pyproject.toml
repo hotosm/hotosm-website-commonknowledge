@@ -28,7 +28,7 @@ djangorestframework = '>=3.12.4'
 django-vite = "^1.2.1"
 dj-database-url = '>=0.5.0'
 django-storages = "*"
-groundwork-django = '^2.0.0'
+groundwork-django = '^0.2.0'
 gunicorn = '>=20.1.0'
 psycopg2 = '>=2.8.6'
 wagtail = "4.1"
@@ -46,6 +46,7 @@ sentry-sdk = "^1.9.10"
 wagtail-seo = "^2.3.0"
 Wand = "^0.6.10"
 wheel = "^0.38"
+pycountry = "^22.3.5"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"
