@@ -17,18 +17,6 @@
              id="navbar-cta">
             <ul class="flex flex-col bg-background-tint border border-gray-300 border-b p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:bg-white font-semibold">
                 {% comment %} Dynamic menu items {% endcomment %}
-                <li data-fly-to-map-zoom-param="preserve"
-                    data-fly-to-map-lng-param="77.1025"
-                    data-fly-to-map-lat-param="28.7041"
-                    data-action="mouseover->fly-to-map#flyTo">
-                    <span class="hover:text-red-500">Delhi</span>
-                </li>
-                <li data-fly-to-map-zoom-param="preserve"
-                    data-fly-to-map-lng-param="0.1276"
-                    data-fly-to-map-lat-param="51.5072"
-                    data-action="mouseover->fly-to-map#flyTo">
-                    <span class="hover:text-red-500">London</span>
-                </li>
                 {% for item in settings.app.HeaderSetting.navigation %}
                     <li>
                         <a href="{{ item.value.url }}"
