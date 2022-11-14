@@ -305,3 +305,11 @@ if USE_SILK:
     INSTALLED_APPS += [
         "silk",
     ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+        "TIMEOUT": None,  # don't expire by default
+    }
+}

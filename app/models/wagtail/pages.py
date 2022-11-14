@@ -1,7 +1,9 @@
+import json
 import re
 
 import pycountry
 from bs4 import BeautifulSoup
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
@@ -23,6 +25,8 @@ from wagtail.snippets.models import register_snippet
 
 import app.models.wagtail.blocks as app_blocks
 from app.models.wagtail.mixins import SearchableDirectoryMixin
+from app.utils.cache import django_cached
+from app.utils.geo import geolocator
 
 from .cms import CMSImage
 
@@ -250,6 +254,30 @@ class CountryPage(ContentPage):
             isoa2=metadata.alpha_2,
             isoa3=metadata.alpha_3,
         )
+
+    @property
+    @django_cached("country_geocode", get_key=lambda self: self.isoa2)
+    def geo(self):
+        return geolocator.geocode(
+            self.isoa2,
+            exactly_one=True,
+            geometry="geojson",
+            country_codes=self.isoa2.lower(),
+            featuretype="country",
+        )
+
+    # TODO: Cache this
+    @property
+    @django_cached("country_coordinates", get_key=lambda self: self.isoa2)
+    def centroid(self):
+        # TODO: More intelligent centroids available from https://raw.githubusercontent.com/gavinr/world-countries-centroids/29c9d1ec9013b6b36e3f6cf3634daaffd8afb2ea/dist/countries.geojson
+        return Point(self.geo.longitude, self.geo.latitude, self.geo.altitude)
+
+    # TODO: Cache this
+    @property
+    @django_cached("country_geometry", get_key=lambda self: self.isoa2)
+    def geometry(self):
+        return GEOSGeometry(json.dumps(self.geo.raw.get("geojson")))
 
 
 class StaticPage(ContentSidebarPage):

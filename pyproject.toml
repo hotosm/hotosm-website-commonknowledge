@@ -47,6 +47,7 @@ wagtail-seo = "^2.3.0"
 Wand = "^0.6.10"
 wheel = "^0.38"
 pycountry = "^22.3.5"
+geopy = "^2.3.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"
