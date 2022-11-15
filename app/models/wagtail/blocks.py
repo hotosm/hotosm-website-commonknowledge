@@ -300,3 +300,14 @@ class RelatedPeopleBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         features=["italic", "bold", "link"], required=False
     )
+
+
+class HeadingAndSubHeadingBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/heading_and_subheading.html"
+
+    title = blocks.CharBlock(max_length=75, required=True)
+    description = blocks.RichTextBlock(
+        required=True,
+        max_length=400,
+    )
