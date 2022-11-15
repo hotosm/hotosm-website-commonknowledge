@@ -26,6 +26,10 @@ export default class extends Controller {
 
     get defaultOptions(): SwiperOptions {
         return {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
             breakpoints: {
                 0: {
                     slidesPerView: 1,
