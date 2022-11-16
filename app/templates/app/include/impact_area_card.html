@@ -1,0 +1,14 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+<a href="{{ impact_area.url }}" class="text-white no-underline">
+    {% image impact_area.featured_image width-400 as background_image %}
+    <article class=" overflow-hidden rounded-md flex flex-col justify-between h-[400px] max-h-[75vh] lg:h-[700px] bg-blue-300 bg-cover bg-center relative before:contents['.] before:text-transparent before:absolute before:bg-black before:bg-opacity-30 before:inset-0 before:w-full before:h-full "
+             style="background-image: url('{{ background_image.url }}')">
+        <header class="z-10 px-4 pt-8 lg:p-16 flex flex-row justify-between items-start">
+            <div class=" leading-tight text-2xl font-extrabold lg:text-4xl ">{{ impact_area.title }}</div>
+            {% image impact_area.icon_light_transparent width-64 class="w-10 lg:w-16" %}
+        </header>
+        <p class="z-10 m-0 px-4 pb-8 lg:px-8 lg:py-16 font-medium text-sm lg:text-xl">
+            {{ impact_area.short_summary|richtext|striptags|truncatewords:50 }}
+        </p>
+    </article>
+</a>

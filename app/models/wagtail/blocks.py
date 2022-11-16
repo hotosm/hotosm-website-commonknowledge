@@ -380,3 +380,17 @@ class PartnerLogos(blocks.StructBlock):
             ]
         )
     )
+
+
+class ImpactAreaCarousel(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/impact_area_carousel.html"
+        help_text = "Interactive carousel of all impact areas. Clicking to navigate to the page."
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import ImpactAreaPage
+
+        context = super().get_context(value, parent_context=parent_context)
+        impact_areas = localized_pages(ImpactAreaPage.objects.all().live().public())
+        context["impact_areas"] = impact_areas
+        return context

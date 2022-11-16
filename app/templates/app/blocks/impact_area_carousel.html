@@ -1,0 +1,8 @@
+<div class="my-16">
+    <h3>Impact areas</h3>
+    <div>
+        {% for impact_area in impact_areas %}
+            {% include "app/include/impact_area_card.html" with impact_area=impact_area %}
+        {% endfor %}
+    </div>
+</div>
