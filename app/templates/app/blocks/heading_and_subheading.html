@@ -1,5 +1,5 @@
 {% load wagtailcore_tags %}
 <section class="py-8 md:max-w-[50%]">
     <h2 class="leading-tight text-2xl font-extrabold text-gray-900 mb-4">{{ value.title }}</h2>
-    <p class="text-base font-normal text-gray-700">{{ value.description }}</p>
+    <p class="text-base font-normal text-gray-700">{{ value.description|richtext }}</p>
 </section>
