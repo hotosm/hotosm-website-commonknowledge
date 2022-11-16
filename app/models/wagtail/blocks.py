@@ -150,9 +150,6 @@ class InternalLinkBlock(blocks.StructBlock):
     label = blocks.CharBlock(
         required=False, help_text="If set this replaces the page title"
     )
-    is_primary = blocks.BooleanBlock(
-        required=False, help_text="Check this box if the button is the primary button"
-    )
 
     class Meta:
         value_class = InternalLinkValue
@@ -166,9 +163,6 @@ class ExternalLinkValue(StructValue):
 class ExternalLinkBlock(blocks.StructBlock):
     url = blocks.URLBlock(required=True)
     label = blocks.CharBlock(required=True)
-    is_primary = blocks.BooleanBlock(
-        required=False, help_text="Check this box if the button is the primary button"
-    )
 
     class Meta:
         value_class = ExternalLinkValue
@@ -256,14 +250,6 @@ class CallToActionBlock(blocks.StructBlock):
         default="image_left",
     )
     image = ImageChooserBlock(required=False)
-    size = blocks.ChoiceBlock(
-        choices=[
-            ("lg", "Large"),
-            ("md", "Medium"),
-            ("sm", "Small"),
-        ],
-        default="sm",
-    )
 
 
 class PageLinkBlock(blocks.StructBlock):
