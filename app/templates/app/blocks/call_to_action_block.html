@@ -1,16 +1,20 @@
 {% load wagtailimages_tags %}
-<section class="py-16 px-4 lg:px-[80px]">
+<section class="py-16 px-4 lg:px-[80px]{% if value.background == "dark" %} bg-blue-800 rounded-[24px] {% else %} bg-inherit {% endif %}">
     <div class="flex flex-col lg:flex-row lg:items-center {% if value.layout == "image_right" %} flex-col-reverse lg:flex-row-reverse{% endif %} gap-8 lg:gap-16">
         {% image value.image original class="w-[100%] lg:w-[400px] rounded-[24px] shadow-md" %}
         <div>
-            <h2 class="leading-tight text-2xl lg:text-4xl font-extrabold gray-900 mb-4">{{ value.title }}</h2>
-            <p class="text-base lg:text-xl font-normal gray-700">{{ value.description }}</p>
+            <h2 class="leading-tight text-2xl lg:text-4xl font-extrabold {% if value.background == "dark" %} text-white {% else %} text-gray-900 {% endif %} mb-4">
+                {{ value.title }}
+            </h2>
+            <div class="text-base lg:text-xl font-normal {% if value.background == "dark" %} text-gray-50 {% else %} text-gray-700 {% endif %}">
+                {{ value.description }}
+            </div>
             <div class="flex flex-col gap-4 md:flex-row md:gap-3 mt-8">
                 {% if value.links %}
                     {% for item in value.links %}
                         <a href="{% if item.type == "internal_link" %} {{ item.value.page }} {% else %}{{ item.value.url }}  {% endif %}">
                             <button type="button"
-                                    class="w-full whitespace-nowrap {% if item == value.links.0 %} bg-primary-500 text-white {% else %} bg-background-tint text-gray-700 {% endif %} rounded-sm flex gap-3 items-center justify-center py-3 px-5 text-base lg:text-lg font-medium lg:font-semibold">
+                                    class="w-full whitespace-nowrap {% if item == value.links.0 %}  bg-primary-500 text-white{% endif %} {% if item == value.links.1 %} {% if value.background == "dark" %} bg-blue-700 text-white {% else %} bg-background-tint text-gray-700 {% endif %} {% endif %} rounded-sm flex gap-3 items-center justify-center py-3 px-5 text-base lg:text-lg font-medium lg:font-semibold">
                                 {{ item.value.label }}
                                 {% if item == value.links.0 %}
                                     <svg xmlns="http://www.w3.org/2000/svg"
