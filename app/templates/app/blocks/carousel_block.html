@@ -19,7 +19,9 @@
             <div class="swiper-slide flex flex-col px-4">
                 <a href="{{ card.url }}">
                     {% image card.image fill-300x200 as img %}
-                    <img src="{{ img.url }}" alt="{{ img.alt }}" class="rounded-xl mb-4"/>
+                    <img src="{{ img.url }}"
+                         alt="{{ img.alt }}"
+                         class="rounded-xl mb-4 w-[100%]"/>
                     <div class="flex flex-row gap-2 items-center text-sm font-medium text-gray-700 mb-4">
                         {{ card.category }}
                         <svg class="xmlns"
