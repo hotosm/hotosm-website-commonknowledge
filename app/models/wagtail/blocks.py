@@ -302,6 +302,18 @@ class RelatedPeopleBlock(blocks.StructBlock):
     )
 
 
+class HeadingAndSubHeadingBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/heading_and_subheading.html"
+
+    title = blocks.CharBlock(max_length=75, required=True)
+    description = blocks.RichTextBlock(
+        required=True,
+        max_length=400,
+        features=["italic", "bold", "link"],
+    )
+
+
 class PartnerLogos(blocks.StructBlock):
     class Meta:
         template = "app/blocks/partner_logos.html"
