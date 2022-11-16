@@ -21,7 +21,7 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 import app.models.wagtail.blocks as app_blocks
-from app.models.wagtail.mixins import SearchableDirectoryMixin
+from app.models.wagtail.mixins import IconMixin, SearchableDirectoryMixin
 
 from .cms import CMSImage
 
@@ -129,11 +129,11 @@ class PreviewablePage(Page):
         return self._meta.verbose_name.removesuffix(" page")
 
     # Editor
-    content_panels = Page.content_panels + [
+    previewable_page_panels = [
         FieldPanel("short_summary"),
         FieldPanel("featured_image"),
-        # FieldPanel("frontmatter"),
     ]
+    content_panels = Page.content_panels + previewable_page_panels
 
     edit_handler = TabbedInterface(
         [
@@ -174,9 +174,10 @@ class ContentPage(PreviewablePage):
     )
 
     # Editor
-    content_panels = PreviewablePage.content_panels + [
+    content_page_panels = [
         FieldPanel("content"),
     ]
+    content_panels = PreviewablePage.content_panels + content_page_panels
 
     edit_handler = TabbedInterface(
         [
@@ -626,6 +627,29 @@ class EventPage(ContentPage):
                 raise ValidationError(
                     {"end_datetime": "The end date cannot be before the start date."}
                 )
+
+
+class ImpactAreaPage(IconMixin, ContentPage):
+    page_description = "Overview page for each of the impact areas. Create one here and you can tag other pages with it."
+
+    # Editor
+    content_panels = [
+        *ContentPage.previewable_page_panels,
+        *IconMixin.icon_panels,
+        *ContentPage.content_page_panels,
+    ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
 
 
 class ActivationIndexPage(PreviewablePage):
