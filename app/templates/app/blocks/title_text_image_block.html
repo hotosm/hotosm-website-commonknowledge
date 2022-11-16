@@ -1,14 +1,19 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-<div>
+<section class="flex flex-row">
     <div>
-        <div>{{ value.title }}</div>
-        <div>{{ value.description }}</div>
-        <div>
+        <header class="pb-8">
+            <h4 class="leading-tight text-4xl font-extrabold text-gray-900 pb-4">{{ value.title }}</h4>
+            <p class="text-xl font-normal text-gray-700">{{ value.description }}</p>
+        </header>
+        <ul>
             {% for link in value.links %}
-                <a href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
+                <li class="pb-4">
+                    <a class="text-primary-500 underline text-xl font-semibold"
+                       href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     </div>
     <div>{% image value.image width-200 %}</div>
-</div>
+</section>
