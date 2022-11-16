@@ -40,6 +40,7 @@
             {% block header %}
                 {% if page.show_header is None or page.show_header is True %}
                     {% include "app/include/header.html" %}
+                    {% include "app/include/service_status.html" %}
                 {% endif %}
             {% endblock header %}
             <div class="flex-grow flex flex-col {% block content_class %}{% endblock content_class %}">
