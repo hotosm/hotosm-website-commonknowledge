@@ -313,6 +313,7 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
         features=["italic", "bold", "link"],
     )
 
+
 class PartnerLogos(blocks.StructBlock):
     class Meta:
         template = "app/blocks/partner_logos.html"
