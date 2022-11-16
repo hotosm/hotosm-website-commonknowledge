@@ -327,5 +327,4 @@ class PartnerLogos(blocks.StructBlock):
                 ("url", blocks.URLBlock(required=True)),
             ]
         )
-
     )
