@@ -1,0 +1,14 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+<div>
+    <div>
+        <div>{{ value.title }}</div>
+        <div>{{ value.description }}</div>
+        <div>
+            {% for link in value.links %}
+                <a href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div>{% image value.image width-200 %}</div>
+</div>
