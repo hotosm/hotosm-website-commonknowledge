@@ -1,8 +1,8 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 <section class="flex flex-row">
-    <div>
-        <header class="pb-8">
+    <div class="mr-16">
+        <header class="pb-8 mb-8 border-b border-solid">
             <h4 class="leading-tight text-4xl font-extrabold text-gray-900 pb-4">{{ value.title }}</h4>
             <p class="text-xl font-normal text-gray-700">{{ value.description }}</p>
         </header>
@@ -15,5 +15,8 @@
             {% endfor %}
         </ul>
     </div>
-    <div>{% image value.image width-200 %}</div>
+    {% image value.image height-608 as img %}
+    <div class="h-[500px] w-[608px] rounded-xl overflow-hidden bg-cover bg-center"
+         style="background-image: url('{{ img.url }}')">
+    </div>
 </section>
