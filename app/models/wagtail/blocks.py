@@ -312,3 +312,20 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
         max_length=400,
         features=["italic", "bold", "link"],
     )
+
+class PartnerLogos(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/partner_logos.html"
+        help_text = "Display a list of partner organisations' logos and links."
+
+    title = blocks.CharBlock(required=True)
+
+    partners = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("logo", ImageChooserBlock(required=True)),
+                ("url", blocks.URLBlock(required=True)),
+            ]
+        )
+
+    )
