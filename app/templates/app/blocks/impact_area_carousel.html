@@ -1,8 +1,11 @@
 <div class="my-16">
-    <h3>Impact areas</h3>
-    <div>
-        {% for impact_area in impact_areas %}
-            {% include "app/include/impact_area_card.html" with impact_area=impact_area %}
-        {% endfor %}
+    <div data-controller="carousel"
+         class="swiper"
+         data-carousel-options-value='{ "effect": "cards", "breakpoints": null, "navigation": null, "cardsEffect": { "rotate": false, "perSlideOffset": 25, "zoom": true }, "grabCursor": true}'>
+        <div class="swiper-wrapper">
+            {% for impact_area in impact_areas %}
+                <div class="swiper-slide">{% include "app/include/impact_area_card.html" with impact_area=impact_area %}</div>
+            {% endfor %}
+        </div>
     </div>
 </div>

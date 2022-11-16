@@ -5,8 +5,11 @@ import Swiper from "swiper/bundle";
 
 export default class extends Controller {
     swiper: Swiper;
-    // @ts-ignore
-    optionsValue: SwiperOptions;
+
+    values = {
+        options: Object,
+    };
+    optionsValue?: SwiperOptions;
 
     static values = {
         options: Object,

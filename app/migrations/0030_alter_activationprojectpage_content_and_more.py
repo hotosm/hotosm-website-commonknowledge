@@ -127,8 +127,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -648,8 +647,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -1169,8 +1167,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -1690,8 +1687,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -2391,8 +2387,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -2732,8 +2727,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -3253,8 +3247,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -3774,8 +3767,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -4295,8 +4287,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -4816,8 +4807,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -5337,8 +5327,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
@@ -5858,8 +5847,7 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "page",
-                                    wagtail.blocks.PageChooserBlock(
-                                        required=True),
+                                    wagtail.blocks.PageChooserBlock(required=True),
                                 ),
                                 (
                                     "include_page_actions",
