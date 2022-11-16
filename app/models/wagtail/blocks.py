@@ -246,7 +246,7 @@ class CallToActionBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         required=False, max_length=200, features=["italic", "bold", "link"]
     )
-    links = LinkStreamBlock(min_num=1, max_num=2)
+    links = LinkStreamBlock(min_num=0, max_num=2, required=False)
 
     layout = blocks.ChoiceBlock(
         choices=[
