@@ -310,4 +310,5 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         required=True,
         max_length=400,
+        features=["italic", "bold", "link"],
     )
