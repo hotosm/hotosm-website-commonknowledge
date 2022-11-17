@@ -87,6 +87,7 @@ class ContentPage(PreviewablePage):
             ("featured_content", app_blocks.FeaturedContentBlock()),
             ("metrics", app_blocks.MetricsBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
+            ("map", app_blocks.MapBlock()),
             ("html", app_blocks.HTMLBlock()),
         ],
         null=True,

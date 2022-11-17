@@ -100,6 +100,7 @@ class HomePage(SearchableDirectoryMixin, Page):
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
             ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
             ("partner_logos", app_blocks.PartnerLogos()),
+            ("map", app_blocks.MapBlock()),
         ],
         null=True,
         blank=True,
