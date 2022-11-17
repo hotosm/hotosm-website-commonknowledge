@@ -4,6 +4,51 @@
         width: 100% !important;
         height: 100% !important;
     }
+
+    .map-block__container {
+        .map-block--collapsed & {
+            @apply relative h-[170px] md:h-[640px] max-h-[75vh];
+        }
+        .map-block--expanded & {
+            @apply z-50 fixed inset-0 h-full w-full bg-blue-800 flex flex-col;
+        }
+    }
+
+    .map-block__header {
+        .map-block--collapsed & {
+            @apply hidden;
+        }
+        .map-block--expanded & {
+            @apply flex flex-row flex-shrink-0 flex-grow-0 justify-between p-3;
+        }
+    }
+
+    .map-block__canvas_container {
+        .map-block--collapsed & {
+            @apply absolute inset-0 w-full h-full;
+        }
+        .map-block--expanded & {
+            @apply w-full h-full md:px-3 md:pb-3;
+        }
+
+        .mapboxgl-map {
+            .map-block--collapsed & {
+                @apply border border-gray-300 rounded-sm overflow-hidden;
+            }
+
+            .map-block--expanded & {
+                @screen md {
+                    @apply rounded-sm;
+                }
+            }
+        }
+    }
+
+    .map-block__mobile-launch-btn-container {
+        .map-block--expanded & {
+            display: none !important;
+        }
+    }
 }
 
 // From wagtail's RTF renderer
