@@ -11,7 +11,11 @@
                         <a href="{% if item.type == "internal_link" %} {{ item.value.page }} {% else %}{{ item.value.url }}  {% endif %}">
                             <button type="button"
                                     class="w-full whitespace-nowrap {% if item == value.links.0 %} bg-primary-500 text-white {% else %} bg-background-tint text-gray-700 {% endif %} rounded-sm flex gap-3 items-center justify-center py-3 px-5 text-base lg:text-lg font-medium lg:font-semibold">
-                                {{ item.value.label }}
+                                {% if item.value.label %}
+                                    {{ item.value.label }}
+                                {% else %}
+                                    {{ item.value.page }}
+                                {% endif %}
                                 {% if item == value.links.0 %}
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          width="20"
