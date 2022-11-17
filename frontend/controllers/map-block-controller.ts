@@ -1,6 +1,12 @@
 import { MapConfigController } from "groundwork-django";
 import { debounce } from "lodash";
-import { GeocodedPageFeatureCollection, getMapData } from "../utils/api";
+import { Marker } from "mapbox-gl";
+import {
+    GeocodedPageFeature,
+    GeocodedPageFeatureCollection,
+    GeocodedPageFeatureProperties,
+    getMapData,
+} from "../utils/api";
 import { tailwindTheme } from "../utils/css";
 import { MAPBOX_INTERACTION_METHODS } from "../utils/mapbox";
 
@@ -75,10 +81,11 @@ export default class MapBlockController extends MapConfigController {
      */
 
     async loadData() {
+        if (!this.map) return;
         if (!this.geoApiEndpointValue)
             return console.error("No API endpoint defined");
         // this.mapDataValue = await getMapData(this.geoApiEndpointValue)
-        this.map?.addSource("all-pages", {
+        this.map.addSource("all-pages", {
             type: "geojson",
             data: this.geoApiEndpointValue,
         });
@@ -95,6 +102,34 @@ export default class MapBlockController extends MapConfigController {
             },
             filter: ["==", "$type", "Point"],
         });
+
+        setTimeout(async () => {
+            const data = await this.map?.querySourceFeatures("all-pages");
+            let i = 0;
+            for (const item of data || []) {
+                i++;
+                if (item.geometry.type === "Point" && i < 6) {
+                    const el = document.createElement("div");
+                    document.body.appendChild(el);
+                    el.innerHTML = `
+                <div class='w-[65px] rounded-full overflow-hidden'>
+                  <div class='bg-cover bg-no-repeat transition-all scale-100 hover:scale-110' style='background-image: url("${
+                      (item.properties as GeocodedPageFeatureProperties)
+                          ?.map_image_url
+                  }")'></div>
+                </div>
+              `;
+                    new Marker({
+                        anchor: "center",
+                        element: el,
+                    })
+                        // @ts-ignore
+                        .setLngLat(item.geometry.coordinates)
+                        // @ts-ignore
+                        .addTo(this.map);
+                }
+            }
+        }, 5000);
     }
 
     /**
