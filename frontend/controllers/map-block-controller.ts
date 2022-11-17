@@ -26,13 +26,13 @@ export default class MapBlockController extends MapConfigController {
     public modeValue!: typeof MapBlockController.MODES[number];
 
     // Hooks
-    connect() {
+    connectMap() {
         super.connect?.();
         this.updateUI();
         this.setupResizeListeners();
     }
 
-    disconnect(): void {
+    disconnectMap(): void {
         this.teardownResizeListeners();
     }
 
