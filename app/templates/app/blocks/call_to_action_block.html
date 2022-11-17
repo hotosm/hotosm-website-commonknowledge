@@ -3,8 +3,8 @@
     <div class="flex flex-col lg:flex-row lg:items-center {% if value.layout == "image_right" %} flex-col-reverse lg:flex-row-reverse{% endif %} gap-8 lg:gap-16">
         {% image value.image original class="w-[100%] lg:w-[400px] rounded-[24px] shadow-md" %}
         <div>
-            <h2 class="leading-tight text-2xl lg:text-4xl font-extrabold gray-900 mb-4">{{ value.title }}</h2>
-            <p class="text-base lg:text-xl font-normal gray-700">{{ value.description }}</p>
+            <h2 class="leading-tight text-2xl lg:text-4xl font-extrabold text-gray-900 mb-4">{{ value.title }}</h2>
+            <p class="text-base lg:text-xl font-normal text-gray-700">{{ value.description }}</p>
             <div class="flex flex-col gap-4 md:flex-row md:gap-3 mt-8">
                 {% if value.links %}
                     {% for item in value.links %}
