@@ -1,11 +1,11 @@
 {% load wagtailimages_tags %}
 <section class="py-16 px-4 lg:px-[80px]">
-    <div class="flex flex-col lg:flex-row lg:items-center {% if value.layout == "image_right" %} flex-col-reverse lg:flex-row-reverse{% endif %} gap-8 lg:gap-16">
-        {% image value.image original class="w-[100%] lg:w-[400px] rounded-[24px] shadow-md" %}
-        <div>
+    <div class="flex flex-col md:flex-row md:items-stretch {% if value.layout == "image_right" %} flex-col-reverse md:flex-row-reverse{% endif %} gap-8 lg:gap-16">
+        {% image value.image original class="w-[100%] md:w-1/2 rounded-[24px] shadow-md" %}
+        <div class="md:w-1/2">
             <h2 class="leading-tight text-2xl lg:text-4xl font-extrabold text-gray-900 mb-4">{{ value.title }}</h2>
             <p class="text-base lg:text-xl font-normal text-gray-700">{{ value.description }}</p>
-            <div class="flex flex-col gap-4 md:flex-row md:gap-3 mt-8">
+            <div class="flex flex-col gap-4 md:flex-row md:flex-wrap md:gap-3 mt-8">
                 {% if value.links %}
                     {% for item in value.links %}
                         <a href="{% if item.type == "internal_link" %} {{ item.value.page }} {% else %}{{ item.value.url }}  {% endif %}">
