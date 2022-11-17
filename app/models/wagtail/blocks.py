@@ -329,3 +329,9 @@ class PartnerLogos(blocks.StructBlock):
             ]
         )
     )
+
+
+class MapBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/map_block.html"
+        help_text = "Explorable map with pin-pointed links to the rest of the site."
