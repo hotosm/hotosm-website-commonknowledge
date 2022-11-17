@@ -209,7 +209,7 @@ class CountryPage(ContentPage):
     @django_cached("country_coordinates", get_key=lambda self: self.isoa2)
     def centroid(self):
         # TODO: More intelligent centroids available from https://raw.githubusercontent.com/gavinr/world-countries-centroids/29c9d1ec9013b6b36e3f6cf3634daaffd8afb2ea/dist/countries.geojson
-        return Point(self.geo.longitude, self.geo.latitude, self.geo.altitude)
+        return Point(self.geo.longitude, self.geo.latitude)
 
     @property
     @django_cached("country_geometry", get_key=lambda self: self.isoa2)

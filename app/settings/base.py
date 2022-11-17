@@ -19,6 +19,8 @@ INSTALLED_APPS = [
     "app",
     "anymail",
     "rest_framework",
+    "rest_framework_gis",
+    "drf_spectacular",
     "groundwork.core",
     "groundwork.geo",
     "livereload",
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.redirects",
     "wagtail.admin",
     "wagtail",
+    "wagtail.api.v2",
     "modelcluster",
     "taggit",
     "wagtail.contrib.settings",
@@ -320,4 +323,24 @@ CACHES = {
         "LOCATION": "django_cache",
         "TIMEOUT": None,  # don't expire by default
     }
+}
+
+# REST API settings
+
+WAGTAILAPI_LIMIT_MAX = None
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Humanitarian OpenStreetMap Team CMS API",
+    "DESCRIPTION": "Access to the content management system for the HOTOSM website.",
+    "VERSION": "1.0.0",
+    "PREPROCESSING_HOOKS": ["app.api.preprocessing_hooks"],
+    # OTHER SETTINGS
 }

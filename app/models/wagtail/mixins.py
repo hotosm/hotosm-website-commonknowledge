@@ -22,7 +22,8 @@ from wagtailautocomplete.edit_handlers import AutocompletePanel
 
 import app.models.wagtail.blocks as app_blocks
 from app.helpers import concat_html, safe_to_int
-from app.serializers import PageCoordinatesSerializer
+
+# from app.serializers import PageCoordinatesSerializer
 from app.utils.geo import geolocator
 
 from .cms import CMSImage
@@ -248,7 +249,7 @@ class GeocodedMixin(Page):
 
     geographical_location = models.CharField(max_length=250, null=True, blank=True)
     coordinates = PointField(null=True, blank=True)
-    related_countries = ParentalManyToManyField("app.CountryPage")
+    related_countries = ParentalManyToManyField("app.CountryPage", blank=True)
     # map_image = models.ForeignKey(
     #     CMSImage, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
 
@@ -349,6 +350,6 @@ class GeocodedMixin(Page):
     api_fields = [
         APIField("label"),
         APIField("geographical_location"),
-        APIField("coordinates", serializer=PageCoordinatesSerializer),
+        # APIField("coordinates", serializer=PageCoordinatesSerializer),
         APIField("countries"),
     ]

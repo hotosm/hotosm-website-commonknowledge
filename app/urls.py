@@ -6,6 +6,11 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 from django.views.generic.base import TemplateView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
@@ -13,6 +18,9 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 
 from app.views.search import SearchView
+
+from .api import wagtail_api_router
+from .views.api import MapSearchViewset
 
 urlpatterns = [
     path("admin/autocomplete/", include(autocomplete_admin_urls)),
@@ -24,9 +32,20 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="app/robots.txt", content_type="text/plain"),
     ),
+    path("api/v2/", wagtail_api_router.urls),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/docs/swagger/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path(
+        "api/docs/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
+    ),
 ]
 
 urlpatterns += i18n_patterns(
+    path("api/geo/", MapSearchViewset.as_view({"get": "list"}), name="geo-api"),
     path("search/", SearchView.as_view(), name="search"),
     path(
         "frames/search/",

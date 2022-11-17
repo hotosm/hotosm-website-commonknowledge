@@ -1,5 +1,7 @@
 import { MapConfigController } from "groundwork-django";
 import { debounce } from "lodash";
+import { GeocodedPageFeatureCollection, getMapData } from "../utils/api";
+import { tailwindTheme } from "../utils/css";
 import { MAPBOX_INTERACTION_METHODS } from "../utils/mapbox";
 
 export default class MapBlockController extends MapConfigController {
@@ -22,14 +24,18 @@ export default class MapBlockController extends MapConfigController {
     // Values
     public static values = {
         mode: { type: String, default: MapBlockController.COLLAPSED },
+        geoApiEndpoint: String,
     };
     public modeValue!: typeof MapBlockController.MODES[number];
+    public geoApiEndpointValue?: string;
+    public mapDataValue?: GeocodedPageFeatureCollection;
 
     // Hooks
     connectMap() {
         super.connect?.();
         this.updateUI();
         this.setupResizeListeners();
+        this.loadData();
     }
 
     disconnectMap(): void {
@@ -40,7 +46,10 @@ export default class MapBlockController extends MapConfigController {
         this.updateUI();
     }
 
-    // Methods
+    /**
+     * Display mode state
+     */
+
     expand() {
         this.modeValue = MapBlockController.EXPANDED;
     }
@@ -60,6 +69,37 @@ export default class MapBlockController extends MapConfigController {
                 ? MapBlockController.COLLAPSED
                 : MapBlockController.EXPANDED;
     }
+
+    /**
+     * Data
+     */
+
+    async loadData() {
+        if (!this.geoApiEndpointValue)
+            return console.error("No API endpoint defined");
+        // this.mapDataValue = await getMapData(this.geoApiEndpointValue)
+        this.map?.addSource("all-pages", {
+            type: "geojson",
+            data: this.geoApiEndpointValue,
+        });
+
+        this.map?.addLayer({
+            id: "all-pages",
+            type: "circle",
+            source: "all-pages",
+            paint: {
+                "circle-color": "transparent",
+                "circle-radius": 16,
+                "circle-stroke-width": 2,
+                "circle-stroke-color": tailwindTheme.extend.colors.blue[500],
+            },
+            filter: ["==", "$type", "Point"],
+        });
+    }
+
+    /**
+     * DOM
+     */
 
     updateUI() {
         // Add classes

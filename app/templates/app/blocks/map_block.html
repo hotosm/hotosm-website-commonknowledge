@@ -7,7 +7,8 @@
          data-controller="map-block"
          class="group map-block--collapsed my-16 mx-4 relative"
          data-map-block-collapsed-class="map-block--collapsed"
-         data-map-block-expanded-class="map-block--expanded">
+         data-map-block-expanded-class="map-block--expanded"
+         data-map-block-geo-api-endpoint-value="{% url 'geo-api' %}">
         {% comment %} Map container and canvas {% endcomment %}
         <div class="map-block__container">
             <header class="map-block__header">

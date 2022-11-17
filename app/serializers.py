@@ -1,6 +1,11 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from rest_framework_gis.serializers import (
+    GeoFeatureModelSerializer,
+    GeometrySerializerMethodField,
+)
+
+from app.models.wagtail import ProjectPage
 
 
 class UserSerializer(serializers.Serializer):
@@ -14,6 +19,23 @@ class UserSerializer(serializers.Serializer):
 
 class PageCoordinatesSerializer(GeoFeatureModelSerializer):
     class Meta:
-        model = "app.GeocodedMixin"
+        model = ProjectPage
         geo_field = "centroid"
-        fields = "__all__"
+        # id_field = 'url'
+        fields = (
+            "id",
+            "label",
+            "title",
+            "geographical_location",
+            "related_countries",
+            "url",
+        )
+
+    centroid = GeometrySerializerMethodField()
+    # url = serializers.CharField()
+
+    # def get_url(self):
+    #     return self.url
+
+    def get_centroid(self, state):
+        return state.centroid
