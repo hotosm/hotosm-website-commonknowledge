@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     "wagtail.contrib.settings",
     "wagtail.contrib.styleguide",
     "wagtail.contrib.modeladmin",
-    "wagtailmenus",
     "django.contrib.sitemaps",
 ]
 
@@ -85,7 +84,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
-                "wagtailmenus.context_processors.wagtailmenus",
             ],
         },
     },
@@ -225,9 +223,6 @@ WAGTAILDOCS_DOCUMENT_MODEL = "app.CMSDocument"
 
 # cms
 SETUP_DEMO_PAGES = os.getenv("SETUP_DEMO_PAGES", False)
-
-# wagtailmenus
-WAGTAILMENUS_FLAT_MENUS_HANDLE_CHOICES = (("footer", "Footer"),)
 
 # wagtail-localize
 DEEPL_API_KEY = os.getenv("DEEPL_API_KEY", None)

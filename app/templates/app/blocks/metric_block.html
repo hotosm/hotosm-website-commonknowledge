@@ -1,0 +1,14 @@
+<section>
+    <dl class="grid gap-8 grid-flow-row md:grid-flow-col">
+        {% for metric in value.metrics %}
+            <div class="flex flex-col items-start justify-start">
+                <dt class="text-gray-900 leading-tight text-6xl font-extrabold">
+                    {{ metric.value }}
+                </dt>
+                <dd class="text-gray-900 leading-tight text-lg font-semibold">
+                    {{ metric.label }}
+                </dd>
+            </div>
+        {% endfor %}
+    </dl>
+</section>

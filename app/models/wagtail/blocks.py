@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
+from wagtail.core.blocks import StructValue
 from wagtail.images.blocks import ImageChooserBlock
 
 from app.utils.github import github_repo_validator
@@ -96,17 +97,31 @@ class HomepageMagazineBlock(blocks.StructBlock):
 
 class MetricsBlock(blocks.StructBlock):
     class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
-        icon = "fa fa-trophy"
+        template = "app/blocks/metric_block.html"
+        icon = "fa fa-list-ol"
+        help_text = "Block that displays numbers with a description under them."
 
     metrics = blocks.ListBlock(
         blocks.StructBlock(
             [
-                ("value", blocks.CharBlock()),
-                ("label", blocks.CharBlock()),
+                (
+                    "value",
+                    blocks.CharBlock(
+                        required=True,
+                        help_text="The metric to display, usually a number. For example: 45",
+                    ),
+                ),
+                (
+                    "label",
+                    blocks.CharBlock(
+                        required=True,
+                        help_text="The name of the metric. For example: areas mapped",
+                    ),
+                ),
             ]
-        )
+        ),
+        max_num=4,
+        min_number=1,
     )
 
 
@@ -120,24 +135,46 @@ class ImageBlock(blocks.StructBlock):
     caption = blocks.CharBlock(required=False)
 
 
+class InternalLinkValue(StructValue):
+    def url(self):
+        return self.get("page").localized.url
+
+    def text(self):
+        if len(self.get("label")):
+            return self.get("label")
+        return self.get("page").localized.title
+
+
+class InternalLinkBlock(blocks.StructBlock):
+    page = blocks.PageChooserBlock(required=True)
+    label = blocks.CharBlock(
+        required=False, help_text="If set this replaces the page title"
+    )
+
+    class Meta:
+        value_class = InternalLinkValue
+
+
+class ExternalLinkValue(StructValue):
+    def text(self):
+        return self.get("label")
+
+
+class ExternalLinkBlock(blocks.StructBlock):
+    url = blocks.URLBlock(required=True)
+    label = blocks.CharBlock(required=True)
+
+    class Meta:
+        value_class = ExternalLinkValue
+
+
 class LinkStreamBlock(blocks.StreamBlock):
-    internal_link = blocks.StructBlock(
-        [
-            ("page", blocks.PageChooserBlock(required=True)),
-            (
-                "label",
-                blocks.CharBlock(
-                    required=False, help_text="If set this replaces the page title"
-                ),
-            ),
-        ]
-    )
-    external_link = blocks.StructBlock(
-        [
-            ("url", blocks.URLBlock(required=True)),
-            ("label", blocks.CharBlock(required=True)),
-        ]
-    )
+    internal_link = InternalLinkBlock()
+    external_link = ExternalLinkBlock()
+
+    def link(self, *args, **kwargs):
+        print("Called", args, kwargs)
+        return None
 
 
 class TaskManagerProjectBlock(blocks.StructBlock):
@@ -283,6 +320,35 @@ class CarouselBlock(blocks.StructBlock):
                 ("organisation", blocks.TextBlock(required=False, max_length=200)),
                 ("author", blocks.TextBlock(required=False, max_length=200)),
                 ("date", blocks.DateTimeBlock(required=False)),
+            ]
+        )
+    )
+
+
+class HeadingAndSubHeadingBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/heading_and_subheading.html"
+
+    title = blocks.CharBlock(max_length=75, required=True)
+    description = blocks.RichTextBlock(
+        required=True,
+        max_length=400,
+        features=["italic", "bold", "link"],
+    )
+
+
+class PartnerLogos(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/partner_logos.html"
+        help_text = "Display a list of partner organisations' logos and links."
+
+    title = blocks.CharBlock(required=True)
+
+    partners = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("logo", ImageChooserBlock(required=True)),
+                ("url", blocks.URLBlock(required=True)),
             ]
         )
     )

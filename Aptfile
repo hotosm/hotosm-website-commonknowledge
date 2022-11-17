@@ -10,3 +10,5 @@ libproj-dev
 gdal-bin
 g++
 libmagickwand-dev
+python3.9-distutils
+python3.9-apt

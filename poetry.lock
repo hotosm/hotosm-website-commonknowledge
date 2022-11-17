@@ -133,14 +133,14 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "boto3"
-version = "1.26.4"
+version = "1.26.5"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 
 [package.dependencies]
-botocore = ">=1.29.4,<1.30.0"
+botocore = ">=1.29.5,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -149,7 +149,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.4"
+version = "1.29.5"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -194,7 +194,7 @@ unicode-backport = ["unicodedata2"]
 name = "click"
 version = "8.1.3"
 description = "Composable command line interface toolkit"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -224,7 +224,7 @@ test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 name = "cssbeautifier"
 version = "1.14.7"
 description = "CSS unobfuscator and beautifier."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -304,19 +304,6 @@ requests = ">=2.4.3"
 amazon-ses = ["boto3"]
 dev = ["flake8", "sphinx", "sphinx-rtd-theme", "tox", "twine", "wheel"]
 postal = ["cryptography"]
-
-[[package]]
-name = "django-cogwheels"
-version = "0.3"
-description = "A consistent, user-friendly solution for adding app-specific settings your Django package, reusable app or framework."
-category = "main"
-optional = false
-python-versions = ">=3.4"
-
-[package.extras]
-development = ["Django (>=2.0,<2.1)", "django-extensions", "ipdb", "werkzeug"]
-docs = ["Sphinx (>=1.7.4)", "pyenchant (>=2.0)", "sphinx-rtd-theme (>=0.3)", "sphinxcontrib-spelling (>=1.4)"]
-testing = ["coverage"]
 
 [[package]]
 name = "django-debug-toolbar"
@@ -498,9 +485,9 @@ djangorestframework = ">=3.9"
 
 [[package]]
 name = "djlint"
-version = "1.19.6"
+version = "1.19.7"
 description = "HTML Template Linter and Formatter"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7.2,<4.0.0"
 
@@ -551,7 +538,7 @@ testing = ["beautifulsoup4 (>=4.4.1,<5)", "coverage (>=4.1.0)", "flake8 (>=3.2.0
 name = "editorconfig"
 version = "0.12.3"
 description = "EditorConfig File Locator and Interpreter for Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -639,7 +626,7 @@ tornado = ["tornado (>=0.2)"]
 name = "html-tag-names"
 version = "0.1.2"
 description = "List of known HTML tag names"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 
@@ -647,7 +634,7 @@ python-versions = ">=3.7,<4.0"
 name = "html-void-elements"
 version = "0.1.0"
 description = "List of HTML void tag names."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 
@@ -692,7 +679,7 @@ python-versions = ">=3.5"
 name = "importlib-metadata"
 version = "5.0.0"
 description = "Read metadata from Python packages"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -755,7 +742,7 @@ python-versions = ">=3.7"
 name = "jsbeautifier"
 version = "1.14.7"
 description = "JavaScript unobfuscator and beautifier."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -878,7 +865,7 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 name = "pathspec"
 version = "0.10.1"
 description = "Utility library for gitignore style pattern matching of file paths."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -1131,7 +1118,7 @@ python-versions = ">=3.6"
 name = "regex"
 version = "2022.10.31"
 description = "Alternative regular expression module, to replace re."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 
@@ -1385,7 +1372,7 @@ python-versions = ">= 3.7"
 name = "tqdm"
 version = "4.64.1"
 description = "Fast, Extensible Progress Meter"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 
@@ -1506,22 +1493,6 @@ python-versions = ">=3.6"
 wagtail = ">=3.0,<5.0"
 
 [[package]]
-name = "wagtailmenus"
-version = "3.1.3"
-description = "An app to help you manage menus in your Wagtail projects more consistently."
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-django-cogwheels = "0.3"
-
-[package.extras]
-development = ["beautifulsoup4 (>=4.8,<4.10)", "coverage (>=4.5)", "django-debug-toolbar", "django-extensions", "django-webtest (>=1.9,<1.10)", "ipdb", "wagtail (>=2.15)", "werkzeug"]
-docs = ["Sphinx (>=1.7.4)", "pyenchant (>=2.0)", "sphinx-rtd-theme (>=0.3)", "sphinxcontrib-spelling (>=1.4)"]
-testing = ["beautifulsoup4 (>=4.8,<4.10)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
-
-[[package]]
 name = "wand"
 version = "0.6.10"
 description = "Ctypes-based simple MagickWand API binding for Python"
@@ -1543,7 +1514,7 @@ python-versions = "*"
 
 [[package]]
 name = "wheel"
-version = "0.38.2"
+version = "0.38.3"
 description = "A built-package format for Python"
 category = "main"
 optional = false
@@ -1575,7 +1546,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 name = "zipp"
 version = "3.10.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -1586,7 +1557,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cc58042bdfd2f0a8fe4e0ef9f38fd87e76172c2021367605b7d3430146f5743e"
+content-hash = "921f910fa9dbc972ead9ffbb56f3cbcec390ff6847d50477ee633b82081a29c0"
 
 [metadata.files]
 anyascii = [
@@ -1648,12 +1619,12 @@ black = [
     {file = "black-22.10.0.tar.gz", hash = "sha256:f513588da599943e0cde4e32cc9879e825d58720d6557062d1098c5ad80080e1"},
 ]
 boto3 = [
-    {file = "boto3-1.26.4-py3-none-any.whl", hash = "sha256:9bfe15f394a7cd8ca2520e42722269d9aa2bbc222e348283c527d3aa88484314"},
-    {file = "boto3-1.26.4.tar.gz", hash = "sha256:244fd0776fc1f69c3ed34f359db7a90a6108372486abc999ce8515a79bbfc86e"},
+    {file = "boto3-1.26.5-py3-none-any.whl", hash = "sha256:7b6fb7b0346c239b53ad5e5fdf5eeef3c6452186d91239beeb66f106531cb2c3"},
+    {file = "boto3-1.26.5.tar.gz", hash = "sha256:cb4eca34b6e13e4ead46a68f66759feaae6bf5e97362b2c979b7b9f1d203715e"},
 ]
 botocore = [
-    {file = "botocore-1.29.4-py3-none-any.whl", hash = "sha256:4c7dedc1096417ac8a120a3f42b81bddaec5451cdd6add7af98680903fd73b18"},
-    {file = "botocore-1.29.4.tar.gz", hash = "sha256:fa86747f5092723c0dc7f201a48cdfac3ad8d03dd6cb7abc189abc708be43269"},
+    {file = "botocore-1.29.5-py3-none-any.whl", hash = "sha256:94e820994e731568d191373d622507fee6067c9e68b5a121aed46322fd6d3d45"},
+    {file = "botocore-1.29.5.tar.gz", hash = "sha256:8a1a074bce7567576947869d41026c45d507e00885f3890c1719180a9400ec40"},
 ]
 certifi = [
     {file = "certifi-2022.9.24-py3-none-any.whl", hash = "sha256:90c1a32f1d68f940488354e36370f6cca89f0f106db09518524c88d6ed83f382"},
@@ -1705,10 +1676,6 @@ django = [
 django-anymail = [
     {file = "django-anymail-8.6.tar.gz", hash = "sha256:783342d49dd07d68778b81dd12a94c86e1d217463a68a85450a0513fabe31345"},
     {file = "django_anymail-8.6-py3-none-any.whl", hash = "sha256:49d83d7c16316ca86a624097496881d59b7d71b16bf1c5211cffa5b19ef98d0c"},
-]
-django-cogwheels = [
-    {file = "django-cogwheels-0.3.tar.gz", hash = "sha256:848a4d9f2c96c582a4a4f2e7c276dfd95ab3905748cae13bb7c4b365a6717e94"},
-    {file = "django_cogwheels-0.3-py3-none-any.whl", hash = "sha256:197bd05e7114403d7301214b3f8a371c4fb6039cf21c811f099438b167b5ed21"},
 ]
 django-debug-toolbar = [
     {file = "django-debug-toolbar-3.7.0.tar.gz", hash = "sha256:1e3acad24e3d351ba45c6fa2072e4164820307332a776b16c9f06d1f89503465"},
@@ -1765,8 +1732,8 @@ djangorestframework-dataclasses = [
     {file = "djangorestframework_dataclasses-1.1.1-py3-none-any.whl", hash = "sha256:aa4b23ac3de4ce25e82dd24110ddb9ff6551e2032ed7f25e8687eca6b4d7a472"},
 ]
 djlint = [
-    {file = "djlint-1.19.6-py3-none-any.whl", hash = "sha256:e7fd305f93057cd205a29999b840210db70789e4cf277625f148447ad7de62b1"},
-    {file = "djlint-1.19.6.tar.gz", hash = "sha256:a28133317eccc3924b157c947f98f0bdc300f754f51097b5467c73e112aa9fec"},
+    {file = "djlint-1.19.7-py3-none-any.whl", hash = "sha256:517b1a2dfb943854abaf8b1ad2117d5c2e699d5916cd2621e24f8669eb564af2"},
+    {file = "djlint-1.19.7.tar.gz", hash = "sha256:7339b0e2b228655000e6bc5e85adb146e1cdad11a1a29c52c3f1e68707d02d86"},
 ]
 dparse = [
     {file = "dparse-0.6.2-py3-none-any.whl", hash = "sha256:8097076f1dd26c377f30d4745e6ec18fef42f3bf493933b842ac5bafad8c345f"},
@@ -2456,9 +2423,6 @@ wagtail-seo = [
     {file = "wagtail-seo-2.3.0.tar.gz", hash = "sha256:cefd8c1b011d55a95dbe8b6c75a504fb441df089f594e2b06d92e3d5b95f3609"},
     {file = "wagtail_seo-2.3.0-py3-none-any.whl", hash = "sha256:052c1cd56f13ad04ff8dd37c3937085f8f79677241e30ef5900a06c596c283c6"},
 ]
-wagtailmenus = [
-    {file = "wagtailmenus-3.1.3-py3-none-any.whl", hash = "sha256:0f5669f160d788b1ab8c2b412cb95411e9c07f83e4b52dddc92991752c6fa397"},
-]
 wand = [
     {file = "Wand-0.6.10-py2.py3-none-any.whl", hash = "sha256:ff69eeba36ec243d9a80dec31e738091653dcd01c2668a9c22dc3ff20392596b"},
     {file = "Wand-0.6.10.tar.gz", hash = "sha256:373f4a7f2866c868c31ce910e1f9b36a92d132640a20068ec17cea3284fedc57"},
@@ -2468,8 +2432,8 @@ webencodings = [
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
 ]
 wheel = [
-    {file = "wheel-0.38.2-py3-none-any.whl", hash = "sha256:7a5a3095dceca97a3cac869b8fef4e89b83fafde21b6688f47b6fda7600eb441"},
-    {file = "wheel-0.38.2.tar.gz", hash = "sha256:3d492ef22379a156ec923d2a77051cedfd4df4b667864e9e41ba83f0b70b7149"},
+    {file = "wheel-0.38.3-py3-none-any.whl", hash = "sha256:f3c99240da8d26989dca2d67a7a431015eb91fb301eecacc6e452133689d9d59"},
+    {file = "wheel-0.38.3.tar.gz", hash = "sha256:4066646ef77d0e56cc44004c100381ee1957955cfc3151345dda96886f9896a5"},
 ]
 willow = [
     {file = "Willow-1.4.1-py2.py3-none-any.whl", hash = "sha256:fc4042696d090e75aef922fa1ed26d483c764f005b36cf523cf7c34e69d5dd7a"},
