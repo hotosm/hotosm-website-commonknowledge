@@ -229,17 +229,13 @@ class StaticPage(ContentSidebarPage):
     class Meta:
         ordering = ["title"]
 
-    page_description = "General information page"
+    page_description = "Use this for generic longform text. Use Landing Page if you need full width, freeform content instead."
 
     # Layout
-    show_header = models.BooleanField(default=True)
-    show_footer = models.BooleanField(default=True)
     show_table_of_contents = models.BooleanField(default=True)
     show_section_navigation = models.BooleanField(default=False)
     show_breadcrumb = models.BooleanField(default=True)
     layout_panels = [
-        FieldPanel("show_header"),
-        FieldPanel("show_footer"),
         FieldPanel("show_table_of_contents"),
         # FieldPanel("show_section_navigation"),
         FieldPanel("show_breadcrumb"),
@@ -251,6 +247,35 @@ class StaticPage(ContentSidebarPage):
             ObjectList(ContentSidebarPage.promote_panels, heading="Sharing"),
             ObjectList(
                 ContentSidebarPage.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
+class LandingPage(ContentPage):
+    class Meta:
+        ordering = ["title"]
+
+    page_description = (
+        "Use this to construct freeform pages. Use Static Page for longform text."
+    )
+
+    # Layout
+    show_header = models.BooleanField(default=True)
+    show_footer = models.BooleanField(default=True)
+    layout_panels = [
+        FieldPanel("show_header"),
+        FieldPanel("show_footer"),
+    ]
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(ContentPage.content_panels, heading="Content"),
+            ObjectList(layout_panels, heading="Layout"),
+            ObjectList(ContentPage.promote_panels, heading="Sharing"),
+            ObjectList(
+                ContentPage.settings_panels,
                 heading="Publishing Schedule",
                 classname="settings",
             ),
