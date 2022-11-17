@@ -29,6 +29,7 @@ class PageCoordinatesSerializer(GeoFeatureModelSerializer):
             "geographical_location",
             "related_countries",
             "url",
+            "map_image_url",
         )
 
     centroid = GeometrySerializerMethodField()

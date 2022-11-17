@@ -4,6 +4,7 @@ export type GeocodedPageFeatureProperties = {
     title: string;
     relatedCountries: string[];
     geographical_location: string | null;
+    map_image_url: string;
 };
 
 export type GeocodedPageFeature = GeoJSON.Feature<
