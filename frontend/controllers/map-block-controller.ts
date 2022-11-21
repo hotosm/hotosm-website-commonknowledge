@@ -11,6 +11,11 @@ import { tailwindTheme } from "../utils/css";
 import { createElement } from "../utils/dom";
 import { MAPBOX_INTERACTION_METHODS } from "../utils/mapbox";
 
+interface MarkerConfig {
+    currentDisplayModeOnly?: boolean;
+    allowedDisplayModes?: Array<typeof MapBlockController.MODES[number]>;
+}
+
 export default class MapBlockController extends MapConfigController {
     // Modes
     public static EXPANDED = "expanded" as const;
@@ -51,6 +56,7 @@ export default class MapBlockController extends MapConfigController {
 
     modeValueChanged() {
         this.updateUI();
+        this.resetMarkers();
     }
 
     /**
@@ -104,22 +110,30 @@ export default class MapBlockController extends MapConfigController {
             filter: ["==", "$type", "Point"],
         });
 
-        this.map.on("idle", async () => {
-            const query = this.map?.querySourceFeatures("all-pages");
-            // @ts-ignore
-            const data: GeocodedPageFeature[] | undefined = await query;
-            let i = 0;
-            for (const item of data || []) {
-                i++;
-                if (
-                    i < 6 &&
-                    item.geometry.type === "Point" &&
-                    item.properties?.map_image_url?.length
-                ) {
-                    this.createMarker(
-                        `photo-marker:${item.properties.url}`,
-                        item.geometry.coordinates as mapboxgl.LngLatLike,
-                        `
+        this.map.on("idle", (event) => this.addMapMarkers(event));
+    }
+
+    private addedMarkers = false;
+    async addMapMarkers(
+        event: mapboxgl.MapboxEvent<undefined> & mapboxgl.EventData,
+    ) {
+        if (this.addedMarkers) return;
+        this.addedMarkers = true;
+        const query = this.map?.querySourceFeatures("all-pages");
+        // @ts-ignore
+        const data: GeocodedPageFeature[] | undefined = await query;
+        let i = 0;
+        for (const item of data || []) {
+            i++;
+            if (
+                i < 6 &&
+                item.geometry.type === "Point" &&
+                item.properties?.map_image_url?.length
+            ) {
+                this.createMarker(
+                    `photo-marker:${item.properties.url}`,
+                    item.geometry.coordinates as mapboxgl.LngLatLike,
+                    `
               <div class='w-[65px] h-[65px] rounded-full overflow-hidden relative shadow-md'>
                 <div class='w-full h-full inset-0 absolute bg-cover bg-no-repeat transition-all scale-100 hover:scale-110' style='background-image: url("${
                     (item.properties as GeocodedPageFeatureProperties)
@@ -127,46 +141,70 @@ export default class MapBlockController extends MapConfigController {
                 }")'></div>
               </div>
             `,
-                        {
-                            anchor: "center",
-                        },
-                    );
-                }
+                    {
+                        anchor: "center",
+                    },
+                    {
+                        allowedDisplayModes: [MapBlockController.COLLAPSED],
+                    },
+                );
             }
-        });
+        }
     }
 
-    private markers: { [id: string]: Marker } = {};
+    private markers: {
+        [id: string]: {
+            marker: Marker;
+        } & MarkerConfig;
+    } = {};
 
     createMarker(
         id: string,
         lngLat: mapboxgl.LngLatLike,
         html: string,
-        config?: Exclude<mapboxgl.MarkerOptions, "element">,
+        mapboxConfig?: Exclude<mapboxgl.MarkerOptions, "element">,
+        controllerConfig?: MarkerConfig,
     ) {
         if (!this.map) return;
         let marker = this.markers[id];
         if (marker) {
             // Update the marker
-            let element = marker.getElement();
+            let element = marker.marker.getElement();
             element.innerHTML = html;
-            marker.setLngLat(lngLat).addTo(this.map);
+            marker.marker.setLngLat(lngLat).addTo(this.map);
         } else {
             // Create the marker
-            this.markers[id] = new Marker({
-                ...config,
-                element: createElement(html),
-            })
-                // @ts-ignore
-                .setLngLat(lngLat)
-                // @ts-ignore
-                .addTo(this.map);
+            this.markers[id] = {
+                ...controllerConfig,
+                marker: new Marker({
+                    ...mapboxConfig,
+                    element: createElement(html),
+                })
+                    // @ts-ignore
+                    .setLngLat(lngLat)
+                    // @ts-ignore
+                    .addTo(this.map),
+            };
         }
     }
 
     /**
      * DOM
      */
+
+    resetMarkers() {
+        if (!this.map) return;
+        for (const marker of Object.values(this.markers)) {
+            if (
+                !marker.allowedDisplayModes?.includes(this.modeValue) ||
+                marker.currentDisplayModeOnly
+            ) {
+                marker.marker.remove();
+            } else {
+                marker.marker.addTo(this.map);
+            }
+        }
+    }
 
     updateUI() {
         // Add classes
@@ -179,7 +217,6 @@ export default class MapBlockController extends MapConfigController {
 
         if (this.modeValue === MapBlockController.COLLAPSED) {
             this.map?.setZoom(0);
-
             for (const interaction of MAPBOX_INTERACTION_METHODS) {
                 (this.map?.[interaction] as any)?.disable();
             }
