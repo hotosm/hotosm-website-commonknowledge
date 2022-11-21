@@ -192,6 +192,14 @@ class TitleTextImageBlock(blocks.StructBlock):
     )
     links = blocks.ListBlock(LinkBlock())
 
+    layout = blocks.ChoiceBlock(
+        choices=[
+            ("image_right", "Image right"),
+            ("image_left", "Image left"),
+        ],
+        default="image_left",
+    )
+
 
 class TaskManagerProjectBlock(blocks.StructBlock):
     class Meta:
