@@ -55,7 +55,7 @@ WAGTAILTRANSFER_SOURCES = {}
 
 if os.getenv("WAGTAILTRANSFER_SECRET_KEY_STAGING"):
     WAGTAILTRANSFER_SOURCES["staging"] = {
-        "BASE_URL": "https://hotosm-staging.fly.dev/wagtail-transfer/",
+        "BASE_URL": "https://alpha.hotosm.org/wagtail-transfer/",
         "SECRET_KEY": os.getenv("WAGTAILTRANSFER_SECRET_KEY_STAGING"),
     }
 
