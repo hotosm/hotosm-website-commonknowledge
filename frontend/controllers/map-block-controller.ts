@@ -8,6 +8,7 @@ import {
     getMapData,
 } from "../utils/api";
 import { tailwindTheme } from "../utils/css";
+import { createElement } from "../utils/dom";
 import { MAPBOX_INTERACTION_METHODS } from "../utils/mapbox";
 
 export default class MapBlockController extends MapConfigController {
@@ -103,33 +104,64 @@ export default class MapBlockController extends MapConfigController {
             filter: ["==", "$type", "Point"],
         });
 
-        setTimeout(async () => {
-            const data = await this.map?.querySourceFeatures("all-pages");
+        this.map.on("idle", async () => {
+            const query = this.map?.querySourceFeatures("all-pages");
+            // @ts-ignore
+            const data: GeocodedPageFeature[] | undefined = await query;
             let i = 0;
             for (const item of data || []) {
                 i++;
-                if (item.geometry.type === "Point" && i < 6) {
-                    const el = document.createElement("div");
-                    document.body.appendChild(el);
-                    el.innerHTML = `
-                <div class='w-[65px] rounded-full overflow-hidden'>
-                  <div class='bg-cover bg-no-repeat transition-all scale-100 hover:scale-110' style='background-image: url("${
-                      (item.properties as GeocodedPageFeatureProperties)
-                          ?.map_image_url
-                  }")'></div>
-                </div>
-              `;
-                    new Marker({
-                        anchor: "center",
-                        element: el,
-                    })
-                        // @ts-ignore
-                        .setLngLat(item.geometry.coordinates)
-                        // @ts-ignore
-                        .addTo(this.map);
+                if (
+                    i < 6 &&
+                    item.geometry.type === "Point" &&
+                    item.properties?.map_image_url?.length
+                ) {
+                    this.createMarker(
+                        `photo-marker:${item.properties.url}`,
+                        item.geometry.coordinates as mapboxgl.LngLatLike,
+                        `
+              <div class='w-[65px] h-[65px] rounded-full overflow-hidden relative shadow-md'>
+                <div class='w-full h-full inset-0 absolute bg-cover bg-no-repeat transition-all scale-100 hover:scale-110' style='background-image: url("${
+                    (item.properties as GeocodedPageFeatureProperties)
+                        ?.map_image_url
+                }")'></div>
+              </div>
+            `,
+                        {
+                            anchor: "center",
+                        },
+                    );
                 }
             }
-        }, 5000);
+        });
+    }
+
+    private markers: { [id: string]: Marker } = {};
+
+    createMarker(
+        id: string,
+        lngLat: mapboxgl.LngLatLike,
+        html: string,
+        config?: Exclude<mapboxgl.MarkerOptions, "element">,
+    ) {
+        if (!this.map) return;
+        let marker = this.markers[id];
+        if (marker) {
+            // Update the marker
+            let element = marker.getElement();
+            element.innerHTML = html;
+            marker.setLngLat(lngLat).addTo(this.map);
+        } else {
+            // Create the marker
+            this.markers[id] = new Marker({
+                ...config,
+                element: createElement(html),
+            })
+                // @ts-ignore
+                .setLngLat(lngLat)
+                // @ts-ignore
+                .addTo(this.map);
+        }
     }
 
     /**

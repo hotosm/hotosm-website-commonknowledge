@@ -3,8 +3,8 @@ export type GeocodedPageFeatureProperties = {
     id: string;
     title: string;
     relatedCountries: string[];
-    geographical_location: string | null;
-    map_image_url: string;
+    geographical_location?: string | null;
+    map_image_url?: string | null;
 };
 
 export type GeocodedPageFeature = GeoJSON.Feature<
