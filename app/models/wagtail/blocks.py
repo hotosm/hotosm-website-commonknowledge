@@ -238,9 +238,17 @@ class CallToActionBlock(blocks.StructBlock):
 
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
-        required=False, max_length=200, features=["italic", "bold", "link"]
+        required=False, max_length=400, features=["italic", "bold", "link"]
     )
     links = LinkStreamBlock(min_num=0, max_num=2, required=False)
+
+    background = blocks.ChoiceBlock(
+        choices=[
+            ("dark", "Dark"),
+            ("light", "Light"),
+        ],
+        default="light",
+    )
 
     layout = blocks.ChoiceBlock(
         choices=[
