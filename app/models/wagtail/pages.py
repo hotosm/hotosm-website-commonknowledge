@@ -2,8 +2,10 @@ import json
 import re
 from unicodedata import lookup
 
+import pandas as pd
 import pycountry
 from bs4 import BeautifulSoup
+from django.contrib.gis.db.models import PointField
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -28,7 +30,7 @@ from app.models.wagtail.mixins import (
     SearchableDirectoryMixin,
 )
 from app.utils.cache import django_cached
-from app.utils.geo import geolocator
+from app.utils.geo import GeolocatorError, geolocator
 
 from .cms import CMSImage
 
@@ -197,19 +199,48 @@ class CountryPage(ContentPage):
     @property
     @django_cached("country_geocode", get_key=lambda self: self.isoa2)
     def geo(self):
-        return geolocator.geocode(
-            self.isoa2,
-            exactly_one=True,
-            geometry="geojson",
-            country_codes=self.isoa2.lower(),
-            featuretype="country",
+        try:
+            x = geolocator.geocode(
+                self.isoa2,
+                exactly_one=True,
+                geometry="geojson",
+                country_codes=self.isoa2.lower(),
+                featuretype="country",
+            )
+            return x
+        except GeolocatorError:
+            pass
+
+    centroid = PointField(null=True, blank=True)
+
+    def save(self, clean=True, user=None, log_action=False, **kwargs):
+        super().save(clean, user, log_action, **kwargs)
+        if self.centroid is None:
+            self.save_centroid()
+
+    @classmethod
+    def get_centroids(cls) -> pd.DataFrame:
+        return pd.read_csv(
+            "https://raw.githubusercontent.com/gavinr/world-countries-centroids/master/dist/countries.csv"
         )
 
-    @property
-    @django_cached("country_coordinates", get_key=lambda self: self.isoa2)
-    def centroid(self):
-        # TODO: More intelligent centroids available from https://raw.githubusercontent.com/gavinr/world-countries-centroids/29c9d1ec9013b6b36e3f6cf3634daaffd8afb2ea/dist/countries.geojson
-        return Point(self.geo.longitude, self.geo.latitude)
+    def save_centroid(self, df: pd.DataFrame = None):
+        # Special case
+        if self.isoa2 == "TW":
+            self.centroid = Point(120.9605, 23.6978)
+        # Generic case
+        else:
+            if df is None:
+                df = self.__class__.get_centroids()
+            query = df[df["ISO"] == self.isoa2]
+            if query is not None and len(query) > 0:
+                row = query.iloc[0]
+                self.centroid = Point(row["longitude"], row["latitude"])
+
+        if self.centroid:
+            revision = self.save_revision()
+            if self.live:
+                self.publish(revision)
 
     @property
     @django_cached("country_geometry", get_key=lambda self: self.isoa2)

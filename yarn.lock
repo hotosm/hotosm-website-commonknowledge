@@ -1280,6 +1280,18 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
+"@turf/helpers@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.5.0.tgz#f79af094bd6b8ce7ed2bd3e089a8493ee6cae82e"
+  integrity sha512-VbI1dV5bLFzohYYdgqwikdMVpe7pJ9X3E+dlr425wa2/sMJqYDhTO++ec38/pcPvPE6oD9WEEeU3Xu3gza+VPw==
+
+"@turf/random@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/random/-/random-6.5.0.tgz#b19672cf4549557660034d4a303911656df7747e"
+  integrity sha512-8Q25gQ/XbA7HJAe+eXp4UhcXM9aOOJFaxZ02+XSNwMvY8gtWSCBLVqRcW4OhqilgZ8PeuQDWgBxeo+BIqqFWFQ==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+
 "@types/aria-query@^4.2.0":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.2.tgz#ed4e0ad92306a704f9fb132a0cfcf77486dbe2bc"

@@ -94,7 +94,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options.get("scratch"):
             Page.get_first_root_node().get_descendants().delete()
-            Site.objects.all().delete()
+            # Site.objects.all().delete()
             # if options.get("images"):
             #     CMSImage.objects.all().delete()
             management.call_command("fixtree")
@@ -547,7 +547,8 @@ class Command(BaseCommand):
             if not existing.exists():
                 parent_page.add_child(instance=page_instance)
             else:
-                model = existing.first().specific_class
+                page_instance = existing.first()
+                model = page_instance.specific_class
                 if model != page_instance.specific_class:
                     raise ValueError(
                         f"Slug exists ({page_instance.slug}), but type {model} !== required type {page_instance.specific_class}. Manual intervention required."

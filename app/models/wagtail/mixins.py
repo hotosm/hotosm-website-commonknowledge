@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
@@ -254,11 +256,15 @@ class GeocodedMixin(Page):
     #     CMSImage, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
 
     @property
+    def has_unique_location(self):
+        return self.coordinates is not None
+
+    @property
     def centroid(self):
-        related_country = self.related_countries.first()
         if self.coordinates is not None:
             return self.coordinates
-        elif related_country is not None:
+        related_country = self.related_countries.first()
+        if related_country is not None:
             return related_country.centroid
 
     @property

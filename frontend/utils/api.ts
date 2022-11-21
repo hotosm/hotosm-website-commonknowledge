@@ -5,6 +5,7 @@ export type GeocodedPageFeatureProperties = {
     relatedCountries: string[];
     geographical_location?: string | null;
     map_image_url?: string | null;
+    has_unique_location?: boolean;
 };
 
 export type GeocodedPageFeature = GeoJSON.Feature<
@@ -17,6 +18,6 @@ export type GeocodedPageFeatureCollection = GeoJSON.FeatureCollection<
 >;
 
 export async function getMapData(url: string) {
-    const data = await fetch(url);
+    const data = await fetch(url, { cache: "force-cache" });
     return (await data.json()) as GeocodedPageFeatureCollection;
 }

@@ -28,11 +28,14 @@ class PageCoordinatesSerializer(GeoFeatureModelSerializer):
             "title",
             "geographical_location",
             "related_countries",
+            "coordinates",
             "url",
             "map_image_url",
+            "has_unique_location",
         )
 
     centroid = GeometrySerializerMethodField()
+
     # url = serializers.CharField()
 
     # def get_url(self):
