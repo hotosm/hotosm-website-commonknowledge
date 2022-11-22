@@ -289,7 +289,7 @@ class GeocodedMixin(Page):
     @property
     def map_image_url(self):
         if self.featured_image is not None:
-            rendition = self.featured_image.get_rendition("fill-130x130|jpegquality-50")
+            rendition = self.featured_image.get_rendition("fill-140x140|jpegquality-80")
             return rendition.full_url
 
     def save(self, *args, **kwargs):

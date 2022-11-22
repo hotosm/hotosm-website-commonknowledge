@@ -7,6 +7,21 @@ module.exports = {
         "./node_modules/flowbite/**/*.js",
     ],
     theme: {
+        screens: {
+            "<xs": { max: "479px" },
+            xs: "480px",
+            // Tailwind defaults as at 22 Nov 2022
+            "<sm": { max: "639px" },
+            sm: "640px",
+            "<md": { max: "767px" },
+            md: "768px",
+            "<lg": { max: "1023px" },
+            lg: "1024px",
+            "<xl": { max: "1279px" },
+            xl: "1280px",
+            "<2xl": { max: "1535px" },
+            "2xl": "1536px",
+        },
         extend: {
             spacing: {
                 icon: "1.25rem",
@@ -214,9 +229,24 @@ module.exports = {
                     "0%": { opacity: 0 },
                     "100%": { opacity: 1 },
                 },
+                popup: {
+                    "0%": {
+                        opacity: 0,
+                        transform:
+                            "perspective(200px) translate3d(0, 0, -10px)",
+                    },
+                    "20%": {
+                        opacity: 0.5,
+                    },
+                    "100%": {
+                        opacity: 1,
+                        transform: "perspective(200px) translate3d(0, 0, 0)",
+                    },
+                },
             },
             animation: {
                 fadeIn: "fadeIn 0.075s ease-in-out",
+                popup: "popup 0.15s ease forwards",
             },
         },
     },

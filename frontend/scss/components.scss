@@ -42,6 +42,25 @@
                 }
             }
         }
+
+        .mapboxgl-popup {
+            @screen <sm {
+                @apply fixed bottom-0 left-0 p-4 justify-end;
+                transform: none !important;
+                max-width: none !important;
+                width: 100% !important;
+            }
+        }
+
+        .mapboxgl-popup-tip {
+            display: none;
+        }
+
+        .mapboxgl-popup-content {
+            padding: 0;
+            overflow: hidden;
+            @apply rounded-lg animate-popup;
+        }
     }
 
     .map-block__mobile-launch-btn-container {

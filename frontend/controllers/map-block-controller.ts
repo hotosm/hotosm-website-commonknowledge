@@ -1,13 +1,13 @@
 import { MapConfigController } from "groundwork-django";
 import { debounce, random } from "lodash";
-import { Marker } from "mapbox-gl";
+import mapboxgl, { LngLatLike, Map, Marker, Popup } from "mapbox-gl";
 import {
     GeocodedPageFeature,
     GeocodedPageFeatureCollection,
     GeocodedPageFeatureProperties,
     getMapData,
 } from "../utils/api";
-import { tailwindTheme } from "../utils/css";
+import { screen, tailwindTheme } from "../utils/css";
 import { createElement } from "../utils/dom";
 import { MAPBOX_INTERACTION_METHODS } from "../utils/mapbox";
 import { randomPosition } from "@turf/random";
@@ -44,11 +44,13 @@ export default class MapBlockController extends MapConfigController {
     public mapDataValue?: GeocodedPageFeatureCollection;
 
     // Hooks
-    connectMap() {
+    async connectMap(map: Map) {
         super.connect?.();
         this.updateUI();
         this.setupResizeListeners();
-        this.loadData();
+        await this.loadData();
+        map.on("idle", (event) => this.addMapMarkers(event));
+        this.createLayers();
     }
 
     disconnectMap(): void {
@@ -57,7 +59,7 @@ export default class MapBlockController extends MapConfigController {
 
     modeValueChanged() {
         this.updateUI();
-        this.resetMarkers();
+        this.updateMarkerVisibilitys();
     }
 
     /**
@@ -128,8 +130,14 @@ export default class MapBlockController extends MapConfigController {
             clusterMaxZoom: 14, // Max zoom to cluster points on
             clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
         });
+    }
 
-        // TODO: Style
+    /**
+     * Map
+     */
+
+    createLayers() {
+        if (!this.map) return;
         this.map.addLayer({
             id: "clustered-pages-shadow",
             type: "circle",
@@ -175,7 +183,6 @@ export default class MapBlockController extends MapConfigController {
             },
         });
 
-        // TODO: Style
         this.map.addLayer({
             id: "clustered-pages-count",
             type: "symbol",
@@ -196,7 +203,12 @@ export default class MapBlockController extends MapConfigController {
             type: "circle",
             source: "pages",
             paint: {
-                "circle-color": "transparent",
+                "circle-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    tailwindTheme.extend.colors.blue[500],
+                    "transparent",
+                ],
                 "circle-radius": 16,
                 "circle-stroke-width": 2,
                 "circle-stroke-color": tailwindTheme.extend.colors.blue[500],
@@ -204,7 +216,127 @@ export default class MapBlockController extends MapConfigController {
             filter: ["all", ["!has", "point_count"], ["==", "$type", "Point"]],
         });
 
-        this.map.on("idle", (event) => this.addMapMarkers(event));
+        // On desktop, hover and click
+        this.map.on("mouseenter", "unclustered-pages", (e) =>
+            this.showFeaturePopup(e),
+        );
+        this.map.on("mouseup", "unclustered-pages", (e) =>
+            this.clickFeaturePopup(e),
+        );
+        this.map.on("mouseleave", "unclustered-pages", (e) =>
+            this.hideFeaturePopup(e),
+        );
+        // On mobile, touching a feature should bring up the popup, so they can click on the popup and manually click off
+        this.map.on("touchstart", "unclustered-pages", (e) =>
+            this.showFeaturePopup(e),
+        );
+        this.map.on("click", (e) => this.hideFeaturePopup(e));
+    }
+
+    clickFeaturePopup(
+        e: mapboxgl.MapMouseEvent & {
+            features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
+        } & mapboxgl.EventData,
+    ) {
+        if (
+            !this.map ||
+            !e.features ||
+            !e.features?.[0]?.geometry?.type ||
+            e.features?.[0]?.geometry?.type !== "Point" ||
+            !e.features?.[0]?.properties
+        )
+            return;
+        // @ts-ignore
+        let feature = e.features[0] as GeocodedPageFeature;
+        window.location.href = feature.properties.url;
+    }
+
+    showFeaturePopup(
+        e: (mapboxgl.MapMouseEvent | mapboxgl.MapTouchEvent) & {
+            features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
+        } & mapboxgl.EventData,
+    ) {
+        if (
+            !this.map ||
+            !e.features ||
+            !e.features?.[0]?.geometry?.type ||
+            e.features?.[0]?.geometry?.type !== "Point" ||
+            !e.features?.[0]?.properties
+        )
+            return;
+
+        // Clear previous popup first
+        this.resetFeaturePopup();
+
+        // Change the cursor style as a UI indicator.
+        this.map.getCanvas().style.cursor = "pointer";
+
+        // @ts-ignore
+        this.highlightedFeature = e.features[0] as GeocodedPageFeature;
+
+        // Set this to true in case of touch events
+        // where we still want to style them as though they were hovered
+        this.map.setFeatureState(
+            {
+                source: "pages",
+                id: this.highlightedFeature.id,
+            },
+            {
+                hover: true,
+            },
+        );
+
+        // Copy coordinates array.
+        const coordinates =
+            this.highlightedFeature.geometry.coordinates.slice();
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the featurePopup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        // Populate the featurePopup and set its coordinates
+        // based on the feature found.
+        this.featurePopup
+            .setLngLat(coordinates as LngLatLike)
+            .setHTML(
+                `
+            <a class='flex flex-row group/popup items-center justify-between' href='${
+                this.highlightedFeature.properties.url
+            }'>
+              <div class='p-4'>
+                <div class='text-gray-700 text-sm font-medium capitalize'>${
+                    this.highlightedFeature.properties.label
+                }</div>
+                <div class='text-gray-900 leading-tight text-base font-semibold'>${
+                    this.highlightedFeature.properties.title
+                }</div>
+              </div>
+              ${
+                  this.highlightedFeature.properties.map_image_url?.length
+                      ? `
+                <div class='relative w-[130px] h-[130px] overflow-hidden'>
+                  <div class="absolute inset-0 bg-cover bg-center scale-100 transition-all group-hover/popup:scale-110" style="background-image: url('${this.highlightedFeature.properties.map_image_url}')"></div>
+                </div>
+              `
+                      : ""
+              }
+            </a>
+          `,
+            )
+            .addTo(this.map);
+    }
+
+    hideFeaturePopup(
+        e: mapboxgl.MapMouseEvent & {
+            features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
+        } & mapboxgl.EventData,
+    ) {
+        if (!this.map) return;
+        this.map.getCanvas().style.cursor = "";
+        this.resetFeaturePopup();
     }
 
     private addedMarkers = false;
@@ -285,28 +417,59 @@ export default class MapBlockController extends MapConfigController {
                     element: createElement(html),
                 })
                     // @ts-ignore
-                    .setLngLat(lngLat)
-                    // @ts-ignore
-                    .addTo(this.map),
+                    .setLngLat(lngLat),
             };
+
+            this.updateMarkerVisibility(this.markers[id]);
         }
+    }
+
+    private highlightedFeature?: GeocodedPageFeature;
+    private _featurePopup!: Popup;
+    get featurePopup() {
+        if (!this._featurePopup) {
+            // Create a popup, but don't add it to the map yet.
+            this._featurePopup = new Popup({
+                closeButton: false,
+                closeOnClick: false,
+                maxWidth: "350px",
+                offset: 30,
+                anchor: "top",
+            });
+        }
+        return this._featurePopup;
+    }
+
+    resetFeaturePopup() {
+        if (!this.map || !this.highlightedFeature) return;
+        this.featurePopup.remove();
+        this.map.removeFeatureState({
+            source: "pages",
+            id: this.highlightedFeature.id,
+        });
+        this.highlightedFeature = undefined;
     }
 
     /**
      * DOM
      */
 
-    resetMarkers() {
+    updateMarkerVisibilitys() {
         if (!this.map) return;
         for (const marker of Object.values(this.markers)) {
-            if (
-                !marker.allowedDisplayModes?.includes(this.modeValue) ||
-                marker.currentDisplayModeOnly
-            ) {
-                marker.marker.remove();
-            } else {
-                marker.marker.addTo(this.map);
-            }
+            this.updateMarkerVisibility(marker);
+        }
+    }
+
+    updateMarkerVisibility(marker: typeof this.markers[number]) {
+        if (!this.map) return;
+        if (
+            !marker.allowedDisplayModes?.includes(this.modeValue) ||
+            marker.currentDisplayModeOnly
+        ) {
+            marker.marker.remove();
+        } else {
+            marker.marker.addTo(this.map);
         }
     }
 
@@ -319,6 +482,10 @@ export default class MapBlockController extends MapConfigController {
         const newClasses = this[`${this.modeValue}Classes`] as string[];
         this.element.classList.add(...newClasses);
 
+        // Reset UI elements
+        this.resetFeaturePopup();
+
+        // Mode-specific config
         if (this.modeValue === MapBlockController.COLLAPSED) {
             this.map?.setZoom(0);
             for (const interaction of MAPBOX_INTERACTION_METHODS) {

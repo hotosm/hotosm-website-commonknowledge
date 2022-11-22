@@ -1,5 +1,33 @@
+export function screen(breakpoint: keyof typeof tailwindTheme.screens) {
+    const config = tailwindTheme.screens[breakpoint];
+    const query = window.matchMedia(
+        typeof config === "string"
+            ? `(min-width: ${config})`
+            : !!config.max
+            ? `(max-width: ${config.max})`
+            : "",
+    );
+    return query.matches;
+}
+
 // Duplicate of /tailwind.config.js
+/** @type {import('tailwindcss').Config} */
 export const tailwindTheme = {
+    screens: {
+        "<xs": { max: "479px" },
+        xs: "480px",
+        // Tailwind defaults as at 22 Nov 2022
+        "<sm": { max: "639px" },
+        sm: "640px",
+        "<md": { max: "767px" },
+        md: "768px",
+        "<lg": { max: "1023px" },
+        lg: "1024px",
+        "<xl": { max: "1279px" },
+        xl: "1280px",
+        "<2xl": { max: "1535px" },
+        "2xl": "1536px",
+    },
     extend: {
         spacing: {
             icon: "1.25rem",

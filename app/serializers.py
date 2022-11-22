@@ -21,7 +21,7 @@ class PageCoordinatesSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ProjectPage
         geo_field = "centroid"
-        # id_field = 'url'
+        id_field = "id"
         fields = (
             "id",
             "label",

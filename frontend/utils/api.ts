@@ -1,6 +1,6 @@
 export type GeocodedPageFeatureProperties = {
     url: string;
-    id: string;
+    label: string;
     title: string;
     relatedCountries: string[];
     geographical_location?: string | null;
@@ -8,9 +8,9 @@ export type GeocodedPageFeatureProperties = {
     has_unique_location?: boolean;
 };
 
-export type GeocodedPageFeature = GeoJSON.Feature<
-    GeoJSON.Point,
-    GeocodedPageFeatureProperties
+export type GeocodedPageFeature = WithRequiredProperty<
+    GeoJSON.Feature<GeoJSON.Point, GeocodedPageFeatureProperties>,
+    "id"
 >;
 export type GeocodedPageFeatureCollection = GeoJSON.FeatureCollection<
     GeoJSON.Point,
