@@ -64,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "app.middleware.StagingDomainRedirectMiddleware",
     "livereload.middleware.LiveReloadScript",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     # wagtail-localize
@@ -344,3 +345,9 @@ SPECTACULAR_SETTINGS = {
     "PREPROCESSING_HOOKS": ["app.api.preprocessing_hooks"],
     # OTHER SETTINGS
 }
+# URL
+
+# This is for redirecting. See app.middleware.StagingDomainRedirectMiddleware
+REDIRECT_FROM_HOSTS = os.getenv("REDIRECT_FROM_HOSTS", "hotosm-staging.fly.dev").split(
+    ","
+)

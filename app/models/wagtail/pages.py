@@ -100,6 +100,8 @@ class HomePage(SearchableDirectoryMixin, Page):
             ("page_gallery", app_blocks.PageLinkGalleryBlock()),
             ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
             ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
             ("partner_logos", app_blocks.PartnerLogos()),
             ("map", app_blocks.MapBlock()),

@@ -6,6 +6,7 @@ from wagtail.images.blocks import ImageChooserBlock
 
 from app.utils.github import github_repo_validator
 from app.utils.hotosm import task_manager_project_url_validator
+from app.utils.wagtail import localized_pages
 
 
 class PageSummaryBlock(blocks.StructBlock):
@@ -234,23 +235,31 @@ class CallToActionBlock(blocks.StructBlock):
 
     class Meta:
         # TODO:
-        template = "app/blocks/dummy_block.html"
+        template = "app/blocks/call_to_action_block.html"
         icon = "fa fa-map-signs"
 
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
-        required=False, max_length=200, features=["italic", "bold", "link"]
+        required=False, max_length=400, features=["italic", "bold", "link"]
     )
-    links = LinkStreamBlock(min_num=1, max_num=2)
-    image = ImageChooserBlock(required=False)
-    size = blocks.ChoiceBlock(
+    links = LinkStreamBlock(min_num=0, max_num=2, required=False)
+
+    background = blocks.ChoiceBlock(
         choices=[
-            ("lg", "Large"),
-            ("md", "Medium"),
-            ("sm", "Small"),
+            ("dark", "Dark"),
+            ("light", "Light"),
         ],
-        default="sm",
+        default="light",
     )
+
+    layout = blocks.ChoiceBlock(
+        choices=[
+            ("image_left", "Image left"),
+            ("image_right", "Image right"),
+        ],
+        default="image_left",
+    )
+    image = ImageChooserBlock(required=False)
 
 
 class PageLinkBlock(blocks.StructBlock):
@@ -301,6 +310,48 @@ class RelatedPeopleBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         features=["italic", "bold", "link"], required=False
     )
+
+
+class CarouselBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/carousel_block.html"
+
+    title = blocks.CharBlock(required=True)
+
+
+class LatestArticles(CarouselBlock):
+    class Meta:
+        template = "app/blocks/latest_articles.html"
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import ArticlePage, MagazineIndexPage
+
+        context = super().get_context(value, parent_context=parent_context)
+        articles = localized_pages(
+            ArticlePage.objects.all()
+            .live()
+            .public()
+            .order_by("-first_published_at")[:6]
+        )
+
+        context["view_all"] = MagazineIndexPage.objects.live().public().first()
+        context["pages"] = articles
+        return context
+
+
+class FeaturedProjects(CarouselBlock):
+    class Meta:
+        template = "app/blocks/featured_projects.html"
+
+    ProjectsChooser = blocks.ListBlock(
+        blocks.PageChooserBlock(page_type="app.ProjectPage")
+    )
+
+    def get_context(self, value, parent_context=None):
+
+        context = super().get_context(value, parent_context=parent_context)
+        context["pages"] = value["ProjectsChooser"]
+        return context
 
 
 class HeadingAndSubHeadingBlock(blocks.StructBlock):

@@ -9,7 +9,7 @@ jobs:
   deploy:
     environment:
       name: staging
-      url: https://hotosm-staging.fly.dev
+      url: https://alpha.hotosm.org
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
