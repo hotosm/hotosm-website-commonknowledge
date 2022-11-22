@@ -167,6 +167,8 @@ class ContentPage(PreviewablePage):
             ("html", app_blocks.HTMLBlock()),
             ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
             ("partner_logos", app_blocks.PartnerLogos()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
         ],
         null=True,
         blank=True,
