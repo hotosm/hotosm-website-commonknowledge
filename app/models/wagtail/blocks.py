@@ -5,6 +5,7 @@ from wagtail.images.blocks import ImageChooserBlock
 
 from app.utils.github import github_repo_validator
 from app.utils.hotosm import task_manager_project_url_validator
+from app.utils.wagtail import localized_pages
 
 
 class PageSummaryBlock(blocks.StructBlock):
@@ -308,6 +309,48 @@ class RelatedPeopleBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         features=["italic", "bold", "link"], required=False
     )
+
+
+class CarouselBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/carousel_block.html"
+
+    title = blocks.CharBlock(required=True)
+
+
+class LatestArticles(CarouselBlock):
+    class Meta:
+        template = "app/blocks/latest_articles.html"
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import ArticlePage, MagazineIndexPage
+
+        context = super().get_context(value, parent_context=parent_context)
+        articles = localized_pages(
+            ArticlePage.objects.all()
+            .live()
+            .public()
+            .order_by("-first_published_at")[:6]
+        )
+
+        context["view_all"] = MagazineIndexPage.objects.live().public().first()
+        context["pages"] = articles
+        return context
+
+
+class FeaturedProjects(CarouselBlock):
+    class Meta:
+        template = "app/blocks/featured_projects.html"
+
+    ProjectsChooser = blocks.ListBlock(
+        blocks.PageChooserBlock(page_type="app.ProjectPage")
+    )
+
+    def get_context(self, value, parent_context=None):
+
+        context = super().get_context(value, parent_context=parent_context)
+        context["pages"] = value["ProjectsChooser"]
+        return context
 
 
 class HeadingAndSubHeadingBlock(blocks.StructBlock):
