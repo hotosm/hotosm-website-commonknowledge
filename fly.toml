@@ -9,7 +9,7 @@ kill_timeout = 5
 
 [env]
   PORT = "8080"
-  BASE_URL = "https://hotosm-staging.fly.dev"
+  BASE_URL = "https://alpha.hotosm.org"
 
 [[services]]
   internal_port = 8080

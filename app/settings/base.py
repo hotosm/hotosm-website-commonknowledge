@@ -60,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "app.middleware.StagingDomainRedirectMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "livereload.middleware.LiveReloadScript",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
@@ -307,3 +308,10 @@ if USE_SILK:
     INSTALLED_APPS += [
         "silk",
     ]
+
+# URL
+
+# This is for redirecting. See app.middleware.StagingDomainRedirectMiddleware
+REDIRECT_FROM_HOSTS = os.getenv("REDIRECT_FROM_HOSTS", "hotosm-staging.fly.dev").split(
+    ","
+)
