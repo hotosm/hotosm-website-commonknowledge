@@ -169,6 +169,8 @@ class ContentPage(PreviewablePage):
             ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
             ("partner_logos", app_blocks.PartnerLogos()),
             ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
         ],
         null=True,
         blank=True,
