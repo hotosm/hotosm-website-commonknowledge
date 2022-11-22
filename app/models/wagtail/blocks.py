@@ -188,46 +188,6 @@ class TaskManagerProjectBlock(blocks.StructBlock):
     )
 
 
-# class FeaturedContentBlock(blocks.StructBlock):
-#     """
-#     This is a big fancy block meant for embeddable stuff...
-#     """
-
-#     class Meta:
-#         # TODO:
-#         template = "app/blocks/dummy_block.html"
-#         icon = "fa fa-map-signs"
-
-#     title = blocks.CharBlock(required=True, max_length=100)
-#     description = blocks.RichTextBlock(
-#         required=False, max_length=500, features=["italic", "bold", "link"]
-#     )
-#     links = LinkStreamBlock(min_num=1, max_num=3)
-#     featured_content = blocks.StreamBlock(
-#         [
-#             ("single_image", ImageChooserBlock()),
-#             (
-#                 "multiple_images",
-#                 blocks.ListBlock(ImageChooserBlock(), icon="fa fa-picture-o"),
-#             ),
-#             ("single_task_manager_project", TaskManagerProjectBlock()),
-#             (
-#                 "multiple_task_manager_projects",
-#                 blocks.ListBlock(TaskManagerProjectBlock(),
-#                                  icon="fa fa-map-o"),
-#             ),
-#             (
-#                 "github_repo",
-#                 blocks.URLBlock(
-#                     validators=[github_repo_validator], icon="fa fa-github"
-#                 ),
-#             ),
-#         ],
-#         min_num=1,
-#         max_num=1,
-#     )
-
-
 class SimpleCallToActionBlock(blocks.StructBlock):
     """
     This is a more boring but versatile block for adding links to things, optionally with an image
