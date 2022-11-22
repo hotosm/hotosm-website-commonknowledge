@@ -1,0 +1,21 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% firstof background value.background as background %}
+<section class="{{ class }} group py-16 px-4 md:px-8 md:rounded-lg {% if background == "dark" %} bg-blue-800{% endif %} {% if value.image %}md:grid md:grid-cols-2 md:gap-8 md:items-center lg:gap-16{% endif %}">
+    <div>
+        <h2 class="leading-tight text-2xl lg:text-4xl font-extrabold text-gray-900 {% if background == "dark" %} text-white{% endif %} mb-4">
+            {{ value.title }}
+        </h2>
+        <div class="text-base lg:text-xl font-normal text-gray-700 {% if background == "dark" %} text-gray-50{% endif %}">
+            {{ value.description|richtext }}
+        </div>
+        {% include "app/include/list_of_links.html" with links=value.links background=background %}
+    </div>
+    {% if value.image %}
+        <div class="relative min-h-[200px] md:min-h-[400px] overflow-hidden rounded-lg shadow-md {% if value.layout == "image_left" %}md:order-1{% endif %}">
+            {% image value.image fill-700x450 as image %}
+            <div class="bg-cover bg-center scale-100 transition-all group-hover:scale-110 absolute inset-0 w-full h-full"
+                 style="background-image: url('{{ image.url }}')">
+            </div>
+        </div>
+    {% endif %}
+</section>
