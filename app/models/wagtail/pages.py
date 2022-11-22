@@ -636,6 +636,7 @@ class ImpactAreaPage(IconMixin, ContentPage):
 
     # Editor
     content_panels = [
+        *Page.content_panels,
         *ContentPage.previewable_page_panels,
         *IconMixin.icon_panels,
         *ContentPage.content_page_panels,
