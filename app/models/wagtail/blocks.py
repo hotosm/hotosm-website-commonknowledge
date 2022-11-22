@@ -257,23 +257,31 @@ class CallToActionBlock(blocks.StructBlock):
 
     class Meta:
         # TODO:
-        template = "app/blocks/dummy_block.html"
+        template = "app/blocks/call_to_action_block.html"
         icon = "fa fa-map-signs"
 
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
-        required=False, max_length=200, features=["italic", "bold", "link"]
+        required=False, max_length=400, features=["italic", "bold", "link"]
     )
-    links = LinkStreamBlock(min_num=1, max_num=2)
-    image = ImageChooserBlock(required=False)
-    size = blocks.ChoiceBlock(
+    links = LinkStreamBlock(min_num=0, max_num=2, required=False)
+
+    background = blocks.ChoiceBlock(
         choices=[
-            ("lg", "Large"),
-            ("md", "Medium"),
-            ("sm", "Small"),
+            ("dark", "Dark"),
+            ("light", "Light"),
         ],
-        default="sm",
+        default="light",
     )
+
+    layout = blocks.ChoiceBlock(
+        choices=[
+            ("image_left", "Image left"),
+            ("image_right", "Image right"),
+        ],
+        default="image_left",
+    )
+    image = ImageChooserBlock(required=False)
 
 
 class PageLinkBlock(blocks.StructBlock):
