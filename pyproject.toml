@@ -50,7 +50,7 @@ pycountry = "^22.3.5"
 geopy = "^2.3.0"
 wagtail-autocomplete = "^0.9.0"
 djangorestframework-gis = "^1.0"
-django-map-widgets = { rev = "86bceb5c88cac5129f453b3b3ba976d13940fb68", git = "https://github.com/commonknowledge/django-map-widgets.git" }
+django-map-widgets = { rev = "54d4dfb18064bb4cec5bc7d3ced9d3acc560a172", git = "https://github.com/commonknowledge/django-map-widgets.git" }
 drf-spectacular = "^0.24.2"
 pandas = "^1.5.1"
 
