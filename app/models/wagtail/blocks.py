@@ -128,8 +128,7 @@ class MetricsBlock(blocks.StructBlock):
 
 class ImageBlock(blocks.StructBlock):
     class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
+        template = "app/blocks/image_block.html"
         icon = "fa fa-picture-o"
 
     image = ImageChooserBlock(required=True)
