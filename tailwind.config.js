@@ -220,9 +220,5 @@ module.exports = {
             },
         },
     },
-    plugins: [
-        require("@tailwindcss/typography"),
-        require("flowbite/plugin"),
-        require("@tailwindcss/container-queries"),
-    ],
+    plugins: [require("@tailwindcss/typography"), require("flowbite/plugin")],
 };

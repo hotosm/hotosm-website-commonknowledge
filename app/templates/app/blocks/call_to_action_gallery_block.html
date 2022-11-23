@@ -1,12 +1,12 @@
-<section class="mx-4 my-16 grid md:grid-cols-6 md:gap-8">
+<section class="md:mx-4 my-16 grid grid-flow-row md:grid-cols-6 md:gap-3 lg:gap-5 xl:gap-6 2xl:gap-8">
     {% for row in value.rows %}
         {% for block in row %}
             {% if row|length == 1 %}
-                {% include "app/include/call_to_action_row.html" with value=block background="dark" class="col-span-6" %}
+                {% include "app/include/call_to_action_row.html" with value=block background="dark" class="md:col-span-6" %}
             {% elif row|length == 2 %}
-                {% include "app/include/call_to_action_column.html" with value=block background="dark" class="col-span-3" %}
+                {% include "app/include/call_to_action_column_medium.html" with value=block background="dark" class="md:col-span-3" %}
             {% else %}
-                {% include "app/include/call_to_action_column.html" with value=block background="dark" class="col-span-2" %}
+                {% include "app/include/call_to_action_column_small.html" with value=block background="dark" class="md:col-span-3 lg:col-span-2" %}
             {% endif %}
         {% endfor %}
     {% endfor %}

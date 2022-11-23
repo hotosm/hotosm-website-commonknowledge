@@ -6,10 +6,6 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@tailwindcss/container-queries": "^0.1.0",
-    "@tailwindcss/typography": "^0.5.7",
-    "@types/lodash": "^4.14.189",
-    "@types/swiper": "^6.0.0",
     "flowbite": "^1.5.2",
     "focus-trap": "^7.0.0",
     "lodash": "^4.17.21",
@@ -28,8 +24,11 @@
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/turbo": "^7.0.1",
     "@popperjs/core": "^2.10.2",
+    "@tailwindcss/typography": "^0.5.7",
     "@testing-library/dom": "^8.11.1",
     "@types/jest": "^27.0.3",
+    "@types/lodash": "^4.14.189",
+    "@types/swiper": "^6.0.0",
     "autoprefixer": "^10.4.8",
     "babel-core": "^6.26.3",
     "babel-jest": "^27.4.2",
