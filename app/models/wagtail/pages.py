@@ -21,7 +21,11 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 import app.models.wagtail.blocks as app_blocks
-from app.models.wagtail.mixins import IconMixin, SearchableDirectoryMixin
+from app.models.wagtail.mixins import (
+    IconMixin,
+    SearchableDirectoryMixin,
+    ThemeablePageMixin,
+)
 
 from .cms import CMSImage
 
@@ -85,11 +89,8 @@ class HomePage(SearchableDirectoryMixin, Page):
             ("html", app_blocks.HTMLBlock()),
             ("metrics", app_blocks.MetricsBlock()),
             ("image", app_blocks.ImageBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
-            ("cta", app_blocks.CallToActionBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
-            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
             ("latest_articles", app_blocks.LatestArticles()),
             ("featured_projects", app_blocks.FeaturedProjects()),
@@ -126,6 +127,24 @@ class PreviewablePage(Page):
     )
 
     @property
+    def resolved_theme_class(self):
+        if (
+            hasattr(self, "theme_class")
+            and self.theme_class is not None
+            and len(self.theme_class) > 0
+        ):
+            return self.theme_class
+        for nearest_ancestor in reversed(self.get_ancestors()):
+            nearest_ancestor = nearest_ancestor.specific
+            if (
+                hasattr(nearest_ancestor, "theme_class")
+                and nearest_ancestor.theme_class is not None
+                and len(nearest_ancestor.theme_class) > 0
+            ):
+                return nearest_ancestor.theme_class
+        return "theme-blue"
+
+    @property
     def label(self):
         return self._meta.verbose_name.removesuffix(" page")
 
@@ -158,16 +177,14 @@ class ContentPage(PreviewablePage):
         [
             ("richtext", blocks.RichTextBlock()),
             ("image", app_blocks.ImageBlock()),
-            ("cta", app_blocks.CallToActionBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
-            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
             ("metrics", app_blocks.MetricsBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
             ("html", app_blocks.HTMLBlock()),
             ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
             ("partner_logos", app_blocks.PartnerLogos()),
+            ("title_text_image", app_blocks.TitleTextImageBlock()),
             ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
             ("latest_articles", app_blocks.LatestArticles()),
             ("featured_projects", app_blocks.FeaturedProjects()),
@@ -205,8 +222,7 @@ class ContentSidebarPage(ContentPage):
         [
             ("richtext", blocks.RichTextBlock()),
             ("image", app_blocks.ImageBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("call_to_action", app_blocks.SimpleCallToActionBlock()),
         ],
         null=True,
         blank=True,
@@ -633,7 +649,7 @@ class EventPage(ContentPage):
                 )
 
 
-class ImpactAreaPage(IconMixin, ContentPage):
+class ImpactAreaPage(ThemeablePageMixin, IconMixin, ContentPage):
     page_description = "Overview page for each of the impact areas. Create one here and you can tag other pages with it."
 
     # Editor
@@ -641,6 +657,7 @@ class ImpactAreaPage(IconMixin, ContentPage):
         *Page.content_panels,
         *ContentPage.previewable_page_panels,
         *IconMixin.icon_panels,
+        *ThemeablePageMixin.themeable_content_panels,
         *ContentPage.content_page_panels,
     ]
 
