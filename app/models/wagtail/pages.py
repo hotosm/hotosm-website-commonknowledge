@@ -21,7 +21,11 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 import app.models.wagtail.blocks as app_blocks
-from app.models.wagtail.mixins import IconMixin, SearchableDirectoryMixin
+from app.models.wagtail.mixins import (
+    IconMixin,
+    SearchableDirectoryMixin,
+    ThemeablePageMixin,
+)
 
 from .cms import CMSImage
 
@@ -121,6 +125,24 @@ class PreviewablePage(Page):
     frontmatter = models.JSONField(
         blank=True, null=True, help_text="Metadata from the legacy site"
     )
+
+    @property
+    def resolved_theme_class(self):
+        if (
+            hasattr(self, "theme_class")
+            and self.theme_class is not None
+            and len(self.theme_class) > 0
+        ):
+            return self.theme_class
+        for nearest_ancestor in reversed(self.get_ancestors()):
+            nearest_ancestor = nearest_ancestor.specific
+            if (
+                hasattr(nearest_ancestor, "theme_class")
+                and nearest_ancestor.theme_class is not None
+                and len(nearest_ancestor.theme_class) > 0
+            ):
+                return nearest_ancestor.theme_class
+        return "theme-blue"
 
     @property
     def label(self):
@@ -628,7 +650,7 @@ class EventPage(ContentPage):
                 )
 
 
-class ImpactAreaPage(IconMixin, ContentPage):
+class ImpactAreaPage(ThemeablePageMixin, IconMixin, ContentPage):
     page_description = "Overview page for each of the impact areas. Create one here and you can tag other pages with it."
 
     # Editor
@@ -636,6 +658,7 @@ class ImpactAreaPage(IconMixin, ContentPage):
         *Page.content_panels,
         *ContentPage.previewable_page_panels,
         *IconMixin.icon_panels,
+        *ThemeablePageMixin.themeable_content_panels,
         *ContentPage.content_page_panels,
     ]
 

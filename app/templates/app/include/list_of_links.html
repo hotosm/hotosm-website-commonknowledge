@@ -3,7 +3,7 @@
         {% for item in links %}
             <a href="{% if item.type == "internal_link" %} {{ item.value.page }} {% else %}{{ item.value.url }}  {% endif %}">
                 <button type="button"
-                        class="w-full whitespace-nowrap {% if item == links.0 %} bg-primary-500 hover:bg-primary-600 text-white{% endif %} {% if item == links.1 %} {% if background == "dark" %} bg-blue-700 hover:bg-blue-800 text-white {% else %} bg-background-tint hover:bg-gray-300 text-gray-700 {% endif %} {% endif %} rounded-sm flex gap-3 items-center justify-center py-3 px-5 text-base lg:text-lg font-medium lg:font-semibold">
+                        class="w-full whitespace-nowrap {% if item == links.0 %} bg-theme-500 hover:bg-theme-600 text-white{% endif %} {% if item == links.1 %} {% if background == "dark" %} bg-theme-700 hover:bg-theme-800 text-white {% else %} bg-background-tint hover:bg-gray-300 text-gray-700 {% endif %} {% endif %} rounded-sm flex gap-3 items-center justify-center py-3 px-5 text-base lg:text-lg font-medium lg:font-semibold">
                     {% firstof item.value.label item.value.page %}
                     {% if item.value.page %}
                         <svg xmlns="http://www.w3.org/2000/svg"

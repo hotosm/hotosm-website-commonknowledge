@@ -131,3 +131,30 @@ class IconMixin(Page):
             heading="Page icon",
         )
     ]
+
+
+class ThemeablePageMixin(Page):
+    class Meta:
+        abstract = True
+
+    class ThemeColourChoices(models.TextChoices):
+        blue = "theme-blue", "blue"
+        red = "theme-red", "red"
+        yellow = "theme-yellow", "yellow"
+        orange = "theme-orange", "orange"
+        pink = "theme-pink", "pink"
+        purple = "theme-purple", "purple"
+        indigo = "theme-indigo", "indigo"
+        teal = "theme-teal", "teal"
+        green = "theme-green", "green"
+        gray = "theme-gray", "gray"
+
+    theme_class = models.CharField(
+        max_length=50,
+        choices=ThemeColourChoices.choices,
+        default=ThemeColourChoices.blue,
+        verbose_name="Theme colour",
+        help_text="Pick the colour palette for this page's elements. Defaults to HOT blue.",
+    )
+
+    themeable_content_panels = [FieldPanel("theme_class")]
