@@ -178,6 +178,30 @@ class LinkStreamBlock(blocks.StreamBlock):
         return None
 
 
+class TitleTextImageBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/title_text_image_block.html"
+        help_text = "A title, a block of text, two links and a image on the left or right hand side"
+
+    title = blocks.CharBlock(required=True, help_text="The title of the block")
+    description = blocks.CharBlock(
+        required=True, help_text="A description displayed under the title"
+    )
+    image = ImageChooserBlock(
+        required=True,
+        help_text="An image, displayed on the left or right of the title and description",
+    )
+    links = blocks.ListBlock(LinkBlock())
+
+    layout = blocks.ChoiceBlock(
+        choices=[
+            ("image_right", "Image right"),
+            ("image_left", "Image left"),
+        ],
+        default="image_left",
+    )
+
+
 class TaskManagerProjectBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/dummy_block.html"
