@@ -133,7 +133,6 @@ class ImageBlock(blocks.StructBlock):
 
     image = ImageChooserBlock(required=True)
     caption = blocks.CharBlock(required=False)
-    credit = blocks.CharBlock(required=False)
 
 
 class InternalLinkValue(StructValue):
