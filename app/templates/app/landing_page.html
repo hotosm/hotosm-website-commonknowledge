@@ -9,9 +9,7 @@
                         <div class="mb-6">
                             <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
                         </div>
-                        {% if page.short_summary %}
-                            <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
-                        {% endif %}
+                        {% if page.summary %}<p class="text-xl sm:text-2xl text-gray-800">{{ page.summary|richtext }}</p>{% endif %}
                     </div>
                 </header>
                 {% if page.featured_image %}

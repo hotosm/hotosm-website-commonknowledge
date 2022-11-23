@@ -1,0 +1,122 @@
+{% load app wagtailcore_tags wagtailimages_tags %}
+{% url "directory_frame" as frame_url %}
+{% firstof url frame_url as url %}
+<form action="{{ url }}" method="get">
+    <header class="bg-background-tint pb-8 pt-16 md:py-16">
+        <div class="px-4 md:px-16 lg:px-20 md:flex md:flex-row leading-tight text-2xl md:text-4xl font-extrabold">
+            <h2 class="text-gray-900 mr-4">Directory</h2>
+            <h2 class="text-gray-500">All pages</h2>
+        </div>
+    </header>
+    {% with "font-semibold text-gray-900 border-b border-b-gray-900" as highlighted_class %}
+        <nav class="bg-background-tint flex flex-row space-x-4 flex-nowrap overflow-x-auto border-b border-t border-gray-300 px-4 md:px-16 lg:px-20">
+            <a class="block p-3 {% if not request.GET.type %} {{ highlighted_class }}{% endif %}"
+               href="{{ url }}{% querystring type=None %}">All</a>
+            {% for page_type in page_types %}
+                <a class="{% if request.GET.type == page_type %} {{ highlighted_class }}{% endif %} block p-3 text-gray-700 capitalize"
+                   href="{{ url }}{% querystring type=page_type %}">{{ page_type }}</a>
+            {% endfor %}
+        </nav>
+    {% endwith %}
+    <div class="{% comment %}md:grid md:grid-cols-4 md:gap-8{% endcomment %} lg:gap-12 xl:gap-16 2xl:gap-20 relative px-4 md:px-16 lg:px-20">
+        {% comment %} <aside class="hidden md:block sticky top-4 divide-y divide-gray-300">
+      <div class="py-4">
+        <div>
+          Country
+          <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-middle inline-block">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="#5F5F5F" />
+          </svg>
+        </div>
+      </div>
+      <div class="py-4">
+        <div>
+          Year
+          <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-middle inline-block">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="#5F5F5F" />
+          </svg>
+        </div>
+      </div>
+      <div class="py-4">
+        <div>
+          Impact Area
+          <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-middle inline-block">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="#5F5F5F" />
+          </svg>
+        </div>
+      </div>
+      <div class="py-4">
+        <div>
+          Hub
+          <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-middle inline-block">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="#5F5F5F" />
+          </svg>
+        </div>
+      </div>
+        </aside> {% endcomment %}
+        <div class="{% comment %} md:col-span-3 {% endcomment %}">
+            <div>
+                <div class="my-8 text-base font-semibold">{{ total_count }} result{{ total_count|pluralize }}</div>
+            </div>
+            <hr class="border-b border-b-gray-300" />
+            <div class="my-8 divide-y divide-gray-300">
+                {% for page in pages %}
+                    <a href="{{ page.url }}"
+                       class="block space-y-4 py-8"
+                       data-turbo-frame="_top">
+                        <div class="text-sm /font-medium bulleted-children">
+                            <span class="capitalize">{{ page.label }}</span>
+                            {% for impact_area in page.related_impact_areas %}<span>{{ impact_area.title }}</span>{% endfor %}
+                        </div>
+                        <header class="flex flex-row space-x-4 justify-between items-center">
+                            <div class="text-gray-900 leading-tight text-2xl font-semibold">{{ page.title }}</div>
+                            {% if page.image %}
+                                <div class="overflow-hidden rounded-lg relative w-[100px] h-[70px] md:w-[190px] md:h-[160px]">
+                                    {% image page.image fill-190x160 as image %}
+                                    <div class="bg-cover bg-center scale-100 transition-all group-hover:scale-110 absolute inset-0 w-full h-full" style="background-image: url("{{ image.url }}")">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </header>
+                        <aside class="text-sm font-medium bulleted-children">
+                            {% if page.related_countries %}
+                                {% for country in page.related_countries %}<span>{{ country.title }}</span>{% endfor %}
+                            {% endif %}
+                            <time datetime="{{ page.first_published_at }}">{{ page.first_published_at|date:"j F Y" }}</time>
+                        </aside>
+                        <p>{{ page.summary|richtext|striptags|truncatewords:24 }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+            <!-- Previous Button -->
+            <div class="my-4 px-2 sm:px-4">
+                {% if paginator_page.has_previous %}
+                    <a href="{{ url }}{% querystring page=paginator_page.previous_page_number %}"
+                       data-turbo-frame="_self"
+                       class="inline-flex items-center py-2 px-4 mr-3 text-sm font-medium text-gray-500 bg-white rounded-sm border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <svg aria-hidden="true"
+                             class="mr-2 w-icon h-icon"
+                             fill="currentColor"
+                             viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Previous results
+                    </a>
+                {% endif %}
+                {% if paginator_page.has_next %}
+                    <a href="{{ url }}{% querystring page=paginator_page.next_page_number %}"
+                       data-turbo-frame="_self"
+                       class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-sm border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        More results
+                        <svg aria-hidden="true"
+                             class="ml-2 w-icon h-icon"
+                             fill="currentColor"
+                             viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </form>

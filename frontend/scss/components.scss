@@ -72,6 +72,21 @@
             display: none !important;
         }
     }
+
+    .breadcrumbed-children > *:not(:last-child) {
+        &:after {
+            content: "/";
+        }
+        @apply pl-2;
+    }
+
+    // Classes added here will only be bundled if referenced in templates
+    .bulleted-children > *:not(:last-child) {
+        &:after {
+            content: "•";
+        }
+        @apply pl-2;
+    }
 }
 
 // From wagtail's RTF renderer

@@ -41,8 +41,8 @@
     <main class="my-4 px-2 sm:px-4 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {% for article in pages %}
             <a href="{{ article.url }}" role="status" class="block">
-                {% if article.featured_image %}
-                    {% image article.featured_image width-500 as img %}
+                {% if article.image %}
+                    {% image article.image width-500 as img %}
                     <div class="mb-4 h-48 rounded overflow-hidden bg-cover bg-center"
                          style="background-image: url('{{ img.url }}')"></div>
                 {% else %}
