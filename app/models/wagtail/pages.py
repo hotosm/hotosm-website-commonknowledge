@@ -222,8 +222,6 @@ class ContentSidebarPage(ContentPage):
             ("richtext", blocks.RichTextBlock()),
             ("image", app_blocks.ImageBlock()),
             ("call_to_action", app_blocks.SimpleCallToActionBlock()),
-            # ("page_link", app_blocks.PageLinkBlock()),
-            # ("featured_content", app_blocks.FeaturedContentBlock()),
         ],
         null=True,
         blank=True,
