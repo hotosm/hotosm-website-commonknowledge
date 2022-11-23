@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+    <main>
+        {% block content_header %}
+            {% if page.show_header is not False %}
+                <header class="py-8 sm:py-16 text-center border-gray-300 border-b mb-16">
+                    <div class="max-w-prose mx-auto">
+                        <div class="mb-6">
+                            <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
+                        </div>
+                        {% if page.short_summary %}
+                            <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
+                        {% endif %}
+                    </div>
+                </header>
+                {% if page.featured_image %}
+                    <div class="my-4">
+                        {% image page.featured_image width-800 class="w-full" alt=page.feature_image.alt_text %}
+                        {% if page.featured_image.attribution %}
+                            <div class="text-gray-600 text-sm italic">{{ page.featured_image.attribution }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endblock content_header %}
+        {% include "app/include/streamfield.html" with streamfield=page.content %}
+    </main>
+{% endblock content %}

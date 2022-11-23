@@ -5,6 +5,7 @@ from wagtail.images.blocks import ImageChooserBlock
 
 from app.utils.github import github_repo_validator
 from app.utils.hotosm import task_manager_project_url_validator
+from app.utils.wagtail import localized_pages
 
 
 class PageSummaryBlock(blocks.StructBlock):
@@ -121,7 +122,7 @@ class MetricsBlock(blocks.StructBlock):
             ]
         ),
         max_num=4,
-        min_number=1,
+        min_num=1,
     )
 
 
@@ -211,52 +212,12 @@ class TaskManagerProjectBlock(blocks.StructBlock):
     )
 
 
-class FeaturedContentBlock(blocks.StructBlock):
-    """
-    This is a big fancy block meant for embeddable stuff...
-    """
-
-    class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
-        icon = "fa fa-map-signs"
-
-    title = blocks.CharBlock(required=True, max_length=100)
-    description = blocks.RichTextBlock(
-        required=False, max_length=500, features=["italic", "bold", "link"]
-    )
-    links = LinkStreamBlock(min_num=1, max_num=3)
-    featured_content = blocks.StreamBlock(
-        [
-            ("single_image", ImageChooserBlock()),
-            (
-                "multiple_images",
-                blocks.ListBlock(ImageChooserBlock(), icon="fa fa-picture-o"),
-            ),
-            ("single_task_manager_project", TaskManagerProjectBlock()),
-            (
-                "multiple_task_manager_projects",
-                blocks.ListBlock(TaskManagerProjectBlock(), icon="fa fa-map-o"),
-            ),
-            (
-                "github_repo",
-                blocks.URLBlock(
-                    validators=[github_repo_validator], icon="fa fa-github"
-                ),
-            ),
-        ],
-        min_num=1,
-        max_num=1,
-    )
-
-
-class CallToActionBlock(blocks.StructBlock):
+class SimpleCallToActionBlock(blocks.StructBlock):
     """
     This is a more boring but versatile block for adding links to things, optionally with an image
     """
 
     class Meta:
-        # TODO:
         template = "app/blocks/call_to_action_block.html"
         icon = "fa fa-map-signs"
 
@@ -264,7 +225,18 @@ class CallToActionBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         required=False, max_length=400, features=["italic", "bold", "link"]
     )
+    image = ImageChooserBlock(required=False)
     links = LinkStreamBlock(min_num=0, max_num=2, required=False)
+
+
+class LargeCallToActionBlock(SimpleCallToActionBlock):
+    """
+    This is a more boring but versatile block for adding links to things, optionally with an image
+    """
+
+    class Meta:
+        template = "app/blocks/call_to_action_block.html"
+        icon = "fa fa-map-signs"
 
     background = blocks.ChoiceBlock(
         choices=[
@@ -281,57 +253,71 @@ class CallToActionBlock(blocks.StructBlock):
         ],
         default="image_left",
     )
-    image = ImageChooserBlock(required=False)
 
 
-class PageLinkBlock(blocks.StructBlock):
-    """
-    This is the simplest block
-    """
-
+class CallToActionGalleryBlock(blocks.StructBlock):
     class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
-        icon = "fa fa-link"
-
-    page = blocks.PageChooserBlock(required=True)
-    include_page_actions = blocks.BooleanBlock(
-        default=True,
-        help_text="Find and display any quick links set up inside the Page, like 'Download Tool' or 'Read Guide'",
-    )
-    size = blocks.ChoiceBlock(
-        choices=[
-            ("lg", "Large (more previewed content)"),
-            ("md", "Medium"),
-            ("sm", "Small (least previewed content)"),
-        ],
-        default="sm",
-    )
-
-
-class GalleryBlock(blocks.StructBlock):
-    class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
+        template = "app/blocks/call_to_action_gallery_block.html"
         icon = "fa fa-th-large"
 
-    title = blocks.CharBlock(max_length=100, required=False)
-    subtitle = blocks.CharBlock(max_length=100, required=False)
-
-
-class PageLinkGalleryBlock(GalleryBlock):
-    pages = blocks.ListBlock(PageLinkBlock())
-
-
-class CallToActionGalleryBlock(GalleryBlock):
-    pages = blocks.ListBlock(CallToActionBlock())
+    rows = blocks.ListBlock(
+        blocks.ListBlock(SimpleCallToActionBlock(), min_num=1, max_num=3),
+        help_text="A lone item in a row will be displayed full width. More items per row means visually smaller items.",
+    )
 
 
 class RelatedPeopleBlock(blocks.StructBlock):
+    class Meta:
+        # TODO:
+        template = "app/blocks/dummy_block.html"
+        icon = "fa fa-users"
+
     title = blocks.CharBlock(required=False)
     description = blocks.RichTextBlock(
         features=["italic", "bold", "link"], required=False
     )
+
+
+class CarouselBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/carousel_block.html"
+
+    title = blocks.CharBlock(required=True)
+
+
+class LatestArticles(CarouselBlock):
+    class Meta:
+        template = "app/blocks/latest_articles.html"
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import ArticlePage, MagazineIndexPage
+
+        context = super().get_context(value, parent_context=parent_context)
+        articles = localized_pages(
+            ArticlePage.objects.all()
+            .live()
+            .public()
+            .order_by("-first_published_at")[:6]
+        )
+
+        context["view_all"] = MagazineIndexPage.objects.live().public().first()
+        context["pages"] = articles
+        return context
+
+
+class FeaturedProjects(CarouselBlock):
+    class Meta:
+        template = "app/blocks/featured_projects.html"
+
+    ProjectsChooser = blocks.ListBlock(
+        blocks.PageChooserBlock(page_type="app.ProjectPage")
+    )
+
+    def get_context(self, value, parent_context=None):
+
+        context = super().get_context(value, parent_context=parent_context)
+        context["pages"] = value["ProjectsChooser"]
+        return context
 
 
 class HeadingAndSubHeadingBlock(blocks.StructBlock):
@@ -361,3 +347,17 @@ class PartnerLogos(blocks.StructBlock):
             ]
         )
     )
+
+
+class ImpactAreaCarousel(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/impact_area_carousel.html"
+        help_text = "Interactive carousel of all impact areas. Clicking to navigate to the page."
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import ImpactAreaPage
+
+        context = super().get_context(value, parent_context=parent_context)
+        impact_areas = localized_pages(ImpactAreaPage.objects.all().live().public())
+        context["impact_areas"] = impact_areas
+        return context

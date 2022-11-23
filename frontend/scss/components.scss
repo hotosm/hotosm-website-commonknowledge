@@ -8,3 +8,9 @@
     width: 100% !important;
     height: auto !important;
 }
+
+// FIX
+// For some reason Tailwind isn't auto-generating this one
+.group.swiper-slide-active .group-\[\.swiper-slide-active\]\:opacity-100 {
+    opacity: 100;
+}
