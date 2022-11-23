@@ -8,7 +8,7 @@ module.exports = {
     ],
     safelist: [
         {
-            pattern: /theme-[a-zA-Z]+*/,
+            pattern: /theme-[a-zA-Z-]+/,
         },
     ],
     theme: {
