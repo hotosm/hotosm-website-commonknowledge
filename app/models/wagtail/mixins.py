@@ -2,12 +2,16 @@ from math import ceil
 
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
+from django.db import models
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.core.models import Page
 from wagtail.search.models import Query
 
 from app.helpers import concat_html, safe_to_int
+
+from .cms import CMSImage
 
 
 class SearchableDirectoryMixin(Page):
@@ -98,3 +102,32 @@ class SearchableDirectoryMixin(Page):
         )
 
         return context
+
+
+class IconMixin(Page):
+    class Meta:
+        abstract = True
+
+    icon_dark_transparent = models.ForeignKey(
+        CMSImage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="For use on top of light/white backgrounds",
+    )
+    icon_light_transparent = models.ForeignKey(
+        CMSImage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="For use on top of dark/colourful backgrounds",
+    )
+
+    icon_panels = [
+        MultiFieldPanel(
+            [FieldPanel("icon_dark_transparent"), FieldPanel("icon_light_transparent")],
+            heading="Page icon",
+        )
+    ]
