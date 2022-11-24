@@ -67,8 +67,9 @@
                     <a href="/privacy" class="inline-block">Privacy</a>
                     {# djlint:on #}
                     {% comment %} <a href class="inline-block">Cookies</a> {% endcomment %}
-                    <a href="{% url "wagtailadmin_home" %}" class="inline-block">Site login and documentation</a>
-                    <a href="https://status.hotosm.org" class="inline-block">Status</a>
+                    <a href="{% url "wagtailadmin_home" %}" class="inline-block">Site admin login</a>
+                    <a href="{% url 'swagger-ui' %}" class="inline-block">Site API docs</a>
+                    <a href="https://status.hotosm.org" class="inline-block">Status page</a>
                     <a href="https://commonknowledge.coop" class="inline-block">Site by Common Knowledge</a>
                 </div>
             </div>

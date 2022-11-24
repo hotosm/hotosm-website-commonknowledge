@@ -1,17 +1,193 @@
-from math import ceil
+import json
 
+from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
 from django.db import models
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from mapwidgets.widgets import MapboxPointFieldWidget
+from modelcluster.fields import ParentalManyToManyField
+from wagtail import blocks
+from wagtail.admin.panels import (
+    FieldPanel,
+    FieldRowPanel,
+    MultiFieldPanel,
+    ObjectList,
+    TabbedInterface,
+)
+from wagtail.api.conf import APIField
 from wagtail.core.models import Page
+from wagtail.fields import RichTextField, StreamField
 from wagtail.search.models import Query
+from wagtailautocomplete.edit_handlers import AutocompletePanel
 
+import app.models.wagtail.blocks as app_blocks
 from app.helpers import concat_html, safe_to_int
+from app.utils.geo import geolocator
 
 from .cms import CMSImage
+
+
+class PreviewablePage(Page):
+    class Meta:
+        abstract = True
+
+    template = "app/static_page.html"
+
+    # Fields
+    featured_image = models.ForeignKey(
+        CMSImage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    short_summary = RichTextField(max_length=1500, blank=True, null=True)
+    frontmatter = models.JSONField(
+        blank=True, null=True, help_text="Metadata from the legacy site"
+    )
+
+    @property
+    def resolved_theme_class(self):
+        if (
+            hasattr(self, "theme_class")
+            and self.theme_class is not None
+            and len(self.theme_class) > 0
+        ):
+            return self.theme_class
+        for nearest_ancestor in reversed(self.get_ancestors()):
+            nearest_ancestor = nearest_ancestor.specific
+            if (
+                hasattr(nearest_ancestor, "theme_class")
+                and nearest_ancestor.theme_class is not None
+                and len(nearest_ancestor.theme_class) > 0
+            ):
+                return nearest_ancestor.theme_class
+        return "theme-blue"
+
+    @property
+    def label(self):
+        return self._meta.verbose_name.removesuffix(" page")
+
+    # Editor
+    previewable_page_panels = [
+        FieldPanel("short_summary"),
+        FieldPanel("featured_image"),
+    ]
+    content_panels = Page.content_panels + previewable_page_panels
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
+class ContentPage(PreviewablePage):
+    class Meta:
+        abstract = True
+
+    # Fields
+    content = StreamField(
+        [
+            ("richtext", blocks.RichTextBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
+            ("people_gallery", app_blocks.RelatedPeopleBlock()),
+            ("html", app_blocks.HTMLBlock()),
+            ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
+            ("partner_logos", app_blocks.PartnerLogos()),
+            ("title_text_image", app_blocks.TitleTextImageBlock()),
+            ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
+    # Editor
+    content_page_panels = [
+        FieldPanel("content"),
+    ]
+    content_panels = PreviewablePage.content_panels + content_page_panels
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
+class ContentSidebarPage(PreviewablePage):
+    class Meta:
+        abstract = True
+
+    # This is for the narrow center-column
+    # So full-width blocks are not appropriate here
+    content = StreamField(
+        [
+            ("richtext", blocks.RichTextBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
+            ("html", app_blocks.HTMLBlock()),
+            ("partner_logos", app_blocks.PartnerLogos()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
+    # Fields
+    sidebar = StreamField(
+        [
+            ("richtext", blocks.RichTextBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("call_to_action", app_blocks.SimpleCallToActionBlock()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
+
+    # Editor
+    content_page_panels = [
+        FieldPanel("content"),
+        FieldPanel("sidebar"),
+    ]
+    content_panels = PreviewablePage.content_panels + content_page_panels
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
 
 
 class SearchableDirectoryMixin(Page):
@@ -102,6 +278,92 @@ class SearchableDirectoryMixin(Page):
         )
 
         return context
+
+
+class GeocodedMixin(Page):
+    """
+    Common configuration for pages that want to track a geographical location.
+    """
+
+    class Meta:
+        abstract = True
+
+    geographical_location = models.CharField(max_length=250, null=True, blank=True)
+    coordinates = PointField(null=True, blank=True)
+    related_countries = ParentalManyToManyField("app.CountryPage", blank=True)
+
+    @property
+    def has_unique_location(self):
+        return self.coordinates is not None
+
+    @property
+    def centroid(self):
+        if self.coordinates is not None:
+            return self.coordinates
+        related_country = self.related_countries.first()
+        if related_country is not None:
+            return related_country.centroid
+
+    @property
+    def longitude(self):
+        if self.centroid:
+            return self.centroid.coords[0]
+
+    @property
+    def latitude(self):
+        if self.centroid:
+            return self.centroid.coords[1]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # For comparison purposes
+        self.__previous_coordinates = self.coordinates
+
+    @property
+    def has_coordinates(self):
+        return self.latitude is not None
+
+    @property
+    def map_image_url(self):
+        if self.featured_image is not None:
+            rendition = self.featured_image.get_rendition("fill-140x140|jpegquality-80")
+            return rendition.full_url
+
+    def save(self, *args, **kwargs):
+        try:
+            coordinates_changed = self.__previous_coordinates != self.coordinates
+            if self.has_coordinates is True and self.geographical_location is None:
+                self.update_location_name()
+        except:
+            pass
+        super().save(*args, **kwargs)
+
+    def update_location_name(self):
+        if self.coordinates is not None:
+            location_data = geolocator.reverse(self.coordinates, zoom=5, exactly_one=1)
+            if location_data is not None:
+                self.geographical_location = location_data.address
+
+    content_panels = [
+        MultiFieldPanel(
+            [
+                AutocompletePanel("related_countries", target_model="app.CountryPage"),
+                FieldPanel("geographical_location"),
+                FieldPanel("coordinates", widget=MapboxPointFieldWidget),
+            ],
+            heading="Geographic location",
+        )
+    ]
+
+    @classmethod
+    def label(self):
+        return self._meta.verbose_name.removesuffix(" page")
+
+    api_fields = [
+        APIField("label"),
+        APIField("geographical_location"),
+        APIField("countries"),
+    ]
 
 
 class IconMixin(Page):
