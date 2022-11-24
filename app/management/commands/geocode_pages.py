@@ -27,27 +27,30 @@ class Command(BaseCommand):
                     listed_countries = ensure_list(frontmatter.get("Country", list()))
                     country_pages = []
                     for listed_country in listed_countries:
-                        try:
-                            results = pycountry.countries.search_fuzzy(listed_country)
-                            if len(results) != 0:
-                                metadata = results[0]
-                                country_instance = country_code_database_map.get(
-                                    metadata.alpha_2, None
+                        if listed_country is not None and len(listed_country) > 0:
+                            try:
+                                results = pycountry.countries.search_fuzzy(
+                                    listed_country
                                 )
-                                if country_instance is None:
-                                    country_instance = CountryPage.create_for_code(
-                                        metadata.alpha_2
+                                if len(results) != 0:
+                                    metadata = results[0]
+                                    country_instance = country_code_database_map.get(
+                                        metadata.alpha_2, None
                                     )
-                                    country_root_page.add_child(
-                                        instance=country_instance
-                                    )
-                                    country_code_database_map[
-                                        metadata.alpha_2
-                                    ] = country_instance
-                                if country_instance is not None:
-                                    country_pages.append(country_instance)
-                        except LookupError:
-                            pass
+                                    if country_instance is None:
+                                        country_instance = CountryPage.create_for_code(
+                                            metadata.alpha_2
+                                        )
+                                        country_root_page.add_child(
+                                            instance=country_instance
+                                        )
+                                        country_code_database_map[
+                                            metadata.alpha_2
+                                        ] = country_instance
+                                    if country_instance is not None:
+                                        country_pages.append(country_instance)
+                            except LookupError:
+                                pass
                     if len(country_pages) > 0:
                         page.related_countries.add(*country_pages)
                         revision = page.save_revision()
