@@ -31,9 +31,9 @@ class Command(BaseCommand):
                         country_pages = []
                         for listed_country in listed_countries:
                             if (
-                                listed_country is None
-                                or not isinstance(listed_country, str)
-                                or len(listed_country) == 0
+                                listed_country is not None
+                                and isinstance(listed_country, str)
+                                and len(listed_country) > 0
                             ):
                                 try:
                                     results = pycountry.countries.search_fuzzy(
