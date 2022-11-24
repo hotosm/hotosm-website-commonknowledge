@@ -1,19 +1,45 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags app wagtailimages_tags %}
 {% block content %}
-    <main class="flex-shrink flex-grow flex flex-col max-w-3xl w-full">
-        <div class="mb-4 px-2 sm:px-4 lg:px-5 flex-grow">
+    <main class="flex-shrink flex-grow flex flex-col">
+        <div class="mb-4 flex-grow">
             {% if page.show_header is not False %}
-                <header class="my-5">
-                    <div>Open Mapping Hub</div>
-                    <div class="mt-4">
-                        <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
+                <header class="bg-red-800 px-4 text-background-tint py-10 lg:pb-[119px] lg:pt-[88px] lg:px-20">
+                    <div class="text-red-500 leading-none text-4xl font-extrabold lg:text-6xl">Open Mapping Hub</div>
+                    <div class="mb-6">
+                        <h1 class="leading-none text-4xl font-extrabold text-white lg:text-6xl">{{ page.title }}</h1>
                     </div>
-                    {% if page.short_summary %}
-                        <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
-                    {% endif %}
+                    <p class="text-base font-medium text-background-tint lg:text-white lg:text-xl lg:max-w-[768px]">
+                        {{ page.short_summary|richtext }}
+                    </p>
                 </header>
             {% endif %}
+            <div class="px-4 py-16">
+                <h2 class="gray-900 leading-tight text-2xl font-extrabold mb-4">About us</h2>
+                <div class="text-base font-normal mb-16 p-margin">{{ page.about_us_copy|richtext }}</div>
+                <div class="flex flex-col">
+                    {% if page.email %}
+                        <a class="text-red-800 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
+                           href="mailto:{{ page.email }}">
+                            <i class="fa-solid fa-envelope mr-3"></i>
+                            {{ page.email }}
+                        </a>
+                    {% endif %}
+                    {% if page.twitter %}
+                        <a class="text-red-800 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
+                           href="{{ page.twitter }}"><i class="fa-brands fa-twitter mr-3"></i>{{ page.twitter }}</a>
+                    {% endif %}
+                    {% if page.facebook %}
+                        <a class="text-red-800 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
+                           href="{{ page.facebook }}"><i class="fa-brands fa-facebook mr-3"></i>{{ page.facebook }}</a>
+                    {% endif %}
+                </div>
+                {% if page.featured_image %}
+                    <div class="pt-8">
+                        {% image page.featured_image width-800 class="w-full rounded-xl" alt=page.feature_image.alt_text %}
+                    </div>
+                {% endif %}
+            </div>
             <div data-toc-target="content" class="space-y-5 flex flex-col">
                 {% include "app/include/streamfield.html" with streamfield=page.content %}
             </div>
