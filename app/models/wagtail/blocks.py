@@ -9,13 +9,6 @@ from app.utils.hotosm import task_manager_project_url_validator
 from app.utils.wagtail import localized_pages
 
 
-class PageSummaryBlock(blocks.StructBlock):
-    text = blocks.RichTextBlock(form_classname="full")
-
-    class Meta:
-        template = "app/blocks/page_summary_block.html"
-
-
 class HTMLBlock(blocks.StructBlock):
     description = blocks.RichTextBlock(
         help_text="(Internal use only.) Explain what this does for other editors. Not displayed on the website.",
@@ -25,6 +18,7 @@ class HTMLBlock(blocks.StructBlock):
 
     class Meta:
         template = "app/blocks/html_block.html"
+        group = "Special"
 
 
 class LinkBlock(blocks.StructBlock):
@@ -102,6 +96,7 @@ class MetricsBlock(blocks.StructBlock):
         template = "app/blocks/metric_block.html"
         icon = "fa fa-list-ol"
         help_text = "Block that displays numbers with a description under them."
+        group = "Special"
 
     metrics = blocks.ListBlock(
         blocks.StructBlock(
@@ -131,6 +126,7 @@ class ImageBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/image_block.html"
         icon = "fa fa-picture-o"
+        group = "Basic"
 
     image = ImageChooserBlock(required=True)
     caption = blocks.CharBlock(required=False)
@@ -182,6 +178,7 @@ class TitleTextImageBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/title_text_image_block.html"
         help_text = "A title, a block of text, two links and a image on the left or right hand side"
+        group = "Section headings"
 
     title = blocks.CharBlock(required=True, help_text="The title of the block")
     description = blocks.CharBlock(
@@ -220,6 +217,7 @@ class SimpleCallToActionBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/call_to_action_block.html"
         icon = "fa fa-map-signs"
+        group = "Links"
 
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
@@ -237,6 +235,7 @@ class LargeCallToActionBlock(SimpleCallToActionBlock):
     class Meta:
         template = "app/blocks/call_to_action_block.html"
         icon = "fa fa-map-signs"
+        group = "Links"
 
     background = blocks.ChoiceBlock(
         choices=[
@@ -259,6 +258,7 @@ class CallToActionGalleryBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/call_to_action_gallery_block.html"
         icon = "fa fa-th-large"
+        group = "Links"
 
     rows = blocks.ListBlock(
         blocks.ListBlock(SimpleCallToActionBlock(), min_num=1, max_num=3),
@@ -271,6 +271,7 @@ class RelatedPeopleBlock(blocks.StructBlock):
         # TODO:
         template = "app/blocks/dummy_block.html"
         icon = "fa fa-users"
+        group = "Related content"
 
     title = blocks.CharBlock(required=False)
     description = blocks.RichTextBlock(
@@ -281,6 +282,7 @@ class RelatedPeopleBlock(blocks.StructBlock):
 class CarouselBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/carousel_block.html"
+        group = "Related content"
 
     title = blocks.CharBlock(required=True)
 
@@ -288,6 +290,7 @@ class CarouselBlock(blocks.StructBlock):
 class LatestArticles(CarouselBlock):
     class Meta:
         template = "app/blocks/latest_articles.html"
+        group = "Related content"
 
     def get_context(self, value, parent_context=None):
         from app.models.wagtail import ArticlePage, MagazineIndexPage
@@ -308,6 +311,7 @@ class LatestArticles(CarouselBlock):
 class FeaturedProjects(CarouselBlock):
     class Meta:
         template = "app/blocks/featured_projects.html"
+        group = "Related content"
 
     ProjectsChooser = blocks.ListBlock(
         blocks.PageChooserBlock(page_type="app.ProjectPage")
@@ -323,6 +327,7 @@ class FeaturedProjects(CarouselBlock):
 class HeadingAndSubHeadingBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/heading_and_subheading.html"
+        group = "Section headings"
 
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
@@ -336,6 +341,7 @@ class PartnerLogos(blocks.StructBlock):
     class Meta:
         template = "app/blocks/partner_logos.html"
         help_text = "Display a list of partner organisations' logos and links."
+        group = "Special"
 
     title = blocks.CharBlock(required=True)
 
@@ -353,6 +359,7 @@ class MapBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/map_block.html"
         help_text = "Explorable map with pin-pointed links to the rest of the site."
+        group = "Special"
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
@@ -363,6 +370,7 @@ class ImpactAreaCarousel(blocks.StructBlock):
     class Meta:
         template = "app/blocks/impact_area_carousel.html"
         help_text = "Interactive carousel of all impact areas. Clicking to navigate to the page."
+        group = "Related content"
 
     def get_context(self, value, parent_context=None):
         from app.models.wagtail import ImpactAreaPage
@@ -374,7 +382,7 @@ class ImpactAreaCarousel(blocks.StructBlock):
 
 
 full_width_blocks = [
-    ("richtext", blocks.RichTextBlock()),
+    ("richtext", blocks.RichTextBlock(group="Basic")),
     ("image", ImageBlock()),
     ("call_to_action", LargeCallToActionBlock()),
     ("gallery_of_calls_to_action", CallToActionGalleryBlock()),
