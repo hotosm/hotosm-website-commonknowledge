@@ -12,6 +12,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+DEBUG_TOOLBAR_ENABLED = False
 
 # Application definition
 
