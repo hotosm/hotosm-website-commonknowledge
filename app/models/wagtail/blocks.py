@@ -364,6 +364,7 @@ class MapBlock(blocks.StructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
         context["MAPBOX_PUBLIC_API_KEY"] = settings.MAPBOX_PUBLIC_API_KEY
+        return context
 
 
 class ImpactAreaCarousel(blocks.StructBlock):
