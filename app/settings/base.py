@@ -12,6 +12,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+DEBUG_TOOLBAR_ENABLED = False
 
 # Application definition
 
@@ -19,10 +20,11 @@ INSTALLED_APPS = [
     "app",
     "anymail",
     "rest_framework",
+    "rest_framework_gis",
+    "drf_spectacular",
     "groundwork.core",
     "groundwork.geo",
     "livereload",
-    "debug_toolbar",
     "django_vite",
     "django.contrib.gis",
     "django.contrib.admin",
@@ -44,12 +46,15 @@ INSTALLED_APPS = [
     "wagtail.contrib.redirects",
     "wagtail.admin",
     "wagtail",
+    "wagtail.api.v2",
     "modelcluster",
     "taggit",
     "wagtail.contrib.settings",
     "wagtail.contrib.styleguide",
     "wagtail.contrib.modeladmin",
     "django.contrib.sitemaps",
+    "wagtailautocomplete",
+    "mapwidgets",
 ]
 
 MIDDLEWARE = [
@@ -61,7 +66,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "app.middleware.StagingDomainRedirectMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "livereload.middleware.LiveReloadScript",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     # wagtail-localize
@@ -241,6 +245,12 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 # Mapbox
 MAPBOX_PUBLIC_API_KEY = os.getenv("MAPBOX_PUBLIC_API_KEY", None)
 
+# for django-map-widgets
+MAP_WIDGETS = {
+    "MapboxPointFieldWidget": (("access_token", MAPBOX_PUBLIC_API_KEY),),
+    "MAPBOX_API_KEY": MAPBOX_PUBLIC_API_KEY,
+}
+
 # Posthog
 POSTHOG_PUBLIC_TOKEN = os.getenv("POSTHOG_PUBLIC_TOKEN", None)
 POSTHOG_URL = os.getenv("POSTHOG_URL", "https://app.posthog.com")
@@ -309,7 +319,32 @@ if USE_SILK:
         "silk",
     ]
 
-# URL
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+        "TIMEOUT": None,  # don't expire by default
+    }
+}
+
+# REST API settings
+
+WAGTAILAPI_LIMIT_MAX = None
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Humanitarian OpenStreetMap Team CMS API",
+    "DESCRIPTION": "Access to the content management system for the HOTOSM website.",
+    "VERSION": "1.0.0",
+    "PREPROCESSING_HOOKS": ["app.api.preprocessing_hooks"],
+}
 
 # This is for redirecting. See app.middleware.StagingDomainRedirectMiddleware
 REDIRECT_FROM_HOSTS = os.getenv("REDIRECT_FROM_HOSTS", "hotosm-staging.fly.dev").split(

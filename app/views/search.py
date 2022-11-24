@@ -1,8 +1,5 @@
-from math import ceil
-
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
-from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 from wagtail.core.models import Page

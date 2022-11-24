@@ -25,6 +25,7 @@ setup-cms:
 
 .PHONY: migrate
 migrate:
+	poetry run python manage.py createcachetable
 	poetry run python manage.py migrate
 
 .PHONY: bootstrap

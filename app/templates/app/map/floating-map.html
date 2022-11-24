@@ -1,0 +1,17 @@
+<div data-map-target="config"
+     data-controller="floating-map"
+     data-floating-map-minimap-class="rounded-full w-[160px] h-[160px]"
+     data-floating-map-expanded-class="rounded-md w-full h-full"
+     class="pointer-events-none w-full h-full fixed flex p-8 items-stretch z-20"
+     data-turbo-permanent>
+    <div id="floating-map__padding-container" class="relative w-full h-full">
+        <div id="floating-map__frame"
+             data-floating-map-target="container"
+             class="absolute bottom-0 right-0 overflow-hidden transition-all shadow-sm-light">
+            <div data-map-target="canvas"
+                 data-action="click->floating-map#toggle"
+                 class="w-full h-full absolute mapboxgl-responsive-canvas pointer-events-auto">
+            </div>
+        </div>
+    </div>
+</div>
