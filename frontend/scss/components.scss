@@ -1,4 +1,8 @@
 @layer components {
+    .px-page-row {
+        @apply px-4 md:px-8 lg:px-16 xl:px-20;
+    }
+
     // Classes added here will only be bundled if referenced in templates
     .mapboxgl-responsive-canvas .mapboxgl-canvas {
         width: 100% !important;
