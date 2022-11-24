@@ -72,7 +72,8 @@
                             {% if page.image %}
                                 <div class="overflow-hidden rounded-lg relative w-[100px] h-[70px] md:w-[190px] md:h-[160px]">
                                     {% image page.image fill-190x160 as image %}
-                                    <div class="bg-cover bg-center scale-100 transition-all group-hover:scale-110 absolute inset-0 w-full h-full" style="background-image: url("{{ image.url }}")">
+                                    <div class="bg-cover bg-center scale-100 transition-all group-hover:scale-110 absolute inset-0 w-full h-full"
+                                         style="background-image: url('{{ image.url }}')">
                                     </div>
                                 </div>
                             {% endif %}
@@ -119,4 +120,5 @@
                 {% endif %}
             </div>
         </div>
-    </form>
+    </div>
+</form>
