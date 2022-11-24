@@ -1,10 +1,13 @@
 {% load wagtailimages_tags %}
 <section class="py-16 px-4 lg:px-20">
     <h2 class="leading-tight text-2xl font-extrabold text-gray-900 mb-8 lg:mb-12">{{ self.title }}</h2>
-    <div class="grid grid-cols-2 lg:flex lg:justify-between lg:items-center gap-y-8">
+    <div class="grid gap-y-4 items-center grid-cols-2 sm:grid-cols-3 md:flex-row md:flex md:flex-wrap md:justify-around md:items-center">
         {% for partner in self.partners %}
-            <a href="{{ partner.url }}" target="_blank" rel="noopener noreferrer">
-                {% image partner.logo width-200 class="grayscale" %}
+            <a href="{{ partner.url }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="p-4">
+                {% image partner.logo width-128 class="grayscale" %}
             </a>
         {% endfor %}
     </div>
