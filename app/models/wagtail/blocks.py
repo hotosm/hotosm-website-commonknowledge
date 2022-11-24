@@ -371,3 +371,21 @@ class ImpactAreaCarousel(blocks.StructBlock):
         impact_areas = localized_pages(ImpactAreaPage.objects.all().live().public())
         context["impact_areas"] = impact_areas
         return context
+
+
+full_width_blocks = [
+    ("richtext", blocks.RichTextBlock()),
+    ("image", ImageBlock()),
+    ("call_to_action", LargeCallToActionBlock()),
+    ("gallery_of_calls_to_action", CallToActionGalleryBlock()),
+    ("metrics", MetricsBlock()),
+    ("people_gallery", RelatedPeopleBlock()),
+    ("html", HTMLBlock()),
+    ("heading_and_subheading", HeadingAndSubHeadingBlock()),
+    ("partner_logos", PartnerLogos()),
+    ("title_text_image", TitleTextImageBlock()),
+    ("impact_area_carousel", ImpactAreaCarousel()),
+    ("latest_articles", LatestArticles()),
+    ("featured_projects", FeaturedProjects()),
+    ("map", MapBlock()),
+]

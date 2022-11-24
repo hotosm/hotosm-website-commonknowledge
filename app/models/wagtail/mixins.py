@@ -96,21 +96,7 @@ class ContentPage(PreviewablePage):
 
     # Fields
     content = StreamField(
-        [
-            ("richtext", blocks.RichTextBlock()),
-            ("image", app_blocks.ImageBlock()),
-            ("call_to_action", app_blocks.LargeCallToActionBlock()),
-            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
-            ("metrics", app_blocks.MetricsBlock()),
-            ("people_gallery", app_blocks.RelatedPeopleBlock()),
-            ("html", app_blocks.HTMLBlock()),
-            ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
-            ("partner_logos", app_blocks.PartnerLogos()),
-            ("title_text_image", app_blocks.TitleTextImageBlock()),
-            ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
-            ("latest_articles", app_blocks.LatestArticles()),
-            ("featured_projects", app_blocks.FeaturedProjects()),
-        ],
+        app_blocks.full_width_blocks,
         null=True,
         blank=True,
         use_json_field=True,

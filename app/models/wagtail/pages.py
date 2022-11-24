@@ -91,21 +91,7 @@ class HomePage(SearchableDirectoryMixin, Page):
     parent_page_type = []
     show_in_menus_default = False
     content = StreamField(
-        [
-            ("richtext", blocks.RichTextBlock()),
-            ("html", app_blocks.HTMLBlock()),
-            ("metrics", app_blocks.MetricsBlock()),
-            ("image", app_blocks.ImageBlock()),
-            ("call_to_action", app_blocks.LargeCallToActionBlock()),
-            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
-            ("people_gallery", app_blocks.RelatedPeopleBlock()),
-            ("latest_articles", app_blocks.LatestArticles()),
-            ("featured_projects", app_blocks.FeaturedProjects()),
-            ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
-            ("partner_logos", app_blocks.PartnerLogos()),
-            ("map", app_blocks.MapBlock()),
-            ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
-        ],
+        app_blocks.full_width_blocks,
         null=True,
         blank=True,
         use_json_field=True,
