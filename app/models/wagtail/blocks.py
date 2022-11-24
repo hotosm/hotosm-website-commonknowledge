@@ -308,6 +308,30 @@ class LatestArticles(CarouselBlock):
         return context
 
 
+class LatestOpportunities(CarouselBlock):
+    class Meta:
+        template = "app/blocks/latest_opportunities.html"
+        group = "Related content"
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import OpportunityPage
+
+        context = super().get_context(value, parent_context=parent_context)
+        opportunities = localized_pages(
+            OpportunityPage.objects.all()
+            .live()
+            .public()
+            .order_by("-first_published_at")[:6]
+        )
+
+        # Unclear where view all would head to at this point, so commenting for now
+        # context["view_all"] = MagazineIndexPage.objects.live().public().first()
+
+        context["pages"] = opportunities
+
+        return context
+
+
 class FeaturedProjects(CarouselBlock):
     class Meta:
         template = "app/blocks/featured_projects.html"
@@ -396,5 +420,6 @@ full_width_blocks = [
     ("impact_area_carousel", ImpactAreaCarousel()),
     ("latest_articles", LatestArticles()),
     ("featured_projects", FeaturedProjects()),
+    ("latest_opportunities", LatestOpportunities()),
     ("map", MapBlock()),
 ]
