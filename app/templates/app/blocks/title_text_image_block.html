@@ -1,0 +1,22 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+<section class="flex flex-col md:flex-row md:justify-between my-16 {% if value.layout == "image_left" %}flex-col-reverse md:flex-row-reverse{% endif %}">
+    <div class="md:mr-16">
+        <header class="pb-8 mb-8 border-b border-solid sm:w-full">
+            <h4 class="leading-tight text-4xl font-extrabold text-gray-900 pb-4">{{ value.title }}</h4>
+            <p class="text-xl font-normal text-gray-700">{{ value.description }}</p>
+        </header>
+        <ul>
+            {% for link in value.links %}
+                <li class="pb-4">
+                    <a class="text-primary-500 underline text-xl font-semibold"
+                       href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% image value.image height-500 as img %}
+    <div class="min-h-[200px] md:min-h-[500px] w-full md:max-w-[608px] rounded-xl overflow-hidden bg-cover bg-center mt-9 md:mt-0"
+         style="background-image: url('{{ img.url }}')">
+    </div>
+</section>

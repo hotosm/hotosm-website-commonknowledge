@@ -49,15 +49,33 @@ class PreviewablePage(Page):
     )
 
     @property
+    def resolved_theme_class(self):
+        if (
+            hasattr(self, "theme_class")
+            and self.theme_class is not None
+            and len(self.theme_class) > 0
+        ):
+            return self.theme_class
+        for nearest_ancestor in reversed(self.get_ancestors()):
+            nearest_ancestor = nearest_ancestor.specific
+            if (
+                hasattr(nearest_ancestor, "theme_class")
+                and nearest_ancestor.theme_class is not None
+                and len(nearest_ancestor.theme_class) > 0
+            ):
+                return nearest_ancestor.theme_class
+        return "theme-blue"
+
+    @property
     def label(self):
         return self._meta.verbose_name.removesuffix(" page")
 
     # Editor
-    content_panels = Page.content_panels + [
+    previewable_page_panels = [
         FieldPanel("short_summary"),
         FieldPanel("featured_image"),
-        # FieldPanel("frontmatter"),
     ]
+    content_panels = Page.content_panels + previewable_page_panels
 
     edit_handler = TabbedInterface(
         [
@@ -81,15 +99,17 @@ class ContentPage(PreviewablePage):
         [
             ("richtext", blocks.RichTextBlock()),
             ("image", app_blocks.ImageBlock()),
-            ("cta", app_blocks.CallToActionBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
-            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
             ("metrics", app_blocks.MetricsBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
-            ("map", app_blocks.MapBlock()),
             ("html", app_blocks.HTMLBlock()),
+            ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
+            ("partner_logos", app_blocks.PartnerLogos()),
+            ("title_text_image", app_blocks.TitleTextImageBlock()),
+            ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
         ],
         null=True,
         blank=True,
@@ -97,9 +117,10 @@ class ContentPage(PreviewablePage):
     )
 
     # Editor
-    content_panels = PreviewablePage.content_panels + [
+    content_page_panels = [
         FieldPanel("content"),
     ]
+    content_panels = PreviewablePage.content_panels + content_page_panels
 
     edit_handler = TabbedInterface(
         [
@@ -114,17 +135,35 @@ class ContentPage(PreviewablePage):
     )
 
 
-class ContentSidebarPage(ContentPage):
+class ContentSidebarPage(PreviewablePage):
     class Meta:
         abstract = True
+
+    # This is for the narrow center-column
+    # So full-width blocks are not appropriate here
+    content = StreamField(
+        [
+            ("richtext", blocks.RichTextBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
+            ("html", app_blocks.HTMLBlock()),
+            ("partner_logos", app_blocks.PartnerLogos()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
 
     # Fields
     sidebar = StreamField(
         [
             ("richtext", blocks.RichTextBlock()),
             ("image", app_blocks.ImageBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
+            ("call_to_action", app_blocks.SimpleCallToActionBlock()),
         ],
         null=True,
         blank=True,
@@ -132,9 +171,11 @@ class ContentSidebarPage(ContentPage):
     )
 
     # Editor
-    content_panels = ContentPage.content_panels + [
+    content_page_panels = [
+        FieldPanel("content"),
         FieldPanel("sidebar"),
     ]
+    content_panels = PreviewablePage.content_panels + content_page_panels
 
     edit_handler = TabbedInterface(
         [
@@ -323,3 +364,59 @@ class GeocodedMixin(Page):
         APIField("geographical_location"),
         APIField("countries"),
     ]
+
+
+class IconMixin(Page):
+    class Meta:
+        abstract = True
+
+    icon_dark_transparent = models.ForeignKey(
+        CMSImage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="For use on top of light/white backgrounds",
+    )
+    icon_light_transparent = models.ForeignKey(
+        CMSImage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="For use on top of dark/colourful backgrounds",
+    )
+
+    icon_panels = [
+        MultiFieldPanel(
+            [FieldPanel("icon_dark_transparent"), FieldPanel("icon_light_transparent")],
+            heading="Page icon",
+        )
+    ]
+
+
+class ThemeablePageMixin(Page):
+    class Meta:
+        abstract = True
+
+    class ThemeColourChoices(models.TextChoices):
+        blue = "theme-blue", "blue"
+        red = "theme-red", "red"
+        yellow = "theme-yellow", "yellow"
+        orange = "theme-orange", "orange"
+        pink = "theme-pink", "pink"
+        purple = "theme-purple", "purple"
+        indigo = "theme-indigo", "indigo"
+        teal = "theme-teal", "teal"
+        green = "theme-green", "green"
+        gray = "theme-gray", "gray"
+
+    theme_class = models.CharField(
+        max_length=50,
+        choices=ThemeColourChoices.choices,
+        default=ThemeColourChoices.blue,
+        verbose_name="Theme colour",
+        help_text="Pick the colour palette for this page's elements. Defaults to HOT blue.",
+    )
+
+    themeable_content_panels = [FieldPanel("theme_class")]

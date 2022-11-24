@@ -1,0 +1,15 @@
+<div class="my-16">
+    <div data-controller="carousel"
+         class="swiper"
+         data-carousel-options-value='{ "slidesPerView": "auto", "grabCursor": true, "centeredSlides": true, "effect": "cards", "cardsEffect": { "rotate": false }, "breakpoints": { "0": { "cardsEffect": { "perSlideOffset": 20 } }, "468": { "cardsEffect": { "perSlideOffset": 40 } }, "768": { "cardsEffect": { "perSlideOffset": 75 } } }}'>
+        <div class="swiper-wrapper">
+            {% for impact_area in impact_areas %}
+                <div data-action="mouseover->carousel#slideTo"
+                     data-carousel-index-param="{{ forloop.counter0 }}"
+                     class="group swiper-slide !w-[260px] sm:!w-[300px] md:!w-[400px] lg:!w-[515px] rounded-md md:rounded-xl">
+                    {% include "app/include/impact_area_card.html" with impact_area=impact_area %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

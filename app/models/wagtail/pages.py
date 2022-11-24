@@ -26,8 +26,10 @@ from app.models.wagtail.mixins import (
     ContentPage,
     ContentSidebarPage,
     GeocodedMixin,
+    IconMixin,
     PreviewablePage,
     SearchableDirectoryMixin,
+    ThemeablePageMixin,
 )
 from app.utils.cache import django_cached
 from app.utils.geo import GeolocatorError, geolocator
@@ -94,17 +96,15 @@ class HomePage(SearchableDirectoryMixin, Page):
             ("html", app_blocks.HTMLBlock()),
             ("metrics", app_blocks.MetricsBlock()),
             ("image", app_blocks.ImageBlock()),
-            ("featured_content", app_blocks.FeaturedContentBlock()),
-            ("cta", app_blocks.CallToActionBlock()),
-            ("page_link", app_blocks.PageLinkBlock()),
-            ("page_gallery", app_blocks.PageLinkGalleryBlock()),
-            ("cta_gallery", app_blocks.CallToActionGalleryBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
             ("people_gallery", app_blocks.RelatedPeopleBlock()),
             ("latest_articles", app_blocks.LatestArticles()),
             ("featured_projects", app_blocks.FeaturedProjects()),
             ("heading_and_subheading", app_blocks.HeadingAndSubHeadingBlock()),
             ("partner_logos", app_blocks.PartnerLogos()),
             ("map", app_blocks.MapBlock()),
+            ("impact_area_carousel", app_blocks.ImpactAreaCarousel()),
         ],
         null=True,
         blank=True,
@@ -259,11 +259,38 @@ class CountryPage(ContentPage):
         return f"{self.emoji_flag} {self.title}"
 
 
+class LandingPage(ContentPage):
+    class Meta:
+        ordering = ["title"]
+
+    page_description = "Free-form full width page."
+
+    # Layout
+    show_header = models.BooleanField(default=True)
+    show_footer = models.BooleanField(default=True)
+    layout_panels = [
+        FieldPanel("show_header"),
+        FieldPanel("show_footer"),
+    ]
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(ContentPage.content_panels, heading="Content"),
+            ObjectList(layout_panels, heading="Layout"),
+            ObjectList(ContentPage.promote_panels, heading="Sharing"),
+            ObjectList(
+                ContentPage.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
 class StaticPage(ContentSidebarPage):
     class Meta:
         ordering = ["title"]
 
-    page_description = "Use this for generic longform text. Use Landing Page if you need full width, freeform content instead."
+    page_description = "Generic page meant for longform text."
 
     # Layout
     show_table_of_contents = models.BooleanField(default=True)
@@ -281,35 +308,6 @@ class StaticPage(ContentSidebarPage):
             ObjectList(ContentSidebarPage.promote_panels, heading="Sharing"),
             ObjectList(
                 ContentSidebarPage.settings_panels,
-                heading="Publishing Schedule",
-                classname="settings",
-            ),
-        ]
-    )
-
-
-class LandingPage(ContentPage):
-    class Meta:
-        ordering = ["title"]
-
-    page_description = (
-        "Use this to construct freeform pages. Use Static Page for longform text."
-    )
-
-    # Layout
-    show_header = models.BooleanField(default=True)
-    show_footer = models.BooleanField(default=True)
-    layout_panels = [
-        FieldPanel("show_header"),
-        FieldPanel("show_footer"),
-    ]
-    edit_handler = TabbedInterface(
-        [
-            ObjectList(ContentPage.content_panels, heading="Content"),
-            ObjectList(layout_panels, heading="Layout"),
-            ObjectList(ContentPage.promote_panels, heading="Sharing"),
-            ObjectList(
-                ContentPage.settings_panels,
                 heading="Publishing Schedule",
                 classname="settings",
             ),
@@ -699,6 +697,31 @@ class EventPage(GeocodedMixin, ContentPage):
                 raise ValidationError(
                     {"end_datetime": "The end date cannot be before the start date."}
                 )
+
+
+class ImpactAreaPage(ThemeablePageMixin, IconMixin, ContentPage):
+    page_description = "Overview page for each of the impact areas. Create one here and you can tag other pages with it."
+
+    # Editor
+    content_panels = [
+        *Page.content_panels,
+        *ContentPage.previewable_page_panels,
+        *IconMixin.icon_panels,
+        *ThemeablePageMixin.themeable_content_panels,
+        *ContentPage.content_page_panels,
+    ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
 
 
 class ActivationIndexPage(PreviewablePage):
