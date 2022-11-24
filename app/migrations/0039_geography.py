@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("wagtailcore", "0078_referenceindex"),
-        ("app", "0031_alter_activationprojectpage_content_and_more"),
+        ("app", "0038_related_countries"),
     ]
 
     operations = [
