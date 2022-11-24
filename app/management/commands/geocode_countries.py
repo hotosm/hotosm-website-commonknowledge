@@ -6,7 +6,7 @@ from django.db import transaction
 from app.models import CountryPage
 
 
-class GeocodeCountriesCommand(BaseCommand):
+class Command(BaseCommand):
     help = "Sync all CountryPage coordinates so that pages can be geo-tagged via related_countries."
 
     def handle(self, *args, **options):
