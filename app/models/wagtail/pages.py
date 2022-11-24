@@ -243,6 +243,40 @@ class CountryPage(ContentPage):
             revision = self.save_revision()
             if self.live:
                 self.publish(revision)
+            return revision
+
+    def save(self, clean=True, user=None, log_action=False, **kwargs):
+        super().save(clean, user, log_action, **kwargs)
+        if self.centroid is None:
+            self.save_centroid()
+
+    def save_revision(
+        self,
+        user=None,
+        submitted_for_moderation=False,
+        approved_go_live_at=None,
+        changed=True,
+        log_action=False,
+        previous_revision=None,
+        clean=True,
+    ):
+        generic_revision = super().save_revision(
+            user,
+            submitted_for_moderation,
+            approved_go_live_at,
+            changed,
+            log_action,
+            previous_revision,
+            clean,
+        )
+
+        # When adding new countries, centroids should just automatically be set up.
+        if self.centroid is None:
+            centroid_revision = self.save_centroid()
+            if centroid_revision:
+                return centroid_revision
+
+        return generic_revision
 
     @property
     @django_cached("country_geometry", get_key=lambda self: self.isoa2)
