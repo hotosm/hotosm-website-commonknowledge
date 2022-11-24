@@ -129,7 +129,7 @@ class ContentSidebarPage(PreviewablePage):
     # So full-width blocks are not appropriate here
     content = StreamField(
         [
-            ("richtext", blocks.RichTextBlock()),
+            ("richtext", blocks.RichTextBlock(group="Basic")),
             ("image", app_blocks.ImageBlock()),
             ("call_to_action", app_blocks.LargeCallToActionBlock()),
             ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
@@ -147,7 +147,7 @@ class ContentSidebarPage(PreviewablePage):
     # Fields
     sidebar = StreamField(
         [
-            ("richtext", blocks.RichTextBlock()),
+            ("richtext", blocks.RichTextBlock(group="Basic")),
             ("image", app_blocks.ImageBlock()),
             ("call_to_action", app_blocks.SimpleCallToActionBlock()),
         ],
