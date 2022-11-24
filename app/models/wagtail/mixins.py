@@ -24,8 +24,6 @@ from wagtailautocomplete.edit_handlers import AutocompletePanel
 
 import app.models.wagtail.blocks as app_blocks
 from app.helpers import concat_html, safe_to_int
-
-# from app.serializers import PageCoordinatesSerializer
 from app.utils.geo import geolocator
 
 from .cms import CMSImage
@@ -252,8 +250,6 @@ class GeocodedMixin(Page):
     geographical_location = models.CharField(max_length=250, null=True, blank=True)
     coordinates = PointField(null=True, blank=True)
     related_countries = ParentalManyToManyField("app.CountryPage", blank=True)
-    # map_image = models.ForeignKey(
-    #     CMSImage, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
 
     @property
     def has_unique_location(self):
@@ -297,8 +293,6 @@ class GeocodedMixin(Page):
             coordinates_changed = self.__previous_coordinates != self.coordinates
             if self.has_coordinates is True and self.geographical_location is None:
                 self.update_location_name()
-            # if self.has_coordinates is True and (self.map_image is None or coordinates_changed):
-            #     self.update_map_thumbnail()
         except:
             pass
         super().save(*args, **kwargs)
@@ -308,41 +302,6 @@ class GeocodedMixin(Page):
             location_data = geolocator.reverse(self.coordinates, zoom=5, exactly_one=1)
             if location_data is not None:
                 self.geographical_location = location_data.address
-
-    # def update_map_thumbnail(self):
-    #     if self.coordinates is None:
-    #         return
-    #     url = self.static_map_marker_image_url()
-    #     if url is None:
-    #         return
-    #     response = requests.get(url)
-    #     if response.status_code != 200:
-    #         print("Map generator error:", url)
-    #         print(response.status_code, response.content)
-    #         return
-    #     image = ImageFile(BytesIO(response.content),
-    #                       name=f'{urllib.parse.quote(url)}.png')
-
-    #     if self.map_image is not None:
-    #         self.map_image.delete()
-
-    #     self.map_image = CmsImage(
-    #         alt_text=f"Map of {self.geographical_location}",
-    #         title=f'Generated map thumbnail for {self._meta.model_name} {self.slug}',
-    #         file=image
-    #     )
-    #     self.map_image.save()
-
-    # def static_map_marker_image_url(self) -> str:
-    #     return static_map_marker_image_url(
-    #         self.coordinates,
-    #         access_token=settings.MAPBOX_API_PUBLIC_TOKEN,
-    #         marker_url=self.map_marker,
-    #         username='smartforests',
-    #         style_id='ckziehr6u001e14ohgl2brzlu',
-    #         width=300,
-    #         height=200,
-    #     )
 
     content_panels = [
         MultiFieldPanel(
@@ -362,6 +321,5 @@ class GeocodedMixin(Page):
     api_fields = [
         APIField("label"),
         APIField("geographical_location"),
-        # APIField("coordinates", serializer=PageCoordinatesSerializer),
         APIField("countries"),
     ]

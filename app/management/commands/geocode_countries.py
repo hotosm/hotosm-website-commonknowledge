@@ -6,16 +6,8 @@ from django.db import transaction
 from app.models import CountryPage
 
 
-class Command(BaseCommand):
-    """
-    main thing of interest is the WagtailHtmlRenderer class,
-    which renders markdown as wagtail-friendly html using its custom notation for links.
-
-    Other key thing is to create all the pages and images before setting their content
-    so that the referenced pages all exist when the html gets rendered out
-    """
-
-    help = "Set up essential pages"
+class GeocodeCountriesCommand(BaseCommand):
+    help = "Sync all CountryPage coordinates so that pages can be geo-tagged via related_countries."
 
     def handle(self, *args, **options):
         centroids = CountryPage.get_centroids()

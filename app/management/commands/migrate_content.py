@@ -94,9 +94,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options.get("scratch"):
             Page.get_first_root_node().get_descendants().delete()
-            # Site.objects.all().delete()
-            # if options.get("images"):
-            #     CMSImage.objects.all().delete()
+            Site.objects.all().delete()
+            if options.get("images"):
+                CMSImage.objects.all().delete()
             management.call_command("fixtree")
 
         # Define paths

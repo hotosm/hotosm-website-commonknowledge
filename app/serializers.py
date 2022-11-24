@@ -36,10 +36,5 @@ class PageCoordinatesSerializer(GeoFeatureModelSerializer):
 
     centroid = GeometrySerializerMethodField()
 
-    # url = serializers.CharField()
-
-    # def get_url(self):
-    #     return self.url
-
     def get_centroid(self, state):
         return state.centroid

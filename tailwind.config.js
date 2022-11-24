@@ -1,3 +1,10 @@
+/**
+ * When you update this file, ideally also copy the changes across to
+ * ./frontend/utils/css.ts
+ *
+ * TODO: Automate this.
+ */
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [

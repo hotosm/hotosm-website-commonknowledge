@@ -10,15 +10,7 @@ from app.views.api import MapSearchViewset
 
 
 class Command(BaseCommand):
-    """
-    main thing of interest is the WagtailHtmlRenderer class,
-    which renders markdown as wagtail-friendly html using its custom notation for links.
-
-    Other key thing is to create all the pages and images before setting their content
-    so that the referenced pages all exist when the html gets rendered out
-    """
-
-    help = "Set up essential pages"
+    help = "Update `related_countries` fields for all pages, using data from their `frontmatter` field if migrated from the old site."
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -28,12 +20,11 @@ class Command(BaseCommand):
         country_root_page = CountryPage.objects.first().get_parent()
         for page_type in MapSearchViewset.page_types:
             for page in page_type.objects.all():
-                if page.frontmatter is not None:
+                if hasattr(page, "frontmatter") and page.frontmatter is not None:
                     frontmatter = page.frontmatter
                     if isinstance(page.frontmatter, str):
                         frontmatter = json.loads(page.frontmatter)
                     listed_countries = ensure_list(frontmatter.get("Country", list()))
-                    print(page, type(listed_countries), listed_countries)
                     country_pages = []
                     for listed_country in listed_countries:
                         try:

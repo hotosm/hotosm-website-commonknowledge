@@ -343,9 +343,7 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Access to the content management system for the HOTOSM website.",
     "VERSION": "1.0.0",
     "PREPROCESSING_HOOKS": ["app.api.preprocessing_hooks"],
-    # OTHER SETTINGS
 }
-# URL
 
 # This is for redirecting. See app.middleware.StagingDomainRedirectMiddleware
 REDIRECT_FROM_HOSTS = os.getenv("REDIRECT_FROM_HOSTS", "hotosm-staging.fly.dev").split(
