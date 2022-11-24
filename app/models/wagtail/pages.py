@@ -213,9 +213,28 @@ class ContentPage(PreviewablePage):
     )
 
 
-class ContentSidebarPage(ContentPage):
+class ContentSidebarPage(PreviewablePage):
     class Meta:
         abstract = True
+
+    # This is for the narrow center-column
+    # So full-width blocks are not appropriate here
+    content = StreamField(
+        [
+            ("richtext", blocks.RichTextBlock()),
+            ("image", app_blocks.ImageBlock()),
+            ("call_to_action", app_blocks.LargeCallToActionBlock()),
+            ("gallery_of_calls_to_action", app_blocks.CallToActionGalleryBlock()),
+            ("metrics", app_blocks.MetricsBlock()),
+            ("html", app_blocks.HTMLBlock()),
+            ("partner_logos", app_blocks.PartnerLogos()),
+            ("latest_articles", app_blocks.LatestArticles()),
+            ("featured_projects", app_blocks.FeaturedProjects()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+    )
 
     # Fields
     sidebar = StreamField(
@@ -230,9 +249,11 @@ class ContentSidebarPage(ContentPage):
     )
 
     # Editor
-    content_panels = ContentPage.content_panels + [
+    content_page_panels = [
+        FieldPanel("content"),
         FieldPanel("sidebar"),
     ]
+    content_panels = PreviewablePage.content_panels + content_page_panels
 
     edit_handler = TabbedInterface(
         [
@@ -258,11 +279,38 @@ class CountryPage(ContentPage):
     continent = models.CharField(max_length=50, blank=True, null=True)
 
 
+class LandingPage(ContentPage):
+    class Meta:
+        ordering = ["title"]
+
+    page_description = "Free-form full width page."
+
+    # Layout
+    show_header = models.BooleanField(default=True)
+    show_footer = models.BooleanField(default=True)
+    layout_panels = [
+        FieldPanel("show_header"),
+        FieldPanel("show_footer"),
+    ]
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(ContentPage.content_panels, heading="Content"),
+            ObjectList(layout_panels, heading="Layout"),
+            ObjectList(ContentPage.promote_panels, heading="Sharing"),
+            ObjectList(
+                ContentPage.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
 class StaticPage(ContentSidebarPage):
     class Meta:
         ordering = ["title"]
 
-    page_description = "General information page"
+    page_description = "Generic page meant for longform text."
 
     # Layout
     show_header = models.BooleanField(default=True)
