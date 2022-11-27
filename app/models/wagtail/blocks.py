@@ -384,7 +384,19 @@ class ImpactAreaCarousel(blocks.StructBlock):
 
 class TestimonialsSliderBlock(blocks.StructBlock):
     class Meta:
-        template = "app/blocks/dummy_block.html"
+        group = "Basic"
+        template = "app/blocks/testimonials_slider_block.html"
+
+    testimonials = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                ("quote", blocks.CharBlock(required=True)),
+                ("image", ImageChooserBlock(required=True)),
+                ("name", blocks.CharBlock(required=True)),
+                ("location", blocks.CharBlock(required=False)),
+            ]
+        )
+    )
 
 
 full_width_blocks = [
