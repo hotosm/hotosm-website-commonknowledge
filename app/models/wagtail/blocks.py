@@ -382,6 +382,11 @@ class ImpactAreaCarousel(blocks.StructBlock):
         return context
 
 
+class TestimonialsSliderBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/dummy_block.html"
+
+
 full_width_blocks = [
     ("richtext", blocks.RichTextBlock(group="Basic")),
     ("image", ImageBlock()),
@@ -397,4 +402,5 @@ full_width_blocks = [
     ("latest_articles", LatestArticles()),
     ("featured_projects", FeaturedProjects()),
     ("map", MapBlock()),
+    ("testimonials_slider_block", TestimonialsSliderBlock()),
 ]
