@@ -8,19 +8,23 @@ import { debounce } from "lodash";
 export default class extends Controller<HTMLElement> {
     swiper!: SwiperClass;
 
-    values = {
-        options: Object,
-    };
-    optionsValue?: SwiperOptions;
-
     static values = {
         options: Object,
+        activeIndex: { default: 0, type: Number },
     };
+    activeIndexValue?: number;
+    optionsValue?: SwiperOptions;
 
     connect(): void {
         this.swiper = new Swiper(this.element, {
             ...this.defaultOptions,
             ...this.optionsValue,
+        });
+        if (!!this.activeIndexValue) {
+            this.swiper.slideTo(this.activeIndexValue);
+        }
+        this.swiper.on("activeIndexChange", () => {
+            this.activeIndexValue = this.swiper.activeIndex;
         });
     }
 
