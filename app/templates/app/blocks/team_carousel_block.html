@@ -1,14 +1,15 @@
 {% load wagtailimages_tags %}
-<section class="bg-white">
+<section class="bg-white my-32">
     <div class="py-8 px-4 mx-auto text-center lg:py-16 lg:px-6">
         <div class="mx-auto mb-8 lg:mb-16 max-w-screen-sm md:mb-24">
-            <h2 class="mb-4 leading-tight text-2xl font-extrabold text-gray-900">{{ value.title }}</h2>
-            <p class="text-base font-medium text-gray-700">{{ value.description }}</p>
+            <h2 class="mb-4 leading-tight text-2xl font-extrabold text-gray-900 lg:text-4xl">{{ value.title }}</h2>
+            <p class="text-base font-medium text-gray-700 lg:text-xl lg:font-normal">{{ value.description }}</p>
         </div>
-        <div data-controller="carousel"
+        <div
+            data-controller="carousel"
             class="swiper"
             {# djlint:off #}
-             data-carousel-options-value='{"breakpoints":{"0":{"slidesPerView":2,"spaceBetween":16},"768":{"slidesPerView":4,"spaceBetween":16},"1024":{"slidesPerView":8,"spaceBetween":16}}}'>
+             data-carousel-options-value='{"centerInsufficientSlides": true, "breakpoints":{"0":{"slidesPerView":2,"spaceBetween":16},"768":{"slidesPerView":4,"spaceBetween":16},"1024":{"slidesPerView":8,"spaceBetween":16}}}'>
             {# djlint:on #}
             <div class="flex flex-row swiper-wrapper">
                 {% for person in value.team %}
@@ -17,7 +18,7 @@
                         <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
                              src="{{ img.url }}"
                              alt="{{ person.title }}"/>
-                        <a href="#">
+                        <a href="{{ person.url }}">
                             <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
                         </a>
                         {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
