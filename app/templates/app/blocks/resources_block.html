@@ -1,24 +1,47 @@
 {% load wagtailcore_tags %}
-<section class="flex flex-col md:flex-row md:justify-between my-16">
-    <div class="md:mr-16">
-        <header class="pb-8 mb-8 border-b border-solid sm:w-full">
-            <h4 class="leading-tight text-4xl font-extrabold text-gray-900 pb-4">Resources</h4>
+<section class="flex flex-col mt-32 mb-16 mx-4">
+    <div>
+        <header class="sm:w-full mb-8 md:flex justify-between">
+            <h4 class="leading-tight text-2xl font-extrabold text-gray-900 lg:text-4xl">Resources</h4>
+            <a href="{% firstof view_all_link.url view_all_link.page.url %}">
+                <button class="bg-background-tint rounded-sm text-lg font-semibold  text-gray-700 px-3 py-5 hidden md:block w-[103px]">
+                    View all
+                </button>
+            </a>
         </header>
     </div>
-    <div>
-        <div>
-            <h5>{{ value.first_highlighted_resource.title }}</h5>
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:grid lg:grid-cols-3 lg:gap-4">
+        <div class="border-t border-solid pb-9">
+            <a href="{{ value.first_highlighted_resource.url }}">
+                <h5 class="text-red-800 leading-tight text-xl font-semibold mt-6 pb-4">
+                    {{ value.first_highlighted_resource.title }}
+                </h5>
+                <p class="text-base font-normal">{{ value.first_highlighted_resource.specific.short_summary|richtext|striptags }}</p>
+            </a>
         </div>
-        <div>
-            <h5>{{ value.second_highlighted_resource.title }}</h5>
+        <div class="border-t border-solid pb-9">
+            <a href="{{ value.second_highlighted_resource.url }}">
+                <h5 class="text-red-800 leading-tight text-xl font-semibold mt-6 pb-4">
+                    {{ value.second_highlighted_resource.title }}
+                </h5>
+                <p class="text-base font-normal">{{ value.first_highlighted_resource.specific.short_summary|richtext|striptags }}</p>
+            </a>
+        </div>
+        <div class="border-t border-solid pb-9">
+            <h5 class="leading-tight text-xl font-semibold mt-6 mb-4 text-gray-900">Popular resources</h5>
+            <ul>
+                {% for link in value.popular_resources %}
+                    <li class="mb-4">
+                        <a class="text-red-800 underline text-xl font-semibold"
+                           href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-    <ul>
-        {% for link in value.popular_resources %}
-            <li class="pb-4">
-                <a class="text-primary-500 underline text-xl font-semibold"
-                   href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <a href="{% firstof view_all_link.url view_all_link.page.url %}">
+        <button class="bg-background-tint w-full rounded-sm px-5 py-3 text-base font-medium text-gray-900 md:hidden">
+            View all
+        </button>
+    </a>
 </section>
