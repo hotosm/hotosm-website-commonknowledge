@@ -385,9 +385,7 @@ class ImpactAreaCarousel(blocks.StructBlock):
 class TestimonialsSliderBlock(blocks.StructBlock):
     class Meta:
         group = "Basic"
-        help_text = (
-            "A set of testimonials, arranged horizontally with a carousel if needed."
-        )
+        help_text = "A set of testimonials, inside a carousel."
         template = "app/blocks/testimonials_slider_block.html"
 
     testimonials = blocks.ListBlock(
