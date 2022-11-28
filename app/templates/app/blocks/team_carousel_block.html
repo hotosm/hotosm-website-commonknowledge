@@ -1,21 +1,21 @@
 {% load wagtailimages_tags %}
-<section class="bg-white dark:bg-gray-900">
+<section class="bg-white">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-6">
         <div class="mx-auto mb-8 lg:mb-16 max-w-screen-sm md:mb-24">
-            <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{{ value.title }}</h2>
-            <p class="font-light text-gray-500 sm:text-xl dark:text-gray-400">{{ value.description }}</p>
+            <h2 class="mb-4 leading-tight text-2xl font-extrabold text-gray-900">{{ value.title }}</h2>
+            <p class="text-base font-medium text-gray-700">{{ value.description }}</p>
         </div>
         <div class="grid gap-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {% for person in value.team %}
                 <div class="text-center text-gray-500">
                     {% image person.featured_image fill-300x200 as img %}
-                    <img class="mx-auto mb-4 w-36 h-36 rounded-lg"
+                    <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
                          src="{{ img.url }}"
                          alt="{{ person.title }}"/>
                     <a href="#">
-                        <h5 class="mb-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ person.title }}</h5>
+                        <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
                     </a>
-                    <span>Role goes here</span>
+                    <span class="text-sm font-medium text-gray-700">Role goes here</span>
                 </div>
             {% endfor %}
         </div>
