@@ -9,7 +9,7 @@
                         <div class="flex flex-col justify-center h-[430px] md:h-[440px]">
                             <blockquote>
                                 <p class="leading-relaxed text-2xl font-semibold text-background-tint sm:text-2xl dark:text-white">
-                                    {{ testimonial.quote }}
+                                    {{ testimonial.quote|richtext|striptags }}
                                 </p>
                             </blockquote>
                             <figcaption class="flex justify-center items-center mt-6 space-x-3">
