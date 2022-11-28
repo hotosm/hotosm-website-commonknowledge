@@ -400,8 +400,6 @@ class PersonPage(GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
-    parent_page_type = ["app.DirectoryPage"]
-
     # Editor
     template = "app/static_page.html"
     page_description = "Contributors, staff, and other people"
