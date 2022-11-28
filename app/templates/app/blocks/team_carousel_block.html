@@ -1,5 +1,5 @@
 {% load wagtailimages_tags %}
-<section class="bg-white my-32">
+<section class="overflow-x-hidden my-32">
     <div class="py-8 px-4 mx-auto text-center lg:py-16 lg:px-6">
         <div class="mx-auto mb-8 lg:mb-16 max-w-screen-sm md:mb-24">
             <h2 class="mb-4 leading-tight text-2xl font-extrabold text-gray-900 lg:text-4xl">{{ value.title }}</h2>
@@ -9,7 +9,7 @@
             data-controller="carousel"
             class="swiper"
             {# djlint:off #}
-             data-carousel-options-value='{"centerInsufficientSlides": true, "breakpoints":{"0":{"slidesPerView":2,"spaceBetween":16},"768":{"slidesPerView":4,"spaceBetween":16},"1024":{"slidesPerView":8,"spaceBetween":16}}}'>
+             data-carousel-options-value='{"centerInsufficientSlides": true, "breakpoints":{"0":{"slidesPerView":2.5,"spaceBetween":16},"768":{"slidesPerView":4.5,"spaceBetween":16},"1024":{"slidesPerView":8.5,"spaceBetween":16}}}'>
             {# djlint:on #}
             <div class="flex flex-row swiper-wrapper">
                 {% for person in value.team %}
