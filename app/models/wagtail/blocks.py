@@ -384,6 +384,31 @@ class ImpactAreaCarousel(blocks.StructBlock):
         return context
 
 
+class TestimonialsSliderBlock(blocks.StructBlock):
+    class Meta:
+        group = "Basic"
+        help_text = "A set of testimonials, inside a carousel."
+        template = "app/blocks/testimonials_slider_block.html"
+
+    testimonials = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                (
+                    "quote",
+                    blocks.RichTextBlock(
+                        required=True,
+                        max_length=400,
+                        features=[],
+                    ),
+                ),
+                ("image", ImageChooserBlock(required=True)),
+                ("name", blocks.CharBlock(required=True)),
+                ("location", blocks.CharBlock(required=False)),
+            ]
+        )
+    )
+
+
 full_width_blocks = [
     ("richtext", blocks.RichTextBlock(group="Basic")),
     ("image", ImageBlock()),
@@ -399,4 +424,5 @@ full_width_blocks = [
     ("latest_articles", LatestArticles()),
     ("featured_projects", FeaturedProjects()),
     ("map", MapBlock()),
+    ("testimonials_slider_block", TestimonialsSliderBlock()),
 ]
