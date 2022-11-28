@@ -1,3 +1,5 @@
+from math import floor
+
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
@@ -266,19 +268,6 @@ class CallToActionGalleryBlock(blocks.StructBlock):
     )
 
 
-class RelatedPeopleBlock(blocks.StructBlock):
-    class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
-        icon = "fa fa-users"
-        group = "Related content"
-
-    title = blocks.CharBlock(required=False)
-    description = blocks.RichTextBlock(
-        features=["italic", "bold", "link"], required=False
-    )
-
-
 class CarouselBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/carousel_block.html"
@@ -332,7 +321,7 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
         required=True,
-        max_length=400,
+        max_length=600,
         features=["italic", "bold", "link"],
     )
 
@@ -349,6 +338,21 @@ class ResourcesBlock(blocks.StructBlock):
         LinkBlock(), min=1, help_text="Popular resources to highlight"
     )
     view_all_link = LinkBlock()
+
+
+class TeamCarouselBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/team_carousel_block.html"
+        group = "Related content"
+        help_text = "A carousel of team members."
+
+    title = blocks.CharBlock(max_length=75, required=True)
+    description = blocks.RichTextBlock(
+        required=True,
+        max_length=400,
+        features=[],
+    )
+    team = blocks.ListBlock(blocks.PageChooserBlock(page_type="app.PersonPage"))
 
 
 class PartnerLogos(blocks.StructBlock):
@@ -393,6 +397,7 @@ class ImpactAreaCarousel(blocks.StructBlock):
         context = super().get_context(value, parent_context=parent_context)
         impact_areas = localized_pages(ImpactAreaPage.objects.all().live().public())
         context["impact_areas"] = impact_areas
+        context["starting_index"] = max(0, floor(len(impact_areas) / 2) - 1)
         return context
 
 
@@ -427,7 +432,7 @@ full_width_blocks = [
     ("call_to_action", LargeCallToActionBlock()),
     ("gallery_of_calls_to_action", CallToActionGalleryBlock()),
     ("metrics", MetricsBlock()),
-    ("people_gallery", RelatedPeopleBlock()),
+    ("team_carousel", TeamCarouselBlock()),
     ("html", HTMLBlock()),
     ("heading_and_subheading", HeadingAndSubHeadingBlock()),
     ("partner_logos", PartnerLogos()),

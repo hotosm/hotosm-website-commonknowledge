@@ -70,6 +70,12 @@ class PreviewablePage(Page):
     def label(self):
         return self._meta.verbose_name.removesuffix(" page")
 
+    @property
+    def date(self):
+        if self.first_published_at is not None:
+            return self.first_published_at
+        return self.last_published_at
+
     # Editor
     previewable_page_panels = [
         FieldPanel("short_summary"),

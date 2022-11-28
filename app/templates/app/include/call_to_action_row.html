@@ -1,7 +1,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 {% firstof background value.background as background %}
-<section class="{{ class }} group py-16 px-4 md:px-8 lg:px-16 md:rounded-lg {% if background == "dark" %} bg-theme-800{% endif %} {% if value.image %}grid gap-8 grid-cols-1 grid-flow-row md:grid-cols-2 md:grid-rows-1 md:items-center lg:gap-16{% endif %}">
-    <div>
+<section class="{{ class }} group py-16 px-4 {% if background == "dark" %}md:px-8{% else %}md:px-4{% endif %} lg:px-12 md:rounded-lg {% if background == "dark" %} bg-theme-800{% endif %} {% if value.image %}grid gap-8 grid-cols-1 grid-flow-row md:grid-cols-2 md:grid-rows-1 md:items-center lg:gap-16{% endif %}">
+    <div class="{% if value.layout == "image_left" %}md:order-2{% endif %}">
         <h2 class="leading-tight text-4xl font-extrabold md:text-2xl lg:text-4xl text-gray-900 {% if background == "dark" %} text-white{% endif %} mb-4">
             {{ value.title }}
         </h2>
