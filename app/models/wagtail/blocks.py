@@ -299,17 +299,27 @@ class LatestArticles(CarouselBlock):
 
 class FeaturedProjects(CarouselBlock):
     class Meta:
+        help_text = (
+            "A block of projects you wish to highlight, presented as a carousel."
+        )
         template = "app/blocks/featured_projects.html"
         group = "Related content"
 
     ProjectsChooser = blocks.ListBlock(
-        blocks.PageChooserBlock(page_type="app.ProjectPage")
+        blocks.PageChooserBlock(page_type="app.ProjectPage"),
+        help_text="Projects to list in carousel. You can choose as many as you like.",
+    )
+
+    sub_title = blocks.CharBlock(
+        required=False,
+        help_text="An optional sub-title to display next to the title when displaying projects. Useful for giving context if you are providing a sub-set of projects",
     )
 
     def get_context(self, value, parent_context=None):
-
         context = super().get_context(value, parent_context=parent_context)
+
         context["pages"] = value["ProjectsChooser"]
+
         return context
 
 
