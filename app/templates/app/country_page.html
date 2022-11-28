@@ -35,10 +35,10 @@
                 {% if page.show_header is not False %}
                     <header class="my-5">
                         {% if page.show_breadcrumb or True %}
-                            <ul class="mt-4 list-unstyled space-x-2 text-gray-600 text-sm mb-2">
+                            <ul class="mt-4 list-unstyled text-gray-600 text-sm mb-2 content-separator-2 separator-content-slash">
                                 {% for ancestor in page.get_ancestors %}
                                     {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
-                                        <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
+                                        <li class="inline-block">
                                             <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
                                         </li>
                                     {% endif %}

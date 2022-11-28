@@ -48,6 +48,8 @@ class PreviewablePage(Page):
         blank=True, null=True, help_text="Metadata from the legacy site"
     )
 
+    list_card_template = "app/cards/generic_list_card.html"
+
     @property
     def resolved_theme_class(self):
         if (
@@ -75,6 +77,12 @@ class PreviewablePage(Page):
         if self.first_published_at is not None:
             return self.first_published_at
         return self.last_published_at
+
+    filter_url_key = "pk"
+
+    @property
+    def filter_url_value(self):
+        return getattr(self, self.filter_url_key)
 
     def summary(self):
         if self.short_summary is not None and len(self.short_summary) > 0:
@@ -267,12 +275,10 @@ class SearchableDirectoryMixin(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        search_results = list(
-            {p.specific.localized for p in self.do_search(request)})
+        search_results = list({p.specific.localized for p in self.do_search(request)})
         paginator = Paginator(search_results, self.per_page)
         current_page_number = max(
-            1, min(paginator.num_pages, safe_to_int(
-                request.GET.get("page"), 1))
+            1, min(paginator.num_pages, safe_to_int(request.GET.get("page"), 1))
         )
         paginator_page = paginator.page(current_page_number)
 
@@ -306,8 +312,7 @@ class GeocodedMixin(Page):
     class Meta:
         abstract = True
 
-    geographical_location = models.CharField(
-        max_length=250, null=True, blank=True)
+    geographical_location = models.CharField(max_length=250, null=True, blank=True)
     coordinates = PointField(null=True, blank=True)
     related_countries = ParentalManyToManyField("app.CountryPage", blank=True)
 
@@ -345,8 +350,7 @@ class GeocodedMixin(Page):
     @property
     def map_image_url(self):
         if self.featured_image is not None:
-            rendition = self.featured_image.get_rendition(
-                "fill-140x140|jpegquality-80")
+            rendition = self.featured_image.get_rendition("fill-140x140|jpegquality-80")
             return rendition.full_url
 
     def save(self, *args, **kwargs):
@@ -360,16 +364,14 @@ class GeocodedMixin(Page):
 
     def update_location_name(self):
         if self.coordinates is not None:
-            location_data = geolocator.reverse(
-                self.coordinates, zoom=5, exactly_one=1)
+            location_data = geolocator.reverse(self.coordinates, zoom=5, exactly_one=1)
             if location_data is not None:
                 self.geographical_location = location_data.address
 
     content_panels = [
         MultiFieldPanel(
             [
-                AutocompletePanel("related_countries",
-                                  target_model="app.CountryPage"),
+                AutocompletePanel("related_countries", target_model="app.CountryPage"),
                 FieldPanel("geographical_location"),
                 FieldPanel("coordinates", widget=MapboxPointFieldWidget),
             ],
@@ -411,8 +413,7 @@ class IconMixin(Page):
 
     icon_panels = [
         MultiFieldPanel(
-            [FieldPanel("icon_dark_transparent"),
-             FieldPanel("icon_light_transparent")],
+            [FieldPanel("icon_dark_transparent"), FieldPanel("icon_light_transparent")],
             heading="Page icon",
         )
     ]
@@ -443,3 +444,14 @@ class ThemeablePageMixin(Page):
     )
 
     themeable_content_panels = [FieldPanel("theme_class")]
+
+
+class RelatedImpactAreaMixin(Page):
+    class Meta:
+        abstract = True
+
+    related_impact_areas = ParentalManyToManyField("app.ImpactAreaPage", blank=True)
+
+    content_panels = [
+        AutocompletePanel("related_impact_areas", target_model="app.ImpactAreaPage")
+    ]

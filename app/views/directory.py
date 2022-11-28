@@ -1,7 +1,11 @@
 # View for the block, that takes URL query params (?page_type=…&category=…&sort=…) and outputs the queryset, other template context, renders the template
 
+import datetime
+
+from django import forms
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
@@ -13,13 +17,16 @@ from app.models import (
     ArticlePage,
     CountryPage,
     EventPage,
+    GeocodedMixin,
     ImpactAreaPage,
     OpportunityPage,
     OrganisationPage,
     PersonPage,
     ProjectPage,
+    RelatedImpactAreaMixin,
 )
-from app.utils.python import ensure_list
+from app.utils.python import ensure_1D_list
+from app.utils.wagtail import abstract_page_query_filter
 
 
 class DirectoryView(TemplateView):
@@ -37,28 +44,62 @@ class DirectoryView(TemplateView):
         "news": ArticlePage,
     }
 
-    # filters = [
-    #   {
-    #     "options": lambda: ImpactAreaPage.objects.live().public().all().order_by('title'),
-    #     "key": "impact_area",
-    #     "label": "Impact Areas",
-    #     "widget": "checkbox",
-    #     "model_property": "pk",
-    #     "query": lambda values: {
-    #       "related_impact_areas__in": ensure_list(values)
-    #     }
-    #   },
-    #   {
-    #     "options": lambda: CountryPage.objects.live().public().all().order_by('title'),
-    #     "key": "country",
-    #     "label": "Countries",
-    #     "widget": "dropdown",
-    #     "model_property": "isoa2",
-    #     "query": lambda values: {
-    #       "related_countries__in": ensure_list(values)
-    #     }
-    #   }
-    # ]
+    filters = [
+        {
+            "url_param": "year",
+            "label": "Year",
+            "widget": "dropdown",
+            "options": lambda: range(2010, datetime.date.today().year + 1),
+            "query": lambda qs, values: qs.filter(
+                Q(
+                    first_published_at__year__in=map(
+                        lambda v: int(v), ensure_1D_list(values)
+                    )
+                )
+                | Q(
+                    last_published_at__year__in=map(
+                        lambda v: int(v), ensure_1D_list(values)
+                    )
+                )
+            ),
+        },
+        {
+            "url_param": "impact_area",
+            "label": "Impact Areas",
+            "widget": "dropdown",
+            "options": lambda: ImpactAreaPage.objects.live()
+            .public()
+            .all()
+            .order_by("title"),
+            "query": lambda qs, values: qs.filter(
+                abstract_page_query_filter(
+                    RelatedImpactAreaMixin,
+                    dict(related_impact_areas__in=ensure_1D_list(values)),
+                )
+            ),
+        },
+        {
+            "url_param": "country",
+            "label": "Countries",
+            "widget": "dropdown",
+            "options": lambda: CountryPage.objects.live()
+            .public()
+            .all()
+            .order_by("title"),
+            "query": lambda qs, values: qs.filter(
+                abstract_page_query_filter(
+                    GeocodedMixin,
+                    dict(related_countries__isoa2__in=ensure_1D_list(values)),
+                )
+            ),
+        },
+    ]
+
+    def current_filters(self, request):
+        return [
+            {**filter, "current_value": request.GET.get(filter["url_param"], None)}
+            for filter in self.filters
+        ]
 
     def get_queryset(self):
         qs = Page.objects.live().public()
@@ -90,10 +131,9 @@ class DirectoryView(TemplateView):
         else:
             qs = qs.type(tuple(self.page_types.values()))
 
-        # for filter in self.filters:
-        #     value = self.request.GET.get(filter, None)
-        #     if value is not None:
-        #         qs = qs.
+        for filter in self.current_filters(self.request):
+            if filter["current_value"] is not None and len(filter["current_value"]) > 0:
+                qs = filter["query"](qs, filter["current_value"])
 
         if search_query is not None:
             query = Query.get(search_query)
@@ -141,7 +181,8 @@ class DirectoryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         scope = self.get_scope()
-        search_results = list({p.localized for p in self.do_search()})
+        # search_results = list({p.localized for p in self.do_search()})
+        search_results = self.do_search()
         paginator = Paginator(search_results, self.per_page)
         current_page_number = max(
             1, min(paginator.num_pages, safe_to_int(self.request.GET.get("page"), 1))
@@ -167,6 +208,7 @@ class DirectoryView(TemplateView):
                 "paginator": paginator,
                 "page_types": self.page_types.keys(),
                 "request": self.request,
+                "filters": self.current_filters(self.request),
             }
         )
 

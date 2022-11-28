@@ -28,6 +28,7 @@ from app.models.wagtail.mixins import (
     GeocodedMixin,
     IconMixin,
     PreviewablePage,
+    RelatedImpactAreaMixin,
     SearchableDirectoryMixin,
     ThemeablePageMixin,
 )
@@ -120,6 +121,7 @@ class CountryPage(ContentPage):
     class Meta:
         ordering = ["title"]
 
+    filter_url_key = "isoa2"
     parent_page_type = ["app.DirectoryPage"]
     page_description = "Page for each country"
     isoa2 = models.CharField(
@@ -345,7 +347,7 @@ class TaggedProject(ItemBase):
 
 
 @register_snippet
-class ProjectPage(GeocodedMixin, ContentSidebarPage):
+class ProjectPage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
 
@@ -358,6 +360,7 @@ class ProjectPage(GeocodedMixin, ContentSidebarPage):
     # Editor
     content_panels = ContentSidebarPage.content_panels + [
         FieldPanel("tags"),
+        *RelatedImpactAreaMixin.content_panels,
         *GeocodedMixin.content_panels,
     ]
 
@@ -401,6 +404,7 @@ class PersonPage(GeocodedMixin, ContentPage):
         ordering = ["title"]
 
     template = "app/static_page.html"
+    list_card_template = "app/cards/person_list_card.html"
     page_description = "Contributors, staff, and other people"
     category = ClusterTaggableManager(through=TaggedPerson, blank=True)
     role = models.CharField(max_length=1000, blank=True, null=True)
@@ -433,7 +437,7 @@ class TaggedOrganisation(ItemBase):
     )
 
 
-class OrganisationPage(GeocodedMixin, ContentPage):
+class OrganisationPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
@@ -445,6 +449,7 @@ class OrganisationPage(GeocodedMixin, ContentPage):
     # Editor
     content_panels = ContentPage.content_panels + [
         FieldPanel("tags"),
+        *RelatedImpactAreaMixin.content_panels,
         *GeocodedMixin.content_panels,
     ]
 
@@ -476,7 +481,7 @@ class TaggedOpportunity(ItemBase):
 
 
 @register_snippet
-class OpportunityPage(GeocodedMixin, ContentPage):
+class OpportunityPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["-first_published_at"]
 
@@ -493,6 +498,7 @@ class OpportunityPage(GeocodedMixin, ContentPage):
         FieldPanel("deadline_datetime"),
         FieldPanel("place_of_work"),
         FieldPanel("apply_form_url"),
+        *RelatedImpactAreaMixin.content_panels,
         *GeocodedMixin.content_panels,
     ]
 
@@ -533,11 +539,12 @@ class MagazineSection(SearchableDirectoryMixin, PreviewablePage):
 
 
 @register_snippet
-class ArticlePage(GeocodedMixin, ContentSidebarPage):
+class ArticlePage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
 
     template = "app/static_page.html"
+    list_card_template = "app/cards/article_list_card.html"
     page_description = "Blog posts, news reports, updates and so on"
     parent_page_type = ["app.MagazineIndexPage", "app.MagazineSection"]
     show_in_menus_default = False
@@ -545,7 +552,11 @@ class ArticlePage(GeocodedMixin, ContentSidebarPage):
     tags = ClusterTaggableManager(through=TaggedArticle, blank=True)
 
     # Editor
-    metadata_panels = [FieldPanel("tags"), *GeocodedMixin.content_panels]
+    metadata_panels = [
+        FieldPanel("tags"),
+        *RelatedImpactAreaMixin.content_panels,
+        *GeocodedMixin.content_panels,
+    ]
 
     edit_handler = TabbedInterface(
         [
@@ -669,7 +680,7 @@ class TaggedEvent(ItemBase):
 
 
 @register_snippet
-class EventPage(GeocodedMixin, ContentPage):
+class EventPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     template = "app/static_page.html"
     page_description = "Events, workshops, and other gatherings"
 
@@ -690,6 +701,7 @@ class EventPage(GeocodedMixin, ContentPage):
             ],
             heading="Scheduling",
         ),
+        *RelatedImpactAreaMixin.content_panels,
         *GeocodedMixin.content_panels,
         FieldPanel("tags"),
     ]

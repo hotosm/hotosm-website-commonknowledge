@@ -1,5 +1,7 @@
 {% extends "app/landing_page.html" %}
 {% block content %}
     {{ block.super }}
-    <turbo-frame id="directory-frame" src="{% url "directory_frame" %}" />
+    <turbo-frame id="directory-frame" src="{% url "directory_frame" %}" target="_self">
+    {% include "app/include/loading.html" %}
+    </turbo-frame>
 {% endblock content %}
