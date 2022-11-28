@@ -44,6 +44,21 @@ class DirectoryView(TemplateView):
         "news": ArticlePage,
     }
 
+    # qs, url_value, UI label
+    DEFAULT_ORDER_BY = "-date"
+    order_by = {
+        "alphabetical": {"query": ("title",), "label": "Sort alphabetically (A to Z)"},
+        "-alphabetical": {
+            "query": ("-title",),
+            "label": "Sort reverse alphabetically (Z to A)",
+        },
+        DEFAULT_ORDER_BY: {
+            "query": ("-first_published_at",),
+            "label": "Sort most recent",
+        },
+        "date": {"query": ("first_published_at",), "label": "Sort oldest first"},
+    }
+
     filters = [
         {
             "url_param": "year",
@@ -121,6 +136,12 @@ class DirectoryView(TemplateView):
 
         return Page.objects.filter(pk=scope_id).first()
 
+    def current_order_by_key(self):
+        order_by = self.request.GET.get("order_by", self.DEFAULT_ORDER_BY)
+        if order_by is None or order_by not in self.order_by.keys():
+            order_by = self.DEFAULT_ORDER_BY
+        return order_by
+
     def do_search(self):
         qs = self.get_queryset()
         search_query = self.get_search_query()
@@ -139,76 +160,34 @@ class DirectoryView(TemplateView):
             query = Query.get(search_query)
             query.add_hit()
 
-            return qs.search(search_query)
+            qs = qs.search(search_query)
 
-        else:
-            return qs
+        order_by = self.order_by[self.current_order_by_key()]["query"]
+        qs = qs.order_by(*order_by)
 
-    def get_search_highlight(self, page):
-        if hasattr(page, self.search_highlight_field):
-            highlighter = SearchHeadline(
-                self.search_highlight_field,
-                query=SearchQuery(self.get_search_query()),
-                min_words=60,
-                max_words=80,
-                start_sel="<cksearch:hl>",
-                stop_sel="</cksearch:hl>",
-            )
-
-            highlights_raw = (
-                type(page)
-                .objects.annotate(search_highlight=highlighter)
-                .get(id=page.id)
-                .search_highlight
-            )
-
-            highlight_groups = list(
-                hl.split("</cksearch:hl>")
-                for hl in highlights_raw.split("<cksearch:hl>")
-            )
-            start = highlight_groups.pop(0)[0]
-
-            highlights = tuple(
-                format_html(
-                    '<span class="search-highlight">{}</span>{}',
-                    mark_safe(highlight),
-                    next,
-                )
-                for highlight, next in highlight_groups
-            )
-
-            return concat_html(start, *highlights)
+        return qs
 
     def get_context_data(self, **kwargs):
         scope = self.get_scope()
-        # search_results = list({p.localized for p in self.do_search()})
         search_results = self.do_search()
         paginator = Paginator(search_results, self.per_page)
-        current_page_number = max(
-            1, min(paginator.num_pages, safe_to_int(self.request.GET.get("page"), 1))
-        )
+        current_page_number = max(1, int(self.request.GET.get("page", 1)))
         paginator_page = paginator.page(current_page_number)
 
         kwargs.update(
             {
                 "scope": scope,
                 "search_query": self.get_search_query(),
-                "search_results": lambda: [
-                    {
-                        "page": page,
-                        "search_highlight": lambda: self.get_search_highlight(
-                            page.specific
-                        ),
-                    }
-                    for page in paginator_page
-                ],
-                "pages": lambda: [page.specific for page in paginator_page],
-                "total_count": paginator.count,
+                "pages": lambda: list(
+                    {page.localized.specific for page in paginator_page}
+                ),
                 "paginator_page": paginator_page,
                 "paginator": paginator,
                 "page_types": self.page_types.keys(),
                 "request": self.request,
                 "filters": self.current_filters(self.request),
+                "order_by": self.order_by,
+                "current_order_by_key": self.current_order_by_key(),
             }
         )
 

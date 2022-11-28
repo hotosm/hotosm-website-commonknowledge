@@ -58,6 +58,11 @@ urlpatterns += i18n_patterns(
         DirectoryView.as_view(template_name="app/frames/directory.html"),
         name="directory_frame",
     ),
+    path(
+        "test_directory/",
+        DirectoryView.as_view(template_name="app/test_directory.html"),
+        name="directory_frame",
+    ),
     path("", include(wagtail_urls)),
 )
 

@@ -54,10 +54,22 @@
             </div>
         </aside>
         <div class="md:col-span-3">
-            <div>
-                <div class="my-8 text-base font-semibold">{{ total_count }} result{{ total_count|pluralize }}</div>
-            </div>
-            <hr class="border-b border-b-gray-300" />
+            {% with paginator.count as total_count %}
+                <div class="flex flex-row justify-between">
+                    <div class="my-8 text-base font-semibold">{{ total_count }} result{{ total_count|pluralize }}</div>
+                    <select id="directory-sort"
+                            class="width-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            name="order_by">
+                        {% for key, value in order_by.items %}
+                            <option {% if current_order_by_key == key %}selected="true"{% endif %}
+                                    value="{{ key }}">
+                                {{ value.label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <hr class="border-b border-b-gray-300" />
+            {% endwith %}
             <div class="my-8 divide-y divide-gray-300 md:overflow-y-auto">
                 {% for page in pages %}
                     {% include page.list_card_template with page=page %}
