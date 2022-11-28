@@ -21,7 +21,7 @@
                         <a href="{{ person.url }}">
                             <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
                         </a>
-                        {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
+                        {% if person.role %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
                     </div>
                 {% endfor %}
             </div>
