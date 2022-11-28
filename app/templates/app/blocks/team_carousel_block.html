@@ -5,69 +5,9 @@
             <h2 class="mb-4 leading-tight text-2xl font-extrabold text-gray-900">{{ value.title }}</h2>
             <p class="text-base font-medium text-gray-700">{{ value.description }}</p>
         </div>
-        <div class="grid gap-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div class="flex flex-row">
             {% for person in value.team %}
-                <div class="text-center text-gray-500">
-                    {% image person.featured_image fill-160x160 as img %}
-                    <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
-                         src="{{ img.url }}"
-                         alt="{{ person.title }}"/>
-                    <a href="#">
-                        <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
-                    </a>
-                    {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
-                </div>
-            {% endfor %}
-            {% for person in value.team %}
-                <div class="text-center text-gray-500">
-                    {% image person.featured_image fill-160x160 as img %}
-                    <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
-                         src="{{ img.url }}"
-                         alt="{{ person.title }}"/>
-                    <a href="#">
-                        <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
-                    </a>
-                    {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
-                </div>
-            {% endfor %}
-            {% for person in value.team %}
-                <div class="text-center text-gray-500">
-                    {% image person.featured_image fill-160x160 as img %}
-                    <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
-                         src="{{ img.url }}"
-                         alt="{{ person.title }}"/>
-                    <a href="#">
-                        <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
-                    </a>
-                    {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
-                </div>
-            {% endfor %}
-            {% for person in value.team %}
-                <div class="text-center text-gray-500">
-                    {% image person.featured_image fill-160x160 as img %}
-                    <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
-                         src="{{ img.url }}"
-                         alt="{{ person.title }}"/>
-                    <a href="#">
-                        <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
-                    </a>
-                    {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
-                </div>
-            {% endfor %}
-            {% for person in value.team %}
-                <div class="text-center text-gray-500">
-                    {% image person.featured_image fill-160x160 as img %}
-                    <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
-                         src="{{ img.url }}"
-                         alt="{{ person.title }}"/>
-                    <a href="#">
-                        <h5 class="mb-1 leading-tight text-lg font-semibold text-gray-900">{{ person.title }}</h5>
-                    </a>
-                    {% if person.role != None %}<span class="text-sm font-medium text-gray-700">{{ person.role }}</span>{% endif %}
-                </div>
-            {% endfor %}
-            {% for person in value.team %}
-                <div class="text-center text-gray-500">
+                <div class="text-center text-gray-500 flex flex-col mr-4">
                     {% image person.featured_image fill-160x160 as img %}
                     <img class="mx-auto mb-4 w-[80px] h-[80px] rounded-full"
                          src="{{ img.url }}"
