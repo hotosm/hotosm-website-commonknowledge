@@ -49,7 +49,7 @@
                     <div class="mb-4 h-48 bg-gray-300 rounded"></div>
                 {% endif %}
                 <div class="mb-4">{{ article.title }}</div>
-                <div class="mb-4">{{ article.first_published_at|date:"D d M Y" }}</div>
+                <div class="mb-4">{{ article.date|date:"D d M Y" }}</div>
                 {% if article.short_summary %}
                     <div class="mb-2.5">{{ article.short_summary|richtext|striptags|truncatewords:50 }}</div>
                 {% endif %}

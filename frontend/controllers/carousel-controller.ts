@@ -20,6 +20,7 @@ export default class extends Controller<HTMLElement> {
             ...this.defaultOptions,
             ...this.optionsValue,
         });
+        this.element.classList.add("swiper");
         if (!!this.activeIndexValue) {
             this.swiper.slideTo(this.activeIndexValue);
         }
