@@ -1,3 +1,5 @@
+from math import floor
+
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
@@ -332,7 +334,7 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
         required=True,
-        max_length=400,
+        max_length=600,
         features=["italic", "bold", "link"],
     )
 
@@ -379,6 +381,7 @@ class ImpactAreaCarousel(blocks.StructBlock):
         context = super().get_context(value, parent_context=parent_context)
         impact_areas = localized_pages(ImpactAreaPage.objects.all().live().public())
         context["impact_areas"] = impact_areas
+        context["starting_index"] = max(0, floor(len(impact_areas) / 2) - 1)
         return context
 
 
