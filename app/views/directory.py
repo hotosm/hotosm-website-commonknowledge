@@ -75,7 +75,9 @@ class DirectoryView(TemplateView):
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
                     RelatedImpactAreaMixin,
-                    dict(related_impact_areas__in=ensure_1D_list(values)),
+                    dict(
+                        related_impact_areas__translation_key__in=ensure_1D_list(values)
+                    ),
                 )
             ),
         },

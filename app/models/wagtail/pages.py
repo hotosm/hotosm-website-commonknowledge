@@ -127,13 +127,11 @@ class CountryPage(ContentPage):
     page_description = "Page for each country"
     isoa2 = models.CharField(
         max_length=2,
-        unique=True,
         validators=[validate_genuine_isoa2_code],
         help_text="ISO Alpha 2 country code",
     )
     isoa3 = models.CharField(
         max_length=3,
-        unique=True,
         validators=[validate_genuine_isoa3_code],
         blank=True,
         null=True,

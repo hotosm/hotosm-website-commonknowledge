@@ -96,7 +96,7 @@ class PreviewablePage(Page):
     def autocomplete_label(self):
         return f"[{self.locale.language_code.upper()}] {self.title}"
 
-    filter_url_key = "pk"
+    filter_url_key = "translation_key"
 
     @property
     def filter_url_value(self):
