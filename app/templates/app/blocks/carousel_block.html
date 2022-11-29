@@ -1,7 +1,10 @@
 {% load wagtailimages_tags %}
 <section class="px-page-row overflow-x-hidden">
     <div class="md:flex justify-between pt-16">
-        <h1 class="font-extrabold sm:text-2xl md:text-4xl text-gray-900 leading-tight">{{ self.title }}</h1>
+        <h1 class="font-extrabold sm:text-2xl md:text-4xl text-gray-900 leading-tight flex flex-col md:inline">
+            {% if self.title %}{{ self.title }}{% endif %}
+            {% if self.sub_title %}<span class="text-gray-500">{{ self.sub_title }}</span>{% endif %}
+        </h1>
         <a href="{{ view_all.url }}">
             <button class="bg-background-tint rounded-sm text-lg font-semibold  text-gray-700 px-3 py-5 hidden md:block w-[103px]">
                 View all
@@ -94,7 +97,7 @@
         </svg>
     </div>
     <a href="{{ view_all.url }}">
-        <button class="bg-background-tint w-full rounded-sm px-5 py-3 ml-4 text-base font-medium text-gray-900 md:hidden">
+        <button class="bg-background-tint w-full rounded-sm px-5 py-3 text-base font-medium text-gray-900 md:hidden">
             View all
         </button>
     </a>
