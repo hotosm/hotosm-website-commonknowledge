@@ -20,7 +20,6 @@ from wagtail.api.conf import APIField
 from wagtail.core.models import Page
 from wagtail.fields import RichTextField, StreamField
 from wagtail.search.models import Query
-from wagtail_localize.fields import SynchronizedField
 from wagtailautocomplete.edit_handlers import AutocompletePanel
 
 import app.models.wagtail.blocks as app_blocks
@@ -50,12 +49,6 @@ class PreviewablePage(Page):
     frontmatter = models.JSONField(
         blank=True, null=True, help_text="Metadata from the legacy site"
     )
-
-    # Make the slug synchronised, but don't allow it to be overridden on translations
-    override_translatable_fields = [
-        SynchronizedField("featured_image", overridable=False),
-        SynchronizedField("frontmatter", overridable=False),
-    ]
 
     list_card_template = "app/cards/generic_list_card.html"
 
@@ -424,13 +417,6 @@ class GeocodedMixin(Page):
         APIField("countries"),
     ]
 
-    # Make the slug synchronised, but don't allow it to be overridden on translations
-    override_translatable_fields = [
-        SynchronizedField("geographical_location", overridable=False),
-        SynchronizedField("coordinates", overridable=False),
-        SynchronizedField("related_countries", overridable=False),
-    ]
-
 
 class IconMixin(Page):
     class Meta:
@@ -460,12 +446,6 @@ class IconMixin(Page):
         )
     ]
 
-    # Make the slug synchronised, but don't allow it to be overridden on translations
-    override_translatable_fields = [
-        SynchronizedField("icon_dark_transparent", overridable=False),
-        SynchronizedField("icon_light_transparent", overridable=False),
-    ]
-
 
 class ThemeablePageMixin(Page):
     class Meta:
@@ -493,11 +473,6 @@ class ThemeablePageMixin(Page):
 
     themeable_content_panels = [FieldPanel("theme_class")]
 
-    # Make the slug synchronised, but don't allow it to be overridden on translations
-    override_translatable_fields = [
-        SynchronizedField("theme_class", overridable=False),
-    ]
-
 
 class RelatedImpactAreaMixin(Page):
     class Meta:
@@ -516,8 +491,3 @@ class RelatedImpactAreaMixin(Page):
         so collect them all up
         """
         return localized_related_pages(self, "related_impact_areas")
-
-    # Make the slug synchronised, but don't allow it to be overridden on translations
-    override_translatable_fields = [
-        SynchronizedField("related_impact_areas", overridable=False),
-    ]
