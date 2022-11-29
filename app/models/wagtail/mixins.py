@@ -26,6 +26,8 @@ from wagtailautocomplete.edit_handlers import AutocompletePanel
 import app.models.wagtail.blocks as app_blocks
 from app.helpers import concat_html, safe_to_int
 from app.utils.geo import geolocator
+from app.utils.python import ensure_1D_list
+from app.utils.wagtail import localized_related_pages
 
 from .cms import CMSImage
 
@@ -342,6 +344,14 @@ class GeocodedMixin(Page):
     related_countries = ParentalManyToManyField("app.CountryPage", blank=True)
 
     @property
+    def localized_related_countries(self):
+        """
+        Translations of this page might have different foreign keys defined
+        so collect them all up
+        """
+        return localized_related_pages(self, "related_countries")
+
+    @property
     def has_unique_location(self):
         return self.coordinates is not None
 
@@ -498,6 +508,14 @@ class RelatedImpactAreaMixin(Page):
     content_panels = [
         AutocompletePanel("related_impact_areas", target_model="app.ImpactAreaPage")
     ]
+
+    @property
+    def localized_related_impact_areas(self):
+        """
+        Translations of this page might have different foreign keys defined
+        so collect them all up
+        """
+        return localized_related_pages(self, "related_impact_areas")
 
     # Make the slug synchronised, but don't allow it to be overridden on translations
     override_translatable_fields = [

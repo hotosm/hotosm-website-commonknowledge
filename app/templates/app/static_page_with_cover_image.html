@@ -1,0 +1,12 @@
+{% extends "app/static_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block header %}
+    {% include "app/include/header.html" with transparent=True %}
+{% endblock header %}
+{% block content %}
+    {% block inline_title_block %}
+        {% comment %} Leave this to the page_cover.html template {% endcomment %}
+    {% endblock inline_title_block %}
+    {% include "app/include/page_cover.html" %}
+    {{ block.super }}
+{% endblock content %}

@@ -283,6 +283,9 @@ class CountryPage(ContentPage):
             f"REGIONAL INDICATOR SYMBOL LETTER {self.isoa2[1]}"
         )
 
+    def name_with_flag(self):
+        return f"{self.emoji_flag} {self.title}"
+
     def autocomplete_label(self):
         return f"[{self.locale.language_code.upper()}] {self.emoji_flag} {self.title}"
 
@@ -364,7 +367,6 @@ class ProjectPage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
         ordering = ["-first_published_at"]
 
     parent_page_type = ["app.DirectoryPage"]
-    template = "app/static_page.html"
     page_description = "HOTOSM and third party projects"
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
     # TODO: project status
@@ -422,7 +424,6 @@ class PersonPage(GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
-    template = "app/static_page.html"
     list_card_template = "app/cards/person_list_card.html"
     page_description = "Contributors, staff, and other people"
     category = ClusterTaggableManager(through=TaggedPerson, blank=True)
@@ -468,7 +469,6 @@ class OrganisationPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
         ordering = ["title"]
 
     parent_page_type = ["app.DirectoryPage"]
-    template = "app/static_page.html"
     page_description = "Internal and external organisations"
     tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
 
@@ -520,7 +520,6 @@ class OpportunityPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
         ordering = ["-first_published_at"]
 
     parent_page_type = ["app.DirectoryPage"]
-    template = "app/static_page.html"
     page_description = "Opportunities for people to get involved with HOT"
     deadline_datetime = models.DateTimeField(blank=True, null=True)
     place_of_work = models.CharField(max_length=1000, blank=True, null=True)
@@ -588,7 +587,6 @@ class ArticlePage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
 
-    template = "app/static_page.html"
     list_card_template = "app/cards/article_list_card.html"
     page_description = "Blog posts, news reports, updates and so on"
     parent_page_type = ["app.MagazineIndexPage", "app.MagazineSection"]
@@ -745,7 +743,6 @@ class TaggedEvent(ItemBase):
 
 @register_snippet
 class EventPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
-    template = "app/static_page.html"
     page_description = "Events, workshops, and other gatherings"
 
     class Meta:

@@ -1,15 +1,5 @@
 {% extends "app/static_page_with_cover_image.html" %}
-{% load app %}
 {% block metadata %}
-    {% comment %} Impact areas {% endcomment %}
-    {% with page.localized_related_impact_areas as related %}
-        {% if related|length > 0 %}
-            <section class="space-y-1">
-                <div>Impact area</div>
-                {% for page in related %}<a class="block link" href="{{ page.url }}">{{ page.title }}</a>{% endfor %}
-            </section>
-        {% endif %}
-    {% endwith %}
     {% comment %} Countries {% endcomment %}
     {% with page.localized_related_countries as related %}
         {% if related|length > 0 %}

@@ -72,6 +72,17 @@
             display: none !important;
         }
     }
+
+    .link {
+        @apply text-theme-500 underline font-semibold;
+    }
+
+    .prose,
+    .prose-lg {
+        p:first-child {
+            margin-top: 0;
+        }
+    }
 }
 
 // From wagtail's RTF renderer

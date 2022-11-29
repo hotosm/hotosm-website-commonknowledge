@@ -2,6 +2,19 @@ from django.apps import apps
 from django.db.models import Q, Subquery
 from wagtail.models import Page
 
+from app.utils.python import ensure_1D_list
+
+
+def localized_related_pages(page, property: str):
+    """
+    Collect foreign key references for each translation of a page.
+    """
+    translations = page.get_translations(inclusive=True).all()
+    related_pages = []
+    for translation in translations:
+        related_pages += list(getattr(translation, property).all())
+    return ensure_1D_list(related_pages)
+
 
 def localized_pages(pages):
     return list({p.specific.localized for p in list(pages)})

@@ -9,7 +9,7 @@
         <ul>
             {% for link in value.links %}
                 <li class="pb-4">
-                    <a class="text-primary-500 underline text-xl font-semibold"
+                    <a class="text-theme-500 underline text-xl font-semibold"
                        href="{% firstof link.url link.page.url %}">{% firstof link.label link.page.title %}</a>
                 </li>
             {% endfor %}
