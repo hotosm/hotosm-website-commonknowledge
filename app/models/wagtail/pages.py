@@ -20,6 +20,7 @@ from wagtail.core.rich_text import RichText
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
+from wagtail_localize.fields import SynchronizedField
 
 import app.models.wagtail.blocks as app_blocks
 from app.models.wagtail.mixins import (
@@ -139,6 +140,13 @@ class CountryPage(ContentPage):
         help_text="ISO Alpha 3 country code",
     )
     continent = models.CharField(max_length=50, blank=True, null=True)
+
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        *ContentPage.override_translatable_fields,
+        SynchronizedField("isoa2", overridable=False),
+        SynchronizedField("isoa3", overridable=False),
+    ]
 
     # Editor
     content_panels = Page.content_panels + [
@@ -278,12 +286,18 @@ class CountryPage(ContentPage):
         )
 
     def autocomplete_label(self):
-        return f"{self.emoji_flag} {self.title}"
+        return f"[{self.locale.language_code.upper()}] {self.emoji_flag} {self.title}"
 
 
-class LandingPage(ContentPage):
+class LandingPage(ThemeablePageMixin, ContentPage):
     class Meta:
         ordering = ["title"]
+
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        *ContentPage.override_translatable_fields,
+        *ThemeablePageMixin.override_translatable_fields,
+    ]
 
     page_description = "Free-form full width page."
 
@@ -357,6 +371,13 @@ class ProjectPage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
     # TODO: project status
 
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        *ContentSidebarPage.override_translatable_fields,
+        *GeocodedMixin.override_translatable_fields,
+        *RelatedImpactAreaMixin.override_translatable_fields,
+    ]
+
     # Editor
     content_panels = ContentSidebarPage.content_panels + [
         FieldPanel("tags"),
@@ -411,6 +432,13 @@ class PersonPage(GeocodedMixin, ContentPage):
     # TODO: relations
     # TODO: external links
 
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        SynchronizedField("category", overridable=False),
+        *ContentPage.override_translatable_fields,
+        *GeocodedMixin.override_translatable_fields,
+    ]
+
     content_panels = ContentPage.content_panels + [*GeocodedMixin.content_panels]
 
     edit_handler = TabbedInterface(
@@ -445,6 +473,14 @@ class OrganisationPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     template = "app/static_page.html"
     page_description = "Internal and external organisations"
     tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
+
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        SynchronizedField("tags", overridable=False),
+        *ContentPage.override_translatable_fields,
+        *GeocodedMixin.override_translatable_fields,
+        *RelatedImpactAreaMixin.override_translatable_fields,
+    ]
 
     # Editor
     content_panels = ContentPage.content_panels + [
@@ -492,6 +528,17 @@ class OpportunityPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     place_of_work = models.CharField(max_length=1000, blank=True, null=True)
     apply_form_url = models.URLField(blank=True, null=True)
     category = ClusterTaggableManager(through=TaggedOpportunity, blank=True)
+
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        SynchronizedField("place_of_work", overridable=False),
+        SynchronizedField("apply_form_url", overridable=False),
+        SynchronizedField("deadline_datetime", overridable=False),
+        SynchronizedField("category", overridable=False),
+        *ContentPage.override_translatable_fields,
+        *GeocodedMixin.override_translatable_fields,
+        *RelatedImpactAreaMixin.override_translatable_fields,
+    ]
 
     # Editor
     content_panels = ContentPage.content_panels + [
@@ -551,6 +598,14 @@ class ArticlePage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
 
     tags = ClusterTaggableManager(through=TaggedArticle, blank=True)
 
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        SynchronizedField("tags", overridable=False),
+        *ContentSidebarPage.override_translatable_fields,
+        *GeocodedMixin.override_translatable_fields,
+        *RelatedImpactAreaMixin.override_translatable_fields,
+    ]
+
     # Editor
     metadata_panels = [
         FieldPanel("tags"),
@@ -600,6 +655,11 @@ class TopicHomepage(TopicContextMixin, ContentPage):
     page_description = "Topical overview, can contain subpages"
     subpage_types = ["app.TopicPage"]
 
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        *ContentPage.override_translatable_fields,
+    ]
+
     # Layout
     show_table_of_contents = models.BooleanField(default=True)
     show_section_navigation = models.BooleanField(default=True)
@@ -647,6 +707,12 @@ class TopicPage(TopicContextMixin, ContentPage):
         FieldPanel("tags"),
     ]
 
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        SynchronizedField("tags", overridable=False),
+        *ContentPage.override_translatable_fields,
+    ]
+
     # Layout
     show_table_of_contents = models.BooleanField(default=True)
     show_section_navigation = models.BooleanField(default=True)
@@ -692,6 +758,16 @@ class EventPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     end_datetime = models.DateTimeField(null=True, blank=True)
     tags = ClusterTaggableManager(through=TaggedEvent, blank=True)
 
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        SynchronizedField("start_datetime", overridable=False),
+        SynchronizedField("end_datetime", overridable=False),
+        SynchronizedField("tags", overridable=False),
+        *ContentPage.override_translatable_fields,
+        *GeocodedMixin.override_translatable_fields,
+        *RelatedImpactAreaMixin.override_translatable_fields,
+    ]
+
     # Editor
     content_panels = ContentPage.content_panels + [
         FieldRowPanel(
@@ -731,6 +807,13 @@ class EventPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
 
 class ImpactAreaPage(ThemeablePageMixin, IconMixin, ContentPage):
     page_description = "Overview page for each of the impact areas. Create one here and you can tag other pages with it."
+
+    # Make the slug synchronised, but don't allow it to be overridden on translations
+    override_translatable_fields = [
+        *ContentPage.override_translatable_fields,
+        *ThemeablePageMixin.override_translatable_fields,
+        *IconMixin.override_translatable_fields,
+    ]
 
     # Editor
     content_panels = [
