@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
-{% comment %} TODO: Global header text should be white {% endcomment %}
+{% block header %}
+    {% include "app/include/header.html" with transparent=True %}
+{% endblock header %}
 {% block content %}
     <main>
         {% block content_header %}
             {% if page.show_header is not False %}
                 {% image page.featured_image width-800 as img %}
-                <header class="px-page-row py-24 text-white bg-theme-900 bg-cover bg-center before:contents['.'] relative before:text-transparent before:absolute before:bg-black before:bg-opacity-30 before:inset-0 before:w-full before:h-full before:z-10"
+                <header class="px-page-row pt-[144px] pb-24 text-white bg-theme-900 bg-cover bg-center before:contents['.'] relative before:text-transparent before:absolute before:bg-black before:bg-opacity-30 before:inset-0 before:w-full before:h-full before:z-10"
                         style="background-image: url('{{ img.url }}')">
                     <div class="flex flex-col md:flex-row justify-between items-start">
                         <div class="relative z-20 max-w-prose">
