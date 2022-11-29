@@ -1,39 +1,40 @@
 {% load static app i18n wagtailcore_tags %}
-<nav class="bg-white border-gray-300 border-b relative">
-    <div class="flex flex-wrap justify-end items-center mx-auto p-4 space-x-4 lg:space-x-8">
+<nav class="group {% if transparent %}bg-transparent absolute pointer-events-none inset-0 w-full z-20{% else %}bg-background relative{% endif %}">
+    <div class="flex flex-wrap justify-end items-center mx-auto p-4 space-x-4 lg:space-x-8 pointer-events-auto border-b border-gray-300 group-[.bg-transparent]:border-white">
         {% comment %} Logo {% endcomment %}
         {# djlint:off D018 #}
         {% comment %} The above line allows hardcoded href {% endcomment %}
         <a href="/" class="flex items-center mr-auto">
             {# djlint:on #}
-            <img src="{% static "app/logo.svg" %}"
+            <img src="{% if transparent %}{% static "app/logo-light.svg" %}{% else %}{% static "app/logo.svg" %}{% endif %}"
                  class="sm:mr-3 h-[40px]"
                  alt="Humanitarian OpenStreetMap Team"/>
         </a>
         {% comment %} Links {% endcomment %}
         <div class="hidden justify-between items-center w-full !m-0 absolute top-full left-0 h-full z-50 lg:m-auto lg:relative lg:flex lg:w-auto"
              id="navbar-cta">
-            <ul class="flex flex-col bg-background-tint border border-gray-300 border-b p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:bg-white font-semibold">
+            <ul class="flex flex-col bg-background-tint border border-gray-300 border-b p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:bg-transparent font-semibold">
                 {% comment %} Dynamic menu items {% endcomment %}
                 {% for item in settings.app.HeaderSetting.navigation %}
                     <li>
                         <a href="{{ item.value.url }}"
-                           class="block text-gray-700 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0">{{ item.value.text }}</a>
+                           class="block text-gray-700 group-[.bg-transparent]:text-white rounded hover:bg-gray-100 lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0">{{ item.value.text }}</a>
                     </li>
                 {% endfor %}
                 {% comment %} Donate button {% endcomment %}
                 {% for item in settings.app.HeaderSetting.button %}
                     <li>
                         <a href="{{ item.value.url }}"
-                           class="block text-gray-700 rounded hover:bg-gray-100 lg:inline-block lg:text-white lg:bg-blue-500 lg:hover:bg-blue-600 lg:focus:ring-4 lg:focus:outline-none lg:focus:ring-blue-300 lg:font-medium lg:rounded-sm lg:text-sm lg:px-5 lg:py-2.5 lg:text-center">{{ item.value.text }}</a>
+                           class="block text-gray-700 group-[.bg-transparent]:text-white rounded hover:bg-gray-100 lg:inline-block lg:text-white lg:bg-blue-500 lg:hover:bg-blue-600 lg:focus:ring-4 lg:focus:outline-none lg:focus:ring-blue-300 lg:font-medium lg:rounded-sm lg:text-sm lg:px-5 lg:py-2.5 lg:text-center">{{ item.value.text }}</a>
                     </li>
                 {% endfor %}
             </ul>
         </div>
         {% comment %} Search button {% endcomment %}
         <a href="{% url "search" %}"
-           class="nowrap block text-gray-700 hover:text-blue-800 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0">
-            <svg class="align-middle w-[24px] h-[24px] inline-block"
+           class="nowrap block text-gray-700 group-[.bg-transparent]:text-white hover:text-blue-800 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0">
+            <svg class="align-middle w-[24px] h-[24px] inline-block group-[.bg-transparent]:text-white"
+                 style="max-width: 150px"
                  fill="none"
                  stroke="currentColor"
                  viewBox="0 0 24 24"
@@ -51,7 +52,7 @@
                     <div role="button"
                          data-action="click->dropdown#toggle click@window->dropdown#hide"
                          tabindex="0"
-                         class="inline-block select-none whitespace-nowrap hover:text-blue-800">
+                         class="inline-block select-none whitespace-nowrap group-[.bg-transparent]:text-white hover:text-blue-800">
                         {% get_language_info for page.locale.language_code as current_lang %}
                         <span class="align-middle uppercase font-semibold">{{ current_lang.code }}</span>
                         <svg width="13"
@@ -59,13 +60,13 @@
                              viewBox="0 0 13 8"
                              fill="none"
                              xmlns="http://www.w3.org/2000/svg"
-                             class="align-middle inline-block">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="#5F5F5F" />
+                             class="align-middle inline-block group-[.bg-transparent]:text-white">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="currentColor" />
                         </svg>
                     </div>
                     {% comment %} Language list {% endcomment %}
                     <div data-dropdown-target="menu"
-                         class="hidden transition transform origin-top-right absolute right-0"
+                         class="hidden transition transform origin-top-right absolute right-0 z-50"
                          data-transition-enter-from="opacity-0 scale-95"
                          data-transition-enter-to="opacity-100 scale-100"
                          data-transition-leave-from="opacity-100 scale-100"
@@ -110,8 +111,8 @@
                              viewBox="0 0 13 8"
                              fill="none"
                              xmlns="http://www.w3.org/2000/svg"
-                             class="align-middle inline-block">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="#5F5F5F" />
+                             class="align-middle inline-block group-[.bg-transparent]:text-white">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.18533 0.7516C1.41036 0.526635 1.71553 0.400256 2.03373 0.400256C2.35193 0.400256 2.65709 0.526635 2.88213 0.7516L6.83373 4.7032L10.7853 0.7516C10.896 0.636988 11.0284 0.545569 11.1748 0.482678C11.3212 0.419787 11.4787 0.386684 11.638 0.385299C11.7974 0.383915 11.9554 0.414276 12.1029 0.474613C12.2503 0.534951 12.3843 0.624054 12.497 0.736726C12.6097 0.849397 12.6988 0.983379 12.7591 1.13085C12.8195 1.27833 12.8498 1.43635 12.8484 1.59568C12.847 1.75502 12.8139 1.91248 12.7511 2.05888C12.6882 2.20529 12.5967 2.3377 12.4821 2.4484L7.68213 7.2484C7.45709 7.47336 7.15193 7.59974 6.83373 7.59974C6.51553 7.59974 6.21036 7.47336 5.98533 7.2484L1.18533 2.4484C0.960363 2.22337 0.833984 1.9182 0.833984 1.6C0.833984 1.2818 0.960363 0.976633 1.18533 0.7516Z" fill="currentColor" />
                         </svg>
                     </div>
                     {% comment %} Language list {% endcomment %}
@@ -142,11 +143,11 @@
         {% comment %} Hamburger button {% endcomment %}
         <button data-collapse-toggle="navbar-cta"
                 type="button"
-                class="inline-flex items-center text-sm text-gray-700 rounded-sm lg:hidden hover:text-blue-800"
+                class="inline-flex items-center text-sm text-gray-700 group-[.bg-transparent]:text-white rounded-sm lg:hidden hover:text-blue-800"
                 aria-controls="navbar-cta"
                 aria-expanded="false">
             <span class="sr-only">Open main menu</span>
-            <svg class="w-6 h-6"
+            <svg class="w-6 h-6 group-[.bg-transparent]:text-white"
                  aria-hidden="true"
                  fill="currentColor"
                  viewBox="0 0 20 20"

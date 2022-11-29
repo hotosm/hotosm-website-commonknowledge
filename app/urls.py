@@ -17,6 +17,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 
+from app.views.directory import DirectoryView
 from app.views.search import SearchView
 
 from .api import wagtail_api_router
@@ -51,6 +52,11 @@ urlpatterns += i18n_patterns(
         "frames/search/",
         SearchView.as_view(template_name="app/frames/search.html"),
         name="search_frame",
+    ),
+    path(
+        "frames/directory/",
+        DirectoryView.as_view(template_name="app/frames/directory.html"),
+        name="directory_frame",
     ),
     path("", include(wagtail_urls)),
 )

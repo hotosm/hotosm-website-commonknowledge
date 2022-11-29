@@ -1,0 +1,5 @@
+{% extends "app/cards/generic_list_card.html" %}
+{% block metadata %}
+    {{ block.super }}
+    <time datetime="{{ page.date }}">{{ page.date|date:"j F Y" }}</time>
+{% endblock metadata %}
