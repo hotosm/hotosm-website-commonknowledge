@@ -4,6 +4,7 @@ import re
 import pycountry
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from wagtail.core.models import Locale
 
 from app.models import ImpactAreaPage, ProjectPage
 from app.utils.python import ensure_1D_list
@@ -12,8 +13,12 @@ from app.utils.python import ensure_1D_list
 class Command(BaseCommand):
     help = "Update `related_impact_areas` fields for project pages, using data from their `frontmatter` field if migrated from the old site."
 
+    def add_arguments(self, parser):
+        parser.add_argument("--locale", dest="locale", type=str, default="en")
+
     @transaction.atomic
     def handle(self, *args, **options):
+        self.locale = Locale.objects.get(language_code=options.get("en", "en"))
         self.map = self.get_map()
         self.loop_pages((ProjectPage,), "Impact Area")
 
@@ -35,67 +40,87 @@ class Command(BaseCommand):
             """
             Accessible healthcare infrastructure and informed public health programming and monitoring.
             """
-            "Public Health": ImpactAreaPage.objects.filter(
-                title__icontains="Health"
-            ).first(),
+            "Public Health": ImpactAreaPage.objects.filter(title__icontains="Health")
+            .first()
+            .get_translation(self.locale),
             #
             """
             Preparedness, anticipatory action, risk reduction; and responding to the impacts of rapid onset and prolonged natural disasters.
             """
             "Disaster Risk Reduction": ImpactAreaPage.objects.filter(
                 title__icontains="Disaster"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
             "Disasters & Climate Resilience": ImpactAreaPage.objects.filter(
                 title__icontains="Disaster"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
             "Disaster Response": ImpactAreaPage.objects.filter(
                 title__icontains="Disaster"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
             #
             """
             Service delivery and infrastructure in disadvantaged urban and rural areas, including transportation, water and sanitation, and energy.
             """
             "Sustainable Cities & Communities": ImpactAreaPage.objects.filter(
                 title__icontains="Cities"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
             "Sustainable Cities": ImpactAreaPage.objects.filter(
                 title__icontains="Cities"
-            ).first(),
-            "Transportation": ImpactAreaPage.objects.filter(
-                title__icontains="Cities"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
+            "Transportation": ImpactAreaPage.objects.filter(title__icontains="Cities")
+            .first()
+            .get_translation(self.locale),
             "Water & Sanitation": ImpactAreaPage.objects.filter(
                 title__icontains="Cities"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
             "Poverty Elimination": ImpactAreaPage.objects.filter(
                 title__icontains="Cities"
-            ).first(),
-            "Clean Energy": ImpactAreaPage.objects.filter(
-                title__icontains="Cities"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
+            "Clean Energy": ImpactAreaPage.objects.filter(title__icontains="Cities")
+            .first()
+            .get_translation(self.locale),
             "Technology Development": ImpactAreaPage.objects.filter(
                 title__icontains="Cities"
-            ).first(),
-            "Environment": ImpactAreaPage.objects.filter(
-                title__icontains="Cities"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
+            "Environment": ImpactAreaPage.objects.filter(title__icontains="Cities")
+            .first()
+            .get_translation(self.locale),
             #
             """
             Improved understanding and accounting of gendered experiences & issues in all impact areas.
             """
-            "Gender Equality": ImpactAreaPage.objects.filter(
-                title__icontains="Gender"
-            ).first(),
+            "Gender Equality": ImpactAreaPage.objects.filter(title__icontains="Gender")
+            .first()
+            .get_translation(self.locale),
             #
             """
             Coordinated service delivery for migrants and people displaced from home in transit, camp settings, and other informal contexts.
             """
             "Displacement & Safe Migration": ImpactAreaPage.objects.filter(
                 title__icontains="Displacement"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
             "Refugee Response": ImpactAreaPage.objects.filter(
                 title__icontains="Displacement"
-            ).first(),
+            )
+            .first()
+            .get_translation(self.locale),
         }
 
     def loop_pages(self, page_types, frontmatter_key):
