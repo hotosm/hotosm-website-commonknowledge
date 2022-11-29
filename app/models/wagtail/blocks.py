@@ -297,6 +297,47 @@ class LatestArticles(CarouselBlock):
         return context
 
 
+class LatestOpportunities(CarouselBlock):
+    class Meta:
+        template = "app/blocks/latest_opportunities.html"
+        group = "Related content"
+        help_text = "A horizontal list of opportunities avaliable for volunteering and otherwise helping out HOT."
+
+    opportunities_shown = blocks.ChoiceBlock(
+        choices=[
+            ("show_all", "Show all opportunities across the site"),
+            ("only_children", "Only show opportunities that are childen of this page"),
+        ],
+        default="show_all",
+        help_text="This block can show all opportunites across the HOT site, or only those opportunities that are under this page.",
+    )
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import MagazineIndexPage, OpportunityPage
+
+        context = super().get_context(value, parent_context=parent_context)
+
+        if value["opportunities_shown"] == "show_all":
+            opportunities = localized_pages(
+                OpportunityPage.objects.all()
+                .live()
+                .public()
+                .order_by("-first_published_at")[:6]
+            )
+        else:
+            opportunities = localized_pages(
+                OpportunityPage.objects.all()
+                .live()
+                .child_of(context["page"])
+                .public()
+                .order_by("-first_published_at")[:6]
+            )
+
+        context["pages"] = opportunities
+
+        return context
+
+
 class FeaturedProjects(CarouselBlock):
     class Meta:
         template = "app/blocks/featured_projects.html"
@@ -426,6 +467,7 @@ full_width_blocks = [
     ("impact_area_carousel", ImpactAreaCarousel()),
     ("latest_articles", LatestArticles()),
     ("featured_projects", FeaturedProjects()),
+    ("latest_opportunities", LatestOpportunities()),
     ("map", MapBlock()),
     ("testimonials_slider_block", TestimonialsSliderBlock()),
 ]

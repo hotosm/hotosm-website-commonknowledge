@@ -10,7 +10,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0042_alter_activationprojectpage_content_and_more"),
+        ("app", "0043_merge_20221129_0913"),
     ]
 
     operations = [
