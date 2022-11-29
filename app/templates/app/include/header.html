@@ -1,6 +1,6 @@
 {% load static app i18n wagtailcore_tags %}
-<nav class="group {% if transparent %}bg-transparent absolute pointer-events-none inset-0 w-full z-20{% else %}bg-background relative{% endif %}">
-    <div class="flex flex-wrap justify-end items-center mx-auto p-4 space-x-4 lg:space-x-8 pointer-events-auto border-b border-gray-300 group-[.bg-transparent]:border-white">
+<nav class="group {% if transparent %}bg-transparent absolute pointer-events-none inset-0 w-full z-50{% else %}bg-background relative{% endif %}">
+    <div class="relative flex flex-wrap justify-end items-center mx-auto p-4 space-x-4 lg:space-x-8 pointer-events-auto border-b border-gray-300 group-[.bg-transparent]:border-white">
         {% comment %} Logo {% endcomment %}
         {# djlint:off D018 #}
         {% comment %} The above line allows hardcoded href {% endcomment %}
@@ -13,7 +13,7 @@
         {% comment %} Links {% endcomment %}
         <div class="hidden justify-between items-center w-full !m-0 absolute top-full left-0 h-full z-50 lg:m-auto lg:relative lg:flex lg:w-auto"
              id="navbar-cta">
-            <ul class="flex flex-col bg-background-tint border border-gray-300 border-b p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:bg-transparent font-semibold">
+            <ul class="flex flex-col bg-background-tint group-[.bg-transparent]:bg-theme-800 border-b border-t border-gray-300 group-[.bg-transparent]:border-white p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:!bg-transparent font-semibold">
                 {% comment %} Dynamic menu items {% endcomment %}
                 {% for item in settings.app.HeaderSetting.navigation %}
                     <li>
