@@ -4,7 +4,7 @@
     <main class="flex-shrink flex-grow flex flex-col">
         <div class="mb-4 flex-grow">
             {% if page.show_header is not False %}
-                <header class="bg-red-900 px-4 text-background-tint py-10 lg:pb-[119px] lg:pt-[88px] lg:px-20">
+                <header class="bg-red-900 px-4 text-background-tint py-10 lg:pb-[119px] lg:pt-[88px] lg:px-20 lg:flex lg:flex-row-reverse lg:justify-center">
                     {% image page.icon_light_transparent width-64 class="" %}
                     <svg width="145"
                          class="mb-6"
@@ -69,37 +69,41 @@
                         </clipPath>
                         </defs>
                     </svg>
-                    <div class="text-red-500 leading-none text-4xl font-extrabold lg:text-6xl">Open Mapping Hub</div>
-                    <div class="mb-6">
-                        <h1 class="leading-none text-4xl font-extrabold text-white lg:text-6xl">{{ page.title }}</h1>
+                    <div>
+                        <div class="text-red-500 leading-none text-4xl font-extrabold lg:text-6xl">Open Mapping Hub</div>
+                        <div class="mb-6">
+                            <h1 class="leading-none text-4xl font-extrabold text-white lg:text-6xl">{{ page.title }}</h1>
+                        </div>
+                        <p class="text-base font-medium text-background-tint lg:text-white lg:text-xl lg:max-w-[768px]">
+                            {{ page.summary|richtext|striptags }}
+                        </p>
                     </div>
-                    <p class="text-base font-medium text-background-tint lg:text-white lg:text-xl lg:max-w-[768px]">
-                        {{ page.short_summary|richtext }}
-                    </p>
                 </header>
             {% endif %}
-            <div class="px-4 py-16">
-                <h2 class="gray-900 leading-tight text-2xl font-extrabold mb-4">About us</h2>
-                <div class="text-base font-normal mb-16 p-margin">{{ page.about_us |richtext }}</div>
-                <div class="flex flex-col">
-                    {% if page.email %}
-                        <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
-                           href="mailto:{{ page.email }}">
-                            <i class="fa-solid fa-envelope mr-3"></i>
-                            {{ page.email }}
-                        </a>
-                    {% endif %}
-                    {% if page.twitter %}
-                        <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
-                           href="{{ page.twitter }}"><i class="fa-brands fa-twitter mr-3"></i>{{ page.twitter }}</a>
-                    {% endif %}
-                    {% if page.facebook %}
-                        <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
-                           href="{{ page.facebook }}"><i class="fa-brands fa-facebook mr-3"></i>{{ page.facebook }}</a>
-                    {% endif %}
+            <div class="px-page-row py-16 lg:flex lg:flex-row">
+                <div class="lg:w-1/2 lg:mr-10">
+                    <h2 class="gray-900 leading-tight text-2xl font-extrabold mb-4 lg:text-4xl">About us</h2>
+                    <div class="text-base font-normal mb-16 p-margin lg:text-xl">{{ page.about_us |richtext }}</div>
+                    <div class="flex flex-col lg:flex-row">
+                        {% if page.email %}
+                            <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center lg:text-lg lg:font-medium lg:mr-4"
+                               href="mailto:{{ page.email }}">
+                                <i class="fa-solid fa-envelope mr-3"></i>
+                                {{ page.email }}
+                            </a>
+                        {% endif %}
+                        {% if page.twitter %}
+                            <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center lg:mr-4"
+                               href="{{ page.twitter }}"><i class="fa-brands fa-twitter mr-3"></i>{{ page.twitter }}</a>
+                        {% endif %}
+                        {% if page.facebook %}
+                            <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center lg:mr-4"
+                               href="{{ page.facebook }}"><i class="fa-brands fa-facebook mr-3"></i>{{ page.facebook }}</a>
+                        {% endif %}
+                    </div>
                 </div>
                 {% if page.featured_image %}
-                    <div class="pt-8">
+                    <div class="pt-8 lg:w-1/2">
                         {% image page.featured_image width-800 class="w-full rounded-xl" alt=page.feature_image.alt_text %}
                     </div>
                 {% endif %}
