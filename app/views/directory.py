@@ -66,10 +66,9 @@ class DirectoryView(TemplateView):
             "url_param": "impact_area",
             "label": "Impact Areas",
             "widget": "dropdown",
-            "options": lambda: ImpactAreaPage.objects.live()
-            .public()
-            .all()
-            .order_by("title"),
+            "options": lambda: localized_pages(
+                ImpactAreaPage.objects.live().public().all().order_by("title")
+            ),
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
                     RelatedImpactAreaMixin,
@@ -81,10 +80,9 @@ class DirectoryView(TemplateView):
             "url_param": "country",
             "label": "Countries",
             "widget": "dropdown",
-            "options": lambda: CountryPage.objects.live()
-            .public()
-            .all()
-            .order_by("title"),
+            "options": lambda: localized_pages(
+                CountryPage.objects.live().public().all().order_by("title")
+            ),
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
                     GeocodedMixin,
