@@ -367,6 +367,20 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
     )
 
 
+class ResourcesBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/resources_block.html"
+        group = "Related content"
+        help_text = "Display a set of resources, including popular resources."
+
+    first_highlighted_resource = blocks.PageChooserBlock()
+    second_highlighted_resource = blocks.PageChooserBlock()
+    popular_resources = blocks.ListBlock(
+        LinkBlock(), min=1, help_text="Popular resources to highlight"
+    )
+    view_all_link = LinkBlock()
+
+
 class TeamCarouselBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/team_carousel_block.html"
@@ -470,4 +484,5 @@ full_width_blocks = [
     ("latest_opportunities", LatestOpportunities()),
     ("map", MapBlock()),
     ("testimonials_slider_block", TestimonialsSliderBlock()),
+    ("resources", ResourcesBlock()),
 ]
