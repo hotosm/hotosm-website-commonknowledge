@@ -4,7 +4,7 @@
     <main class="flex-shrink flex-grow flex flex-col">
         <div class="mb-4 flex-grow">
             {% if page.show_header is not False %}
-                <header class="bg-red-800 px-4 text-background-tint py-10 lg:pb-[119px] lg:pt-[88px] lg:px-20">
+                <header class="bg-red-900 px-4 text-background-tint py-10 lg:pb-[119px] lg:pt-[88px] lg:px-20">
                     {% image page.icon_light_transparent width-64 class="" %}
                     <svg width="145"
                          class="mb-6"
@@ -83,18 +83,18 @@
                 <div class="text-base font-normal mb-16 p-margin">{{ page.about_us |richtext }}</div>
                 <div class="flex flex-col">
                     {% if page.email %}
-                        <a class="text-red-800 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
+                        <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
                            href="mailto:{{ page.email }}">
                             <i class="fa-solid fa-envelope mr-3"></i>
                             {{ page.email }}
                         </a>
                     {% endif %}
                     {% if page.twitter %}
-                        <a class="text-red-800 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
+                        <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
                            href="{{ page.twitter }}"><i class="fa-brands fa-twitter mr-3"></i>{{ page.twitter }}</a>
                     {% endif %}
                     {% if page.facebook %}
-                        <a class="text-red-800 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
+                        <a class="text-red-900 text-center bg-background-tint rounded-sm text-base font-medium px-5 py-2.5 mb-4 h-12 inline-flex items-center justify-center"
                            href="{{ page.facebook }}"><i class="fa-brands fa-facebook mr-3"></i>{{ page.facebook }}</a>
                     {% endif %}
                 </div>
