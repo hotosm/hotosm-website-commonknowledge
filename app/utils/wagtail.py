@@ -13,7 +13,7 @@ def localized_related_pages(page, property: str):
     related_pages = []
     for translation in translations:
         related_pages += list(getattr(translation, property).all())
-    return ensure_1D_list(related_pages)
+    return localized_pages(ensure_1D_list(related_pages))
 
 
 def localized_pages(pages):

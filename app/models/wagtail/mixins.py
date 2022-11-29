@@ -342,7 +342,9 @@ class GeocodedMixin(Page):
         Translations of this page might have different foreign keys defined
         so collect them all up
         """
-        return localized_related_pages(self, "related_countries")
+        return sorted(
+            localized_related_pages(self, "related_countries"), lambda p: p.title
+        )
 
     @property
     def has_unique_location(self):
@@ -490,4 +492,6 @@ class RelatedImpactAreaMixin(Page):
         Translations of this page might have different foreign keys defined
         so collect them all up
         """
-        return localized_related_pages(self, "related_impact_areas")
+        return sorted(
+            localized_related_pages(self, "related_impact_areas"), lambda p: p.title
+        )
