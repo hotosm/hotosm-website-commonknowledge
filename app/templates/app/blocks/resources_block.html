@@ -1,5 +1,5 @@
 {% load wagtailcore_tags %}
-<section class="flex flex-col mt-32 mb-16 mx-4">
+<section class="flex flex-col mt-32 mb-16 px-page-row">
     <div>
         <header class="sm:w-full mb-8 md:flex justify-between">
             <h4 class="leading-tight text-2xl font-extrabold text-gray-900 lg:text-4xl">Resources</h4>
@@ -16,7 +16,7 @@
                 <h5 class="text-red-800 leading-tight text-xl font-semibold mt-6 pb-4">
                     {{ value.first_highlighted_resource.title }}
                 </h5>
-                <p class="text-base font-normal">{{ value.first_highlighted_resource.specific.short_summary|richtext|striptags }}</p>
+                <p class="text-base font-normal">{{ value.first_highlighted_resource.specific.summary|richtext|striptags }}</p>
             </a>
         </div>
         <div class="border-t border-solid pb-9">
@@ -24,7 +24,7 @@
                 <h5 class="text-red-800 leading-tight text-xl font-semibold mt-6 pb-4">
                     {{ value.second_highlighted_resource.title }}
                 </h5>
-                <p class="text-base font-normal">{{ value.first_highlighted_resource.specific.short_summary|richtext|striptags }}</p>
+                <p class="text-base font-normal">{{ value.first_highlighted_resource.specific.summary|richtext|striptags }}</p>
             </a>
         </div>
         <div class="border-t border-solid pb-9">
