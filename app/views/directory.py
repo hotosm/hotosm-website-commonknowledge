@@ -66,8 +66,11 @@ class DirectoryView(TemplateView):
             "url_param": "impact_area",
             "label": "Impact Areas",
             "widget": "dropdown",
-            "options": lambda: localized_pages(
-                ImpactAreaPage.objects.live().public().all().order_by("title")
+            "options": lambda: sorted(
+                localized_pages(
+                    ImpactAreaPage.objects.live().public().all().order_by("title")
+                ),
+                key=lambda p: p.title,
             ),
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
@@ -80,8 +83,11 @@ class DirectoryView(TemplateView):
             "url_param": "country",
             "label": "Countries",
             "widget": "dropdown",
-            "options": lambda: localized_pages(
-                CountryPage.objects.live().public().all().order_by("title")
+            "options": lambda: sorted(
+                localized_pages(
+                    CountryPage.objects.live().public().all().order_by("title")
+                ),
+                key=lambda p: p.title,
             ),
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
