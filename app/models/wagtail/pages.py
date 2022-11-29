@@ -503,6 +503,21 @@ class OpportunityPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     ]
 
 
+class MagazineIndexPage(SearchableDirectoryMixin, PreviewablePage):
+    page_description = "Home page for the magazine section of the site"
+    show_in_menus_default = True
+    max_count_per_parent = 1
+    parent_page_type = ["app.HomePage"]
+    subpage_types = [
+        "app.ArticlePage",
+    ]
+    # TODO: Featured articles
+    # TODO: Sections
+
+    def get_queryset(self):
+        return ArticlePage.objects.descendant_of(self).order_by("-first_published_at")
+
+
 class TaggedArticle(ItemBase):
     tag = models.ForeignKey(
         HOTOSMTag, related_name="tagged_articles", on_delete=models.CASCADE
@@ -510,6 +525,17 @@ class TaggedArticle(ItemBase):
     content_object = ParentalKey(
         to="app.ArticlePage", on_delete=models.CASCADE, related_name="tagged_articles"
     )
+
+
+class MagazineSection(SearchableDirectoryMixin, PreviewablePage):
+    page_description = "A section of the magazine"
+    parent_page_type = ["app.MagazineIndexPage", "app.HomePage"]
+    subpage_types = ["app.ArticlePage", "app.MagazineSection"]
+    show_in_menus_default = True
+    template = "app/magazine_index_page.html"
+
+    def get_queryset(self):
+        return ArticlePage.objects.descendant_of(self).order_by("-first_published_at")
 
 
 @register_snippet
