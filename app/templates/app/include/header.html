@@ -13,26 +13,31 @@
         {% comment %} Links {% endcomment %}
         <div class="hidden justify-between items-center w-full !m-0 absolute top-full left-0 h-full z-50 lg:m-auto lg:relative lg:flex lg:w-auto"
              id="navbar-cta">
-            <ul class="flex flex-col bg-background-tint group-[.bg-transparent]:bg-theme-800 border-b border-t border-gray-300 group-[.bg-transparent]:border-white p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:!bg-transparent font-semibold">
+            <div class="flex flex-col shadow-md lg:shadow-none bg-background-tint border-b border-t border-gray-300 group-[.bg-transparent]:border-white p-4 space-y-4 lg:space-y-0 lg:p-0 lg:items-center lg:flex-row lg:space-x-8 lg:mt-0 lg:text-sm lg:font-medium lg:border-0 lg:!bg-transparent font-semibold">
                 {% comment %} Dynamic menu items {% endcomment %}
                 {% for item in settings.app.HeaderSetting.navigation %}
-                    <li>
+                    <div>
                         <a href="{{ item.value.url }}"
-                           class="block text-gray-700 group-[.bg-transparent]:text-white rounded hover:bg-gray-100 lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0">{{ item.value.text }}</a>
-                    </li>
+                           class="block text-gray-700 lg:group-[.bg-transparent]:text-white rounded lg:hover:text-theme-700 lg:p-0">{{ item.value.text }}</a>
+                    </div>
                 {% endfor %}
                 {% comment %} Donate button {% endcomment %}
                 {% for item in settings.app.HeaderSetting.button %}
-                    <li>
+                    <div>
                         <a href="{{ item.value.url }}"
-                           class="block text-gray-700 group-[.bg-transparent]:text-white rounded hover:bg-gray-100 lg:inline-block lg:text-white lg:bg-blue-500 lg:hover:bg-blue-600 lg:focus:ring-4 lg:focus:outline-none lg:focus:ring-blue-300 lg:font-medium lg:rounded-sm lg:text-sm lg:px-5 lg:py-2.5 lg:text-center">{{ item.value.text }}</a>
-                    </li>
+                           class="w-full sm:w-auto inline-block text-white bg-theme-500 hover:bg-theme-600 focus:ring-4 focus:outline-none focus:ring-theme-300 font-medium rounded-sm text-sm px-5 py-2.5 text-center">{{ item.value.text }}</a>
+                    </div>
                 {% endfor %}
-            </ul>
+                <hr class="border-b border-b-gray-300 my-8 lg:hidden" />
+                <div class="lg:hidden">Mapping our world together</div>
+                <div class="text-gray-700 flex flex-row justify-between items-center lg:hidden">
+                    {% include "app/include/social_icons.html" with class="text-gray-700 lg:w-6 lg:h-6 w-8 h-8" %}
+                </div>
+            </div>
         </div>
         {% comment %} Search button {% endcomment %}
         <a href="{% url "search" %}"
-           class="nowrap block text-gray-700 group-[.bg-transparent]:text-white hover:text-blue-800 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0">
+           class="nowrap block text-gray-700 group-[.bg-transparent]:text-white hover:text-theme-800 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-hotbg-red md:p-0">
             <svg class="align-middle w-[24px] h-[24px] inline-block group-[.bg-transparent]:text-white"
                  style="max-width: 150px"
                  fill="none"
@@ -52,7 +57,7 @@
                     <div role="button"
                          data-action="click->dropdown#toggle click@window->dropdown#hide"
                          tabindex="0"
-                         class="inline-block select-none whitespace-nowrap group-[.bg-transparent]:text-white hover:text-blue-800">
+                         class="inline-block select-none whitespace-nowrap group-[.bg-transparent]:text-white hover:text-theme-800">
                         {% get_language_info for page.locale.language_code as current_lang %}
                         <span class="align-middle uppercase font-semibold">{{ current_lang.code }}</span>
                         <svg width="13"
@@ -102,7 +107,7 @@
                     <div role="button"
                          data-action="click->dropdown#toggle click@window->dropdown#hide"
                          tabindex="0"
-                         class="inline-block select-none whitespace-nowrap hover:text-blue-800">
+                         class="inline-block select-none whitespace-nowrap hover:text-theme-800">
                         {% get_current_language as current_lang_code %}
                         {% get_language_info for current_lang_code as current_lang %}
                         <span class="align-middle uppercase font-semibold">{{ current_lang.code }}</span>
@@ -143,7 +148,7 @@
         {% comment %} Hamburger button {% endcomment %}
         <button data-collapse-toggle="navbar-cta"
                 type="button"
-                class="inline-flex items-center text-sm text-gray-700 group-[.bg-transparent]:text-white rounded-sm lg:hidden hover:text-blue-800"
+                class="inline-flex items-center text-sm text-gray-700 group-[.bg-transparent]:text-white rounded-sm lg:hidden hover:text-theme-800"
                 aria-controls="navbar-cta"
                 aria-expanded="false">
             <span class="sr-only">Open main menu</span>
