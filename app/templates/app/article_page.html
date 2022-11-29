@@ -52,10 +52,10 @@
                 {% if page.show_header is not False %}
                     <header class="mb-5">
                         {% if page.show_breadcrumb %}
-                            <ul class="mt-4 list-unstyled space-x-2 text-gray-600 text-sm mb-2">
+                            <ul class="mt-4 list-unstyled text-gray-600 text-sm mb-2 content-separator-2 separator-content-slash">
                                 {% for ancestor in page.get_ancestors %}
                                     {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
-                                        <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
+                                        <li class="inline-block">
                                             <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
                                         </li>
                                     {% endif %}
@@ -63,9 +63,7 @@
                             </ul>
                         {% endif %}
                         <h1 class="mt-4 font-extrabold text-3xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
-                        {% if page.short_summary %}
-                            <div class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</div>
-                        {% endif %}
+                        {% if page.summary %}<div class="text-xl sm:text-2xl text-gray-800">{{ page.summary|richtext }}</div>{% endif %}
                     </header>
                 {% endif %}
                 <div data-toc-target="content" class="space-y-5 flex flex-col">
