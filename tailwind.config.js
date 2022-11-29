@@ -273,11 +273,16 @@ module.exports = {
                 fadeIn: "fadeIn 0.075s ease-in-out",
                 popup: "popup 0.15s ease forwards",
             },
+            content: {
+                bullet: "'•'",
+                slash: "'/'",
+            },
         },
     },
     plugins: [
         require("@tailwindcss/typography"),
         require("flowbite/plugin"),
         require("./tailwind-theme-colours-plugin"),
+        require("./tailwind-content-separator-plugin"),
     ],
 };

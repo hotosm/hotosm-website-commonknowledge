@@ -1,0 +1,34 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+<a href="{{ page.url }}"
+   class="py-8 grid grid-cols-2 sm:grid-cols-9 gap-4 sm:gap-6 md:gap-8"
+   data-turbo-frame="_top">
+    <div class="col-span-1 sm:col-span-3 lg:col-span-4 space-y-4">
+        <div class="text-sm font-medium content-separator-2 separator-content-bullet">
+            <span class="capitalize">{{ page.label }}</span>
+            {% block supertitle %}
+                {% for impact_area in page.related_impact_areas.all %}<span>{{ impact_area.title }}</span>{% endfor %}
+            {% endblock supertitle %}
+        </div>
+        <div class="text-gray-900 leading-tight text-2xl font-semibold">{{ page.title }}</div>
+    </div>
+    {% comment %} Preview {% endcomment %}
+    <div class="order-3 col-span-2 sm:order-2 sm:col-span-4 lg:col-span-3 space-y-4">
+        <div class="text-sm font-medium content-separator-2 separator-content-bullet">
+            {% block metadata %}
+                {% for country in page.related_countries.all %}<span>{{ country.title }}</span>{% endfor %}
+            {% endblock metadata %}
+        </div>
+        <p class="text-base font-normal">{{ page.summary|richtext|striptags|truncatewords:24 }}</p>
+    </div>
+    {% comment %} Image {% endcomment %}
+    {% if page.image %}
+        <div class="order-2 col-span-1 sm:order-3 sm:col-span-2">
+            <div class="overflow-hidden rounded-lg relative h-[100px] sm:h-[160px]">
+                {% image page.image fill-190x160 as image %}
+                <div class="bg-cover bg-center scale-100 transition-all group-hover:scale-110 absolute inset-0 w-full h-full"
+                     style="background-image: url('{{ image.url }}')">
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</a>

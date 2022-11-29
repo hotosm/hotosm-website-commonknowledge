@@ -2,15 +2,15 @@
 {% load wagtailcore_tags app %}
 {% block topic_content %}
     {% if page.show_breadcrumb %}
-        <ul class="mt-4 px-2 sm:px-4 md:px-5 list-unstyled space-x-2 text-gray-600 text-sm">
+        <ul class="mt-4 px-2 sm:px-4 md:px-5 list-unstyled text-gray-600 text-sm content-separator-2 separator-content-slash">
             {% for page in self.get_ancestors %}
                 {% if page.content_type.model == "topichomepage" %}
-                    <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
+                    <li class="inline-block">
                         <a href="{% pageurl page %}">Home</a>
                     </li>
                 {% endif %}
                 {% if page.content_type.model == "topicpage" %}
-                    <li class="inline-block [&:not(:last-child)]:after:content-['/'] after:pl-2">
+                    <li class="inline-block">
                         <a href="{% pageurl page %}">{{ page.title }}</a>
                     </li>
                 {% endif %}
