@@ -17,14 +17,13 @@ from app.models import (
     ArticlePage,
     CountryPage,
     EventPage,
-    GeocodedMixin,
     ImpactAreaPage,
     OpportunityPage,
     OrganisationPage,
     PersonPage,
     ProjectPage,
-    RelatedImpactAreaMixin,
 )
+from app.models.wagtail.mixins import GeocodedMixin, RelatedImpactAreaMixin
 from app.utils.python import ensure_1D_list
 from app.utils.wagtail import abstract_page_query_filter, localized_pages
 
