@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block header %}
+    {% include "app/include/header.html" with transparent=True %}
+{% endblock header %}
+{% block content %}
+    <main>
+        {% block content_header %}
+            {% if page.show_header is not False %}
+                {% image page.featured_image width-800 as img %}
+                <header class="px-page-row pt-[144px] pb-24 text-white bg-theme-900 bg-cover bg-center before:contents['.'] relative before:text-transparent before:absolute before:bg-black before:bg-opacity-30 before:inset-0 before:w-full before:h-full before:z-10"
+                        style="background-image: url('{{ img.url }}')">
+                    <div class="flex flex-col md:flex-row justify-between items-start">
+                        <div class="relative z-20 max-w-prose">
+                            {% block page_cover_title %}
+                                <div class="my-6 text-base md:text-xl font-medium capitalize">{{ page.label }}</div>
+                                <h1 class="my-6 font-extrabold text-4xl sm:text-6xl leading-tight sm:leading-none">{{ page.title }}</h1>
+                            {% endblock page_cover_title %}
+                            {% if page.summary %}<p class="my-6 text-base md:text-xl font-medium">{{ page.summary|richtext }}</p>{% endif %}
+                        </div>
+                        {% comment %} {% if page.icon_light_transparent %}
+                  {% image page.icon_light_transparent class='mb-6 md:mb-0 md:ml-6' width-200 class="w-[80px] md:w-[180px]" %}
+                        {% endif %} {% endcomment %}
+                    </div>
+                </header>
+            {% endif %}
+        {% endblock content_header %}
+        {% include "app/include/streamfield.html" with streamfield=page.content %}
+    </main>
+{% endblock content %}

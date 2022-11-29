@@ -1,6 +1,6 @@
-<div class="my-16">
+<div class="my-16 px-page-row overflow-x-hidden">
     <div data-controller="carousel"
-         class="swiper"
+         data-carousel-active-index-value="{{ starting_index }}"
          data-carousel-options-value='{ "slidesPerView": "auto", "grabCursor": true, "centeredSlides": true, "effect": "cards", "cardsEffect": { "rotate": false }, "breakpoints": { "0": { "cardsEffect": { "perSlideOffset": 20 } }, "468": { "cardsEffect": { "perSlideOffset": 40 } }, "768": { "cardsEffect": { "perSlideOffset": 75 } } }}'>
         <div class="swiper-wrapper">
             {% for impact_area in impact_areas %}

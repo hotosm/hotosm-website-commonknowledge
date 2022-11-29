@@ -41,15 +41,15 @@
     <main class="my-4 px-2 sm:px-4 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {% for article in pages %}
             <a href="{{ article.url }}" role="status" class="block">
-                {% if article.featured_image %}
-                    {% image article.featured_image width-500 as img %}
+                {% if article.image %}
+                    {% image article.image width-500 as img %}
                     <div class="mb-4 h-48 rounded overflow-hidden bg-cover bg-center"
                          style="background-image: url('{{ img.url }}')"></div>
                 {% else %}
                     <div class="mb-4 h-48 bg-gray-300 rounded"></div>
                 {% endif %}
                 <div class="mb-4">{{ article.title }}</div>
-                <div class="mb-4">{{ article.first_published_at|date:"D d M Y" }}</div>
+                <div class="mb-4">{{ article.date|date:"D d M Y" }}</div>
                 {% if article.short_summary %}
                     <div class="mb-2.5">{{ article.short_summary|richtext|striptags|truncatewords:50 }}</div>
                 {% endif %}

@@ -1,3 +1,5 @@
+from math import floor
+
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
@@ -266,19 +268,6 @@ class CallToActionGalleryBlock(blocks.StructBlock):
     )
 
 
-class RelatedPeopleBlock(blocks.StructBlock):
-    class Meta:
-        # TODO:
-        template = "app/blocks/dummy_block.html"
-        icon = "fa fa-users"
-        group = "Related content"
-
-    title = blocks.CharBlock(required=False)
-    description = blocks.RichTextBlock(
-        features=["italic", "bold", "link"], required=False
-    )
-
-
 class CarouselBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/carousel_block.html"
@@ -308,6 +297,47 @@ class LatestArticles(CarouselBlock):
         return context
 
 
+class LatestOpportunities(CarouselBlock):
+    class Meta:
+        template = "app/blocks/latest_opportunities.html"
+        group = "Related content"
+        help_text = "A horizontal list of opportunities avaliable for volunteering and otherwise helping out HOT."
+
+    opportunities_shown = blocks.ChoiceBlock(
+        choices=[
+            ("show_all", "Show all opportunities across the site"),
+            ("only_children", "Only show opportunities that are childen of this page"),
+        ],
+        default="show_all",
+        help_text="This block can show all opportunites across the HOT site, or only those opportunities that are under this page.",
+    )
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import MagazineIndexPage, OpportunityPage
+
+        context = super().get_context(value, parent_context=parent_context)
+
+        if value["opportunities_shown"] == "show_all":
+            opportunities = localized_pages(
+                OpportunityPage.objects.all()
+                .live()
+                .public()
+                .order_by("-first_published_at")[:6]
+            )
+        else:
+            opportunities = localized_pages(
+                OpportunityPage.objects.all()
+                .live()
+                .child_of(context["page"])
+                .public()
+                .order_by("-first_published_at")[:6]
+            )
+
+        context["pages"] = opportunities
+
+        return context
+
+
 class FeaturedProjects(CarouselBlock):
     class Meta:
         template = "app/blocks/featured_projects.html"
@@ -332,9 +362,38 @@ class HeadingAndSubHeadingBlock(blocks.StructBlock):
     title = blocks.CharBlock(max_length=75, required=True)
     description = blocks.RichTextBlock(
         required=True,
-        max_length=400,
+        max_length=600,
         features=["italic", "bold", "link"],
     )
+
+
+class ResourcesBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/resources_block.html"
+        group = "Related content"
+        help_text = "Display a set of resources, including popular resources."
+
+    first_highlighted_resource = blocks.PageChooserBlock()
+    second_highlighted_resource = blocks.PageChooserBlock()
+    popular_resources = blocks.ListBlock(
+        LinkBlock(), min=1, help_text="Popular resources to highlight"
+    )
+    view_all_link = LinkBlock()
+
+
+class TeamCarouselBlock(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/team_carousel_block.html"
+        group = "Related content"
+        help_text = "A carousel of team members."
+
+    title = blocks.CharBlock(max_length=75, required=True)
+    description = blocks.RichTextBlock(
+        required=True,
+        max_length=400,
+        features=[],
+    )
+    team = blocks.ListBlock(blocks.PageChooserBlock(page_type="app.PersonPage"))
 
 
 class PartnerLogos(blocks.StructBlock):
@@ -379,7 +438,33 @@ class ImpactAreaCarousel(blocks.StructBlock):
         context = super().get_context(value, parent_context=parent_context)
         impact_areas = localized_pages(ImpactAreaPage.objects.all().live().public())
         context["impact_areas"] = impact_areas
+        context["starting_index"] = max(0, floor(len(impact_areas) / 2) - 1)
         return context
+
+
+class TestimonialsSliderBlock(blocks.StructBlock):
+    class Meta:
+        group = "Basic"
+        help_text = "A set of testimonials, inside a carousel."
+        template = "app/blocks/testimonials_slider_block.html"
+
+    testimonials = blocks.ListBlock(
+        blocks.StructBlock(
+            [
+                (
+                    "quote",
+                    blocks.RichTextBlock(
+                        required=True,
+                        max_length=400,
+                        features=[],
+                    ),
+                ),
+                ("image", ImageChooserBlock(required=True)),
+                ("name", blocks.CharBlock(required=True)),
+                ("location", blocks.CharBlock(required=False)),
+            ]
+        )
+    )
 
 
 full_width_blocks = [
@@ -388,7 +473,7 @@ full_width_blocks = [
     ("call_to_action", LargeCallToActionBlock()),
     ("gallery_of_calls_to_action", CallToActionGalleryBlock()),
     ("metrics", MetricsBlock()),
-    ("people_gallery", RelatedPeopleBlock()),
+    ("team_carousel", TeamCarouselBlock()),
     ("html", HTMLBlock()),
     ("heading_and_subheading", HeadingAndSubHeadingBlock()),
     ("partner_logos", PartnerLogos()),
@@ -396,5 +481,8 @@ full_width_blocks = [
     ("impact_area_carousel", ImpactAreaCarousel()),
     ("latest_articles", LatestArticles()),
     ("featured_projects", FeaturedProjects()),
+    ("latest_opportunities", LatestOpportunities()),
     ("map", MapBlock()),
+    ("testimonials_slider_block", TestimonialsSliderBlock()),
+    ("resources", ResourcesBlock()),
 ]

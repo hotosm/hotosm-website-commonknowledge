@@ -1,6 +1,6 @@
 {% load static django_vite wagtailcore_tags wagtailuserbar %}
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html class="no-js bg-background" lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="description" content="" />
@@ -40,16 +40,20 @@
         {% endblock extra_css %}
     </head>
     {% comment %} theme-... is used in conjunction with tailwind-theme-colours-plugin {% endcomment %}
-    <body class="relative subpixel-antialiased text-hotGrey {% firstof page.resolved_theme_class "theme-primary" %} {% block body_class %}{% endblock body_class %}">
+    <body class="relative subpixel-antialiased text-hotGrey bg-background {% firstof page.resolved_theme_class "theme-primary" %} {% block body_class %}{% endblock body_class %}">
         {% wagtailuserbar %}
         <div class="flex flex-col {% block screen_class %}min-h-screen{% endblock screen_class %}">
-            {% block header %}
-                {% if page.show_header is None or page.show_header is True %}
-                    {% include "app/include/header.html" %}
+            {% if page.show_header is None or page.show_header is True %}
+                {% block banner %}
                     {% include "app/include/service_status.html" %}
+                {% endblock banner %}
+            {% endif %}
+            <div class="flex-grow flex flex-col relative {% block content_class %}{% endblock content_class %}">
+                {% if page.show_header is None or page.show_header is True %}
+                    {% block header %}
+                        {% include "app/include/header.html" %}
+                    {% endblock header %}
                 {% endif %}
-            {% endblock header %}
-            <div class="flex-grow flex flex-col {% block content_class %}{% endblock content_class %}">
                 {% block content %}
                 {% endblock content %}
             </div>
