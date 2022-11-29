@@ -54,9 +54,11 @@
             </div>
         </aside>
         <div class="md:col-span-3">
-            <div>
-                <div class="my-8 text-base font-semibold">{{ total_count }} result{{ total_count|pluralize }}</div>
-            </div>
+            {% with paginator.count as total_count %}
+                <div>
+                    <div class="my-8 text-base font-semibold">{{ total_count }} result{{ total_count|pluralize }}</div>
+                </div>
+            {% endwith %}
             <hr class="border-b border-b-gray-300" />
             <div class="my-8 divide-y divide-gray-300 md:overflow-y-auto">
                 {% for page in pages %}

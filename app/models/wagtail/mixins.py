@@ -70,10 +70,18 @@ class PreviewablePage(Page):
 
     @property
     def label(self):
+        """
+        What kind of page is this? For use in templates.
+        """
+
         return self._meta.verbose_name.removesuffix(" page")
 
     @property
     def date(self):
+        """
+        Article date for use in templates
+        """
+
         if self.first_published_at is not None:
             return self.first_published_at
         return self.last_published_at
@@ -84,7 +92,11 @@ class PreviewablePage(Page):
     def filter_url_value(self):
         return getattr(self, self.filter_url_key)
 
+    @property
     def summary(self):
+        """
+        Summary text for use in templates: the short_summary if this has been set or the first Richtext we find in the content
+        """
         if self.short_summary is not None and len(self.short_summary) > 0:
             return self.short_summary
         if hasattr(self, "content") and self.content is not None:
@@ -98,6 +110,9 @@ class PreviewablePage(Page):
     # Methods
     @property
     def image(self):
+        """
+        Image for use in templates, such as cards. Will use `featured_image` or else the first image found in the content.
+        """
         if self.featured_image is not None:
             return self.featured_image
         if hasattr(self, "content") and self.content is not None:

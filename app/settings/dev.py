@@ -16,7 +16,7 @@ BASE_URL = "http://localhost:8000"
 
 DATABASES["default"]["CONN_MAX_AGE"] = 0
 
-DEBUG_TOOLBAR_ENABLED = True
+DEBUG_TOOLBAR_ENABLED = False
 
 if DEBUG_TOOLBAR_ENABLED:
     INSTALLED_APPS += ["debug_toolbar"]

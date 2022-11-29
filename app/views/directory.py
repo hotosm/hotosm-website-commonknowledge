@@ -26,7 +26,7 @@ from app.models import (
     RelatedImpactAreaMixin,
 )
 from app.utils.python import ensure_1D_list
-from app.utils.wagtail import abstract_page_query_filter
+from app.utils.wagtail import abstract_page_query_filter, localized_pages
 
 
 class DirectoryView(TemplateView):
@@ -181,29 +181,16 @@ class DirectoryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         scope = self.get_scope()
-        # search_results = list({p.localized for p in self.do_search()})
         search_results = self.do_search()
         paginator = Paginator(search_results, self.per_page)
-        current_page_number = max(
-            1, min(paginator.num_pages, safe_to_int(self.request.GET.get("page"), 1))
-        )
+        current_page_number = max(1, int(self.request.GET.get("page", 1)))
         paginator_page = paginator.page(current_page_number)
 
         kwargs.update(
             {
                 "scope": scope,
                 "search_query": self.get_search_query(),
-                "search_results": lambda: [
-                    {
-                        "page": page,
-                        "search_highlight": lambda: self.get_search_highlight(
-                            page.specific
-                        ),
-                    }
-                    for page in paginator_page
-                ],
-                "pages": lambda: [page.specific for page in paginator_page],
-                "total_count": paginator.count,
+                "pages": lambda: localized_pages(paginator_page),
                 "paginator_page": paginator_page,
                 "paginator": paginator,
                 "page_types": self.page_types.keys(),
