@@ -1,5 +1,12 @@
-{% extends "app/static_page_with_small_image.html" %}
-{% load app %}
+{% extends "app/static_page.html" %}
+{% load slippers wagtailimages_tags %}
+{% block content %}
+    {% block inline_title_block %}
+        {% comment %} Handle this differently than normal {% endcomment %}
+    {% endblock inline_title_block %}
+    {% page_cover page=page label=label small_image=True %}
+    {{ block.super }}
+{% endblock content %}
 {% block metadata %}
     {% comment %} Impact areas {% endcomment %}
     {% with page.localized_related_impact_areas as related %}

@@ -53,6 +53,7 @@ djangorestframework-gis = "^1.0"
 django-map-widgets = { rev = "54d4dfb18064bb4cec5bc7d3ced9d3acc560a172", git = "https://github.com/commonknowledge/django-map-widgets.git" }
 drf-spectacular = "^0.24.2"
 pandas = "^1.5.1"
+slippers = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"

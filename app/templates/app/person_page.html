@@ -1,7 +1,15 @@
-{% extends "app/static_page_with_small_image.html" %}
-{% block page_label %}
-    <span>Contributor</span>
-{% endblock page_label %}
+{% extends "app/static_page.html" %}
+{% load slippers wagtailimages_tags %}
+{% block content %}
+    {% block inline_title_block %}
+        {% comment %} Handle this differently than normal {% endcomment %}
+    {% endblock inline_title_block %}
+    {% fragment as label %}
+    <span>Contributor</span> <span>Staff</span>
+{% endfragment %}
+{% page_cover page=page label=label small_image=True %}
+{{ block.super }}
+{% endblock content %}
 {% block metadata %}
     {% comment %} Countries {% endcomment %}
     {% with page.localized_related_countries as related %}

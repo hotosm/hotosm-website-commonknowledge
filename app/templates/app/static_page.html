@@ -12,7 +12,7 @@
               {% comment %} // Class to add to active links,
               {% endcomment %}
               {% comment %} // the link corresponding to the top most heading on the page.
-              {% endcomment %} "activeLinkClass": "text-red",
+              {% endcomment %} "activeLinkClass": "text-theme-500",
               {% comment %} // Main class to add to lists.
               {% endcomment %} "listClass": "pl-3",
               {% comment %} // Extra classes to add to lists.
@@ -32,7 +32,7 @@
         {% endif %}>
         {% comment %} Metadata {% endcomment %}
         <div class="order-2 md:order-1 md:col-span-2 lg:col-span-3 my-16 text-sm font-medium">
-            <div class="space-y-4 sticky top-8">
+            <div class="space-y-4 sidebar-sticky">
                 {% block metadata %}
                 {% endblock metadata %}
             </div>
@@ -83,7 +83,7 @@
         <aside class="hidden order-3 lg:block lg:col-span-3 my-16">
             {% block sidebar %}
                 {% if page.show_table_of_contents is not False %}
-                    <div class="sticky top-5 mt-5 mb-4 right-3 text-gray-800 text-sm">
+                    <div class="sidebar-sticky mb-4 right-3 text-gray-800 text-sm">
                         <div class="-ml-3" data-toc-target="toc"></div>
                     </div>
                 {% endif %}

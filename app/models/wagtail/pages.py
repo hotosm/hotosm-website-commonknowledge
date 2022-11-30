@@ -282,7 +282,7 @@ class CountryPage(ContentPage):
         return f"{self.emoji_flag} {self.title}"
 
 
-class LandingPage(ContentPage):
+class LandingPage(ThemeablePageMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
@@ -292,6 +292,7 @@ class LandingPage(ContentPage):
     show_header = models.BooleanField(default=True)
     show_footer = models.BooleanField(default=True)
     layout_panels = [
+        *ThemeablePageMixin.themeable_content_panels,
         FieldPanel("show_header"),
         FieldPanel("show_footer"),
     ]

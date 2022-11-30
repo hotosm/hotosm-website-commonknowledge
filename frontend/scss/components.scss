@@ -79,9 +79,13 @@
 
     .prose,
     .prose-lg {
-        p:first-child {
-            margin-top: 0;
+        *:first-child {
+            margin-top: 0 !important;
         }
+    }
+
+    .sidebar-sticky {
+        @apply sticky top-8;
     }
 }
 

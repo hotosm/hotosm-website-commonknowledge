@@ -1,5 +1,16 @@
-{% extends "app/static_page_with_cover_image.html" %}
-{% load app %}
+{% extends "app/static_page.html" %}
+{% load slippers %}
+{% block content %}
+    {% block inline_title_block %}
+        {% comment %} Handle this differently than normal {% endcomment %}
+    {% endblock inline_title_block %}
+    {% if page.featured_image is not None %}
+        {% page_cover page=page background=True background_image=True %}
+    {% else %}
+        {% page_cover page=page %}
+    {% endif %}
+    {{ block.super }}
+{% endblock content %}
 {% block metadata %}
     {% comment %} Impact areas {% endcomment %}
     {% with page.localized_related_impact_areas as related %}

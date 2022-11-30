@@ -6,7 +6,7 @@
     <main>
         {% block content_header %}
             {% if page.show_header is not False %}
-                {% include "app/include/page_cover.html" with background=True image_background=True transparent_navbar=True %}
+                {% include "app/include/page_cover.html" with background=True background_image=True transparent_navbar=True %}
             {% endif %}
         {% endblock content_header %}
         {% include "app/include/streamfield.html" with streamfield=page.content %}

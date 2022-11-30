@@ -1,10 +1,15 @@
-{% extends "app/static_page_with_cover_image.html" %}
-{% block page_title_text %}
-    {{ page.emoji_flag }} {{ page.title }}
-{% endblock page_title_text %}
+{% extends "app/static_page.html" %}
+{% load slippers %}
 {% block content %}
-    {{ block.super }}
-    <turbo-frame id="directory-frame" src="{% url "directory_frame" %}?country={{ page.filter_url_value }}" target="_self">
-    {% include "app/include/loading.html" %}
-    </turbo-frame>
+    {% block inline_title_block %}
+        {% comment %} Handle this differently than normal {% endcomment %}
+    {% endblock inline_title_block %}
+    {% fragment as title %}
+    {{ page.title }} {{ page.emoji_flag }}
+{% endfragment %}
+{% page_cover page=page title=title background=True background_image=True %}
+{{ block.super }}
+<turbo-frame id="directory-frame" src="{% url "directory_frame" %}?country={{ page.filter_url_value }}" target="_self">
+{% include "app/include/loading.html" %}
+</turbo-frame>
 {% endblock content %}
