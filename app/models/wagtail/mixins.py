@@ -4,8 +4,9 @@ from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
 from django.db import models
-from django.utils.html import format_html
+from django.utils.html import format_html, strip_tags
 from django.utils.safestring import mark_safe
+from django.utils.text import Truncator
 from mapwidgets.widgets import MapboxPointFieldWidget
 from modelcluster.fields import ParentalManyToManyField
 from wagtail import blocks
@@ -108,7 +109,8 @@ class PreviewablePage(Page):
             try:
                 for block in self.content:
                     if block.block_type == "richtext":
-                        return block.value
+                        truncator = Truncator(strip_tags(block.value))
+                        return truncator.words(50)
             except:
                 return None
 
