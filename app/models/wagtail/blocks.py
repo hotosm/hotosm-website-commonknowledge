@@ -297,6 +297,11 @@ class LatestArticles(CarouselBlock):
         return context
 
 
+class OpenMappingHubs(blocks.StructBlock):
+    class Meta:
+        template = "app/blocks/openmappinghubs_block.html"
+
+
 class LatestOpportunities(CarouselBlock):
     class Meta:
         template = "app/blocks/latest_opportunities.html"
@@ -495,4 +500,5 @@ full_width_blocks = [
     ("map", MapBlock()),
     ("testimonials_slider_block", TestimonialsSliderBlock()),
     ("resources", ResourcesBlock()),
+    ("openmappinghub", OpenMappingHubs()),
 ]

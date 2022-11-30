@@ -1,0 +1,23 @@
+{% load static wagtailcore_tags %}
+<section class="px-page-row pt-16 pb-24 lg:pb-32 grid grid-rows-2 grid-cols-1 gap-16 lg:grid-rows-1 lg:grid-cols-2 lg:gap-36">
+    <div>
+        <h2 class="leading-tight text-4xl font-extrabold mb-4 text-gray-900 lg:text-6xl">Open Mapping Hubs</h2>
+        <p class="text-lg font-extrabold text-gray-900 lg:text-2xl">
+            Solving global challenges requires an understanding of our physical environment that is grounded in the day-to-day realities of people experiencing those challenges.
+        </p>
+    </div>
+    <div class="grid grid-rows-2 grid-cols-2 gap-4 lg:w-fit">
+        <div class="bg-indigo-700 rounded-xl bg-cover bg-center lg:w-[185px]"
+             style="background-image:url('{% static "app/hubs/asia_pacific.png" %}')">
+        </div>
+        <div class="bg-red-900 rounded-xl bg-cover bg-center lg:w-[185px]"
+             style="background-image:url('{% static "app/hubs/eastern_and_south_africa.png" %}')">
+        </div>
+        <div class=" bg-teal-500 rounded-xl bg-cover bg-center lg:w-[185px]"
+             style="background-image:url('{% static "app/hubs/latin_america.png" %}')">
+        </div>
+        <div class="bg-yellow-500 rounded-xl bg-cover bg-center lg:w-[185px]"
+             style="background-image:url('{% static "app/hubs/west_and_northern_africa.png" %}')">
+        </div>
+    </div>
+</section>
