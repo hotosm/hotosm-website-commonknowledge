@@ -301,13 +301,16 @@ class OpenMappingHubs(blocks.StructBlock):
     class Meta:
         template = "app/blocks/openmappinghubs_block.html"
         group = "Related content"
-        help_text = "A listing of Open Mapping Hubs, with links through to each Hub"
+        help_text = "A listing of Open Mapping Hubs, with links through to each Hub."
 
-    title = blocks.CharBlock(required=True)
+    title = blocks.CharBlock(
+        required=True, help_text="Title of the block, typically Open Mapping Hubs."
+    )
     description = blocks.RichTextBlock(
         required=True,
         max_length=600,
         features=[],
+        help_text="Description of the block, found under the title.",
     )
 
 
