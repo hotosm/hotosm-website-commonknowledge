@@ -300,6 +300,15 @@ class LatestArticles(CarouselBlock):
 class OpenMappingHubs(blocks.StructBlock):
     class Meta:
         template = "app/blocks/openmappinghubs_block.html"
+        group = "Related content"
+        help_text = "A listing of Open Mapping Hubs, with links through to each Hub"
+
+    title = blocks.CharBlock(required=True)
+    description = blocks.RichTextBlock(
+        required=True,
+        max_length=600,
+        features=[],
+    )
 
 
 class LatestOpportunities(CarouselBlock):
