@@ -1,4 +1,7 @@
-{% extends "app/static_page_with_cover_image.html" %}
+{% extends "app/static_page_with_small_image.html" %}
+{% block page_label %}
+    <span>Contributor</span>
+{% endblock page_label %}
 {% block metadata %}
     {% comment %} Countries {% endcomment %}
     {% with page.localized_related_countries as related %}

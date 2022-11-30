@@ -1,6 +1,6 @@
 @layer components {
     .px-page-row {
-        @apply px-4 md:px-8 lg:px-16 xl:px-20;
+        @apply px-4 md:px-8 lg:px-16 xl:px-20 2xl:px-24;
     }
 
     // Classes added here will only be bundled if referenced in templates

@@ -1,0 +1,16 @@
+{% extends "app/include/page_cover.html" %}
+{% block aside %}
+    <a href="{{ url }}"
+       class="w-full whitespace-nowrap bg-theme-500 hover:bg-theme-600 text-white rounded-sm flex gap-3 items-center justify-center py-3 px-5 text-base lg:text-lg font-medium lg:font-semibold">
+        {{ label }}
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20"
+             height="21"
+             viewBox="0 0 20 21"
+             {% if item == links.0 %} class="fill-white"{% endif %}
+             {% if item == links.1 %} {% if background == "dark" %} class="fill-white" {% else %} class="fill-gray-700" {% endif %}
+             {% endif %}>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.46853 5.54856C5.46857 5.2834 5.57392 5.0291 5.76142 4.84161C5.94892 4.65411 6.20321 4.54875 6.46838 4.54871L14.9537 4.54871C15.2188 4.54875 15.4731 4.65411 15.6606 4.84161C15.8481 5.0291 15.9535 5.2834 15.9535 5.54856L15.9535 14.0338C15.949 14.296 15.8416 14.5459 15.6546 14.7297C15.4676 14.9135 15.2159 15.0165 14.9537 15.0165C14.6915 15.0165 14.4397 14.9135 14.2527 14.7297C14.0657 14.5459 13.9584 14.296 13.9538 14.0338L13.9538 7.96262L5.76127 16.1552C5.57373 16.3427 5.31938 16.4481 5.05416 16.4481C4.78895 16.4481 4.53459 16.3427 4.34706 16.1552C4.15952 15.9676 4.05416 15.7133 4.05416 15.4481C4.05416 15.1828 4.15952 14.9285 4.34706 14.7409L12.5396 6.54841L6.46838 6.54841C6.20321 6.54837 5.94892 6.44302 5.76142 6.25552C5.57392 6.06802 5.46857 5.81373 5.46853 5.54856V5.54856Z" />
+        </svg>
+    </a>
+{% endblock aside %}

@@ -343,7 +343,7 @@ class GeocodedMixin(Page):
         so collect them all up
         """
         return sorted(
-            localized_related_pages(self, "related_countries"), lambda p: p.title
+            localized_related_pages(self, "related_countries"), key=lambda p: p.title
         )
 
     @property
@@ -493,5 +493,5 @@ class RelatedImpactAreaMixin(Page):
         so collect them all up
         """
         return sorted(
-            localized_related_pages(self, "related_impact_areas"), lambda p: p.title
+            localized_related_pages(self, "related_impact_areas"), key=lambda p: p.title
         )

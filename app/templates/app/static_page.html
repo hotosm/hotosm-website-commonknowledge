@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 {% block content %}
-    <div class="grid gap-8 md:grid-cols-9 lg:grid-cols-12 md:gap-4 lg:gap-8 px-4 lg:px-8 2xl:px-16 3xl:px-20"
+    <div class="grid gap-8 md:grid-cols-8 lg:grid-cols-12 md:gap-4 lg:gap-8 px-page-row"
         {% if page.show_table_of_contents is not False %}
             data-controller="toc"
             {# djlint:off #}
@@ -31,7 +31,7 @@
             {# djlint:on #}
         {% endif %}>
         {% comment %} Metadata {% endcomment %}
-        <div class="order-2 md:order-1 md:col-span-3 my-16 text-sm font-medium">
+        <div class="order-2 md:order-1 md:col-span-2 lg:col-span-3 my-16 text-sm font-medium">
             <div class="space-y-4 sticky top-8">
                 {% block metadata %}
                 {% endblock metadata %}
@@ -39,7 +39,7 @@
         </div>
         {% comment %} Page content {% endcomment %}
         <main class="order-1 md:order-2 md:col-span-6 my-16">
-            <div class="mx-auto max-w-3xl w-full flex flex-col">
+            <div class="mx-auto md:max-w-2xl w-full flex flex-col">
                 <div class="mb-4 flex-grow">
                     {% block inline_title_block %}
                         {% if page.show_header is not False %}
@@ -59,7 +59,9 @@
                                 <div class="mt-4">
                                     <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
                                 </div>
-                                {% if page.summary %}<p class="text-xl sm:text-2xl text-gray-800">{{ page.summary|richtext }}</p>{% endif %}
+                                {% if page.short_summary %}
+                                    <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
+                                {% endif %}
                             </header>
                         {% endif %}
                         {% if page.featured_image %}
