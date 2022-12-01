@@ -1,8 +1,0 @@
-{% extends "app/static_page.html" %}
-{% block content %}
-    {% block inline_title_block %}
-        {% comment %} Handle this differently than normal {% endcomment %}
-    {% endblock inline_title_block %}
-    {% include "app/include/page_cover.html" with background=False background_image=False image_icon=True %}
-    {{ block.super }}
-{% endblock content %}

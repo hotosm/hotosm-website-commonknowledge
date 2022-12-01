@@ -35,6 +35,9 @@
             <div class="space-y-4 sidebar-sticky">
                 {% block metadata %}
                 {% endblock metadata %}
+                <div class="flex flex-row justify-start items-center space-x-2">
+                    {% include "app/include/share_links.html" with class="text-gray-900 w-5 h-5" %}
+                </div>
             </div>
         </div>
         {% comment %} Page content {% endcomment %}
