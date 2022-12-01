@@ -472,11 +472,19 @@ class ToolPage(RelatedImpactAreaMixin, ContentPage):
 
     template = "app/static_page.html"
     page_description = "Internal and external tools"
-    tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
+    guide = models.ForeignKey(
+        Page,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="tool_guide",
+        help_text="Page that has a guide to the usage of this tool",
+        verbose_name="Tool guide",
+    )
 
     # Editor
     content_panels = ContentPage.content_panels + [
-        FieldPanel("tags"),
+        FieldPanel("guide"),
         *RelatedImpactAreaMixin.content_panels,
     ]
 
