@@ -431,13 +431,15 @@ class PersonPage(GeocodedMixin, ContentPage):
 
     @property
     def osm_url(self):
-        return f"https://openstreetmap.org/user/{self.osm_username}"
+        if self.osm_username is not None and len(self.osm_username) > 1:
+            return f"https://openstreetmap.org/user/{self.osm_username}"
 
     twitter_username = models.CharField(max_length=300, blank=True, null=True)
 
     @property
     def twitter_url(self):
-        return f"https://twitter.com/{self.twitter_username}"
+        if self.twitter_username is not None and len(self.twitter_username) > 1:
+            return f"https://twitter.com/{self.twitter_username}"
 
     linkedin_url = models.URLField(blank=True, null=True)
     facebook_url = models.URLField(blank=True, null=True)
