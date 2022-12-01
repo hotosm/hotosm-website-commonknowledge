@@ -1,6 +1,7 @@
+from app.management.commands.base_frontmatter_converter_command import (
+    BaseFrontmatterConverterCommand,
+)
 from app.models import PersonPage
-
-from ..base_frontmatter_converter_command import BaseFrontmatterConverterCommand
 
 
 class Command(BaseFrontmatterConverterCommand):
