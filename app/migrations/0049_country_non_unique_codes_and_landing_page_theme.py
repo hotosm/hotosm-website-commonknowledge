@@ -11,7 +11,7 @@ import app.models.wagtail.pages
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0046_merge_20221129_1519"),
+        ("app", "0048_merge_20221130_1338"),
     ]
 
     operations = [

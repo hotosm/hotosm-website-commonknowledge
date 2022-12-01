@@ -769,6 +769,45 @@ class ImpactAreaPage(ThemeablePageMixin, IconMixin, ContentPage):
     )
 
 
+class OpenMappingHubIndexPage(IconMixin, ContentPage):
+    page_description = "Open Mapping Hub index page, usually divided up by region"
+
+    about_us = RichTextField(max_length=1500, blank=True, null=True)
+    twitter = models.URLField(default="")
+    facebook = models.URLField(default="")
+    mastodon = models.URLField(default="")
+    email = models.EmailField(default="comms@hotosm.org")
+
+    previewable_page_panels = [
+        FieldPanel("about_us"),
+        FieldPanel("twitter"),
+        FieldPanel("facebook"),
+        FieldPanel("mastodon"),
+        FieldPanel("email"),
+    ]
+
+    # Editor
+    content_panels = [
+        *Page.content_panels,
+        *ContentPage.previewable_page_panels,
+        *IconMixin.icon_panels,
+        *previewable_page_panels,
+        *ContentPage.content_page_panels,
+    ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
 class ActivationIndexPage(PreviewablePage):
     template = "app/static_page.html"
     page_description = "Home page for the activations section of the site"
