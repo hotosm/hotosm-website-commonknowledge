@@ -1,13 +1,15 @@
 {# djlint:off D018 #}
 {% comment %} Ignore DJLint's rule about URLs {% endcomment %}
 {% firstof class "text-gray-700 w-8 h-8" as class %}
-<a href="https://twitter.com/intent/tweet/?text={{ page.title|urlencode }}&url={{ page.url|urlencode }}">
+<a href="https://twitter.com/intent/tweet/?text={{ page.title|urlencode }}&url={{ page.full_url|urlencode }}">
     {% include "app/icons/twitter.svg" with class=class %}
 </a>
-<a href="https://facebook.com/sharer/sharer.php?u={{ page.url|urlencode }}">
+<a href="https://facebook.com/sharer/sharer.php?u={{ page.full_url|urlencode }}">
     {% include "app/icons/facebook.svg" with class=class %}
 </a>
-<a href="whatsapp://send?text={{ page.url|urlencode }}">{% include "app/icons/whatsapp.svg" with class=class %}</a>
+<a href="whatsapp://send?text={{ page.full_url|urlencode }}">
+    {% include "app/icons/whatsapp.svg" with class=class %}
+</a>
 <a href="mailto:?subject={{ page.title|urlencode }}">{% include "app/icons/mail.svg" with class=class %}</a>
-<a href="{{ page.url }}">{% include "app/icons/link.svg" with class=class %}</a>
+<a href="{{ page.full_url }}">{% include "app/icons/link.svg" with class=class %}</a>
 {# djlint:on #}
