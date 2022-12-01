@@ -23,9 +23,18 @@
     <section class="space-y-1">
         <div>On the web</div>
         {% if page.osm_url %}<a class="block link" href="{{ page.osm_url }}">OpenStreetMap</a>{% endif %}
-        {% if page.twitter_url %}<a class="block link" href="{{ page.twitter_url }}">Twitter</a>{% endif %}
         {% if page.linkedin_url %}<a class="block link" href="{{ page.linkedin_url }}">LinkedIn</a>{% endif %}
+        {% if page.twitter_url %}<a class="block link" href="{{ page.twitter_url }}">Twitter</a>{% endif %}
+        {% if page.facebook_url %}<a class="block link" href="{{ page.facebook_url }}">Facebook</a>{% endif %}
         {% if page.website %}<a class="block link" href="{{ page.website }}">Website</a>{% endif %}
-        {% if page.email %}<a class="block link" href="mailto:{{ page.email }}">Email</a>{% endif %}
+        {% if page.email %}
+            <div>
+                <a class="inline-flex flex-row items-end bg-background-tint rounded-sm px-5 py-2 space-x-2"
+                   href="mailto:{{ page.email }}">
+                    Contact via email
+                    {% include "app/icons/external_link.svg" with class="inline-block w-5 h-5 text-gray-700" %}
+                </a>
+            </div>
+        {% endif %}
     </section>
 {% endblock metadata %}
