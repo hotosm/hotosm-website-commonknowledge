@@ -36,8 +36,16 @@ Override args:
                     {% firstof title page.title %}
                 </h1>
             {% endif %}
-            {% firstof summary page.short_summary as summary %}
-            {% if summary %}<div class="my-6 text-base md:text-xl font-medium space-y-4">{{ summary|richtext }}</div>{% endif %}
+            {% firstof summary page.short_summary as has_summary %}
+            {% if has_summary %}
+                <div class="my-6 text-base md:text-xl font-medium space-y-4">
+                    {% if summary %}
+                        {{ summary|richtext }}
+                    {% elif page.short_summary %}
+                        {{ page.short_summary|richtext }}
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
         <div class="mb-6 md:mb-0 md:ml-6 w-full h-full">
             {% if aside %}
