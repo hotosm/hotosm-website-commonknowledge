@@ -466,6 +466,33 @@ class OrganisationPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     )
 
 
+class ToolPage(RelatedImpactAreaMixin, ContentPage):
+    class Meta:
+        ordering = ["title"]
+
+    template = "app/static_page.html"
+    page_description = "Internal and external tools"
+    tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
+
+    # Editor
+    content_panels = ContentPage.content_panels + [
+        FieldPanel("tags"),
+        *RelatedImpactAreaMixin.content_panels,
+    ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
 class OpportunityType(TagBase):
     pass
 
