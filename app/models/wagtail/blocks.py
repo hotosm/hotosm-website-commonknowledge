@@ -1,6 +1,7 @@
 from math import floor
 
 from django.conf import settings
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.core.blocks import StructValue
@@ -381,6 +382,49 @@ class FeaturedProjects(CarouselBlock):
         return context
 
 
+class UpcomingEvents(CarouselBlock):
+    class Meta:
+        template = "app/blocks/upcoming_events_block.html"
+        help_text = "Display a list of upcoming events, presented as a carousel"
+        group = "Community"
+
+    events_shown = blocks.ChoiceBlock(
+        choices=[
+            ("show_all", "Show all events across the site"),
+            ("only_children", "Only show events that are childen of this page"),
+        ],
+        default="show_all",
+        help_text="This block can show all events across the HOT site, or only those events that are under this page.",
+    )
+
+    def get_context(self, value, parent_context=None):
+        from app.models.wagtail import EventPage
+
+        context = super().get_context(value, parent_context=parent_context)
+
+        if value["events_shown"] == "show_all":
+            events = localized_pages(
+                EventPage.objects.all()
+                .live()
+                .public()
+                .filter(end_datetime__gte=timezone.now())
+                .order_by("-first_published_at")[:6]
+            )
+        else:
+            events = localized_pages(
+                EventPage.objects.all()
+                .live()
+                .child_of(context["page"])
+                .public()
+                .filter(end_datetime__gte=timezone.now())
+                .order_by("-first_published_at")[:6]
+            )
+
+        context["pages"] = events
+
+        return context
+
+
 class HeadingAndSubHeadingBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/heading_and_subheading.html"
@@ -512,5 +556,6 @@ full_width_blocks = [
     ("map", MapBlock()),
     ("testimonials_slider_block", TestimonialsSliderBlock()),
     ("resources", ResourcesBlock()),
+    ("upcoming_events", UpcomingEvents()),
     ("openmappinghub", OpenMappingHubs()),
 ]
