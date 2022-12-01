@@ -15,7 +15,13 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from taggit.models import ItemBase, TagBase
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, ObjectList, TabbedInterface
+from wagtail.admin.panels import (
+    FieldPanel,
+    FieldRowPanel,
+    MultiFieldPanel,
+    ObjectList,
+    TabbedInterface,
+)
 from wagtail.core.rich_text import RichText
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
@@ -419,14 +425,43 @@ class PersonPage(GeocodedMixin, ContentPage):
         verbose_name="Role / job title",
         help_text="Role in the HOTOSM/OSM ecosystem. E.g. 'Executive Director of HOTOSM'",
     )
+
+    # Social media fields
+    osm_username = models.CharField(max_length=300, blank=True, null=True)
+
+    @property
+    def osm_url(self):
+        return f"https://openstreetmap.org/user/{self.osm_username}"
+
+    twitter_username = models.CharField(max_length=300, blank=True, null=True)
+
+    @property
+    def twitter_url(self):
+        return f"https://twitter.com/{self.twitter_username}"
+
+    linkedin_url = models.URLField(blank=True, null=True)
+    facebook_url = models.URLField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+
     # TODO: relations
-    # TODO: external links
 
     content_panels = (
         PreviewablePage.content_panels
         + [
             FieldPanel("role"),
             FieldPanel("category"),
+            MultiFieldPanel(
+                [
+                    FieldPanel("osm_username"),
+                    FieldPanel("twitter_username"),
+                    FieldPanel("linkedin_url"),
+                    FieldPanel("facebook_url"),
+                    FieldPanel("website"),
+                    FieldPanel("email"),
+                ],
+                heading="Social media links",
+            ),
         ]
         + ContentPage.content_page_panels
         + [*GeocodedMixin.content_panels]
