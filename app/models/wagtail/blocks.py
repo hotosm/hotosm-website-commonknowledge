@@ -381,6 +381,32 @@ class FeaturedProjects(CarouselBlock):
         return context
 
 
+class FeaturedResources(CarouselBlock):
+    class Meta:
+        help_text = (
+            "A block of resources you wish to highlight, presented as a carousel."
+        )
+        template = "app/blocks/featured_resources.html"
+        group = "Related content"
+
+    resources = blocks.ListBlock(
+        blocks.PageChooserBlock(),
+        help_text="Resources to list in carousel. You can choose as many as you like.",
+    )
+
+    sub_title = blocks.CharBlock(
+        required=False,
+        help_text="An optional sub-title to display next to the title when displaying resources. Useful for giving context if you are providing a sub-set of resources",
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+
+        context["pages"] = value["resources"]
+
+        return context
+
+
 class HeadingAndSubHeadingBlock(blocks.StructBlock):
     class Meta:
         template = "app/blocks/heading_and_subheading.html"
@@ -513,4 +539,5 @@ full_width_blocks = [
     ("testimonials_slider_block", TestimonialsSliderBlock()),
     ("resources", ResourcesBlock()),
     ("openmappinghub", OpenMappingHubs()),
+    ("featured_resources", FeaturedResources()),
 ]
