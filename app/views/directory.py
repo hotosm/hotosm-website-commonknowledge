@@ -66,14 +66,18 @@ class DirectoryView(TemplateView):
             "url_param": "impact_area",
             "label": "Impact Areas",
             "widget": "dropdown",
-            "options": lambda: ImpactAreaPage.objects.live()
-            .public()
-            .all()
-            .order_by("title"),
+            "options": lambda: sorted(
+                localized_pages(
+                    ImpactAreaPage.objects.live().public().all().order_by("title")
+                ),
+                key=lambda p: p.title,
+            ),
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
                     RelatedImpactAreaMixin,
-                    dict(related_impact_areas__in=ensure_1D_list(values)),
+                    dict(
+                        related_impact_areas__translation_key__in=ensure_1D_list(values)
+                    ),
                 )
             ),
         },
@@ -81,10 +85,12 @@ class DirectoryView(TemplateView):
             "url_param": "country",
             "label": "Countries",
             "widget": "dropdown",
-            "options": lambda: CountryPage.objects.live()
-            .public()
-            .all()
-            .order_by("title"),
+            "options": lambda: sorted(
+                localized_pages(
+                    CountryPage.objects.live().public().all().order_by("title")
+                ),
+                key=lambda p: p.title,
+            ),
             "query": lambda qs, values: qs.filter(
                 abstract_page_query_filter(
                     GeocodedMixin,

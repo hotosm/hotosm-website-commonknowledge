@@ -1,0 +1,31 @@
+{% extends "app/static_page.html" %}
+{% load slippers wagtailimages_tags %}
+{% block content %}
+    {% block inline_title_block %}
+        {% comment %} Handle this differently than normal {% endcomment %}
+    {% endblock inline_title_block %}
+    {% fragment as label %}
+    {% for category in page.category.all %}<span>{{ category }}</span>{% endfor %}
+{% endfragment %}
+{% page_cover page=page label=label summary=page.role small_image=True %}
+{{ block.super }}
+{% endblock content %}
+{% block metadata %}
+    {% comment %} Countries {% endcomment %}
+    {% with page.localized_related_countries as related %}
+        {% if related|length > 0 %}
+            <section class="space-y-1">
+                <div>Country</div>
+                {% for page in related %}<a class="block link" href="{{ page.url }}">{{ page.name_with_flag }}</a>{% endfor %}
+            </section>
+        {% endif %}
+    {% endwith %}
+    <section class="space-y-1">
+        <div>On the web</div>
+        {% if page.osm_url %}<a class="block link" href="{{ page.osm_url }}">OpenStreetMap</a>{% endif %}
+        {% if page.twitter_url %}<a class="block link" href="{{ page.twitter_url }}">Twitter</a>{% endif %}
+        {% if page.linkedin_url %}<a class="block link" href="{{ page.linkedin_url }}">LinkedIn</a>{% endif %}
+        {% if page.website %}<a class="block link" href="{{ page.website }}">Website</a>{% endif %}
+        {% if page.email %}<a class="block link" href="mailto:{{ page.email }}">Email</a>{% endif %}
+    </section>
+{% endblock metadata %}

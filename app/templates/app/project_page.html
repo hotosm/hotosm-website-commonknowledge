@@ -4,11 +4,7 @@
     {% block inline_title_block %}
         {% comment %} Handle this differently than normal {% endcomment %}
     {% endblock inline_title_block %}
-    {% if page.featured_image is not None %}
-        {% page_cover page=page background=True background_image=True %}
-    {% else %}
-        {% page_cover page=page %}
-    {% endif %}
+    {% page_cover page=page background=True background_image=True %}
     {{ block.super }}
 {% endblock content %}
 {% block metadata %}

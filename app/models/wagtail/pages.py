@@ -15,7 +15,13 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from taggit.models import ItemBase, TagBase
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, ObjectList, TabbedInterface
+from wagtail.admin.panels import (
+    FieldPanel,
+    FieldRowPanel,
+    MultiFieldPanel,
+    ObjectList,
+    TabbedInterface,
+)
 from wagtail.core.rich_text import RichText
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
@@ -126,13 +132,11 @@ class CountryPage(ContentPage):
     page_description = "Page for each country"
     isoa2 = models.CharField(
         max_length=2,
-        unique=True,
         validators=[validate_genuine_isoa2_code],
         help_text="ISO Alpha 2 country code",
     )
     isoa3 = models.CharField(
         max_length=3,
-        unique=True,
         validators=[validate_genuine_isoa3_code],
         blank=True,
         null=True,
@@ -277,11 +281,14 @@ class CountryPage(ContentPage):
             f"REGIONAL INDICATOR SYMBOL LETTER {self.isoa2[1]}"
         )
 
+    def name_with_flag(self):
+        return f"{self.emoji_flag} {self.title}"
+
     def autocomplete_label(self):
         return f"{self.emoji_flag} {self.title}"
 
 
-class LandingPage(ContentPage):
+class LandingPage(ThemeablePageMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
@@ -291,6 +298,7 @@ class LandingPage(ContentPage):
     show_header = models.BooleanField(default=True)
     show_footer = models.BooleanField(default=True)
     layout_panels = [
+        *ThemeablePageMixin.themeable_content_panels,
         FieldPanel("show_header"),
         FieldPanel("show_footer"),
     ]
@@ -352,7 +360,6 @@ class ProjectPage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
         ordering = ["-first_published_at"]
 
     parent_page_type = ["app.DirectoryPage"]
-    template = "app/static_page.html"
     page_description = "HOTOSM and third party projects"
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
     # TODO: project status
@@ -403,15 +410,62 @@ class PersonPage(GeocodedMixin, ContentPage):
     class Meta:
         ordering = ["title"]
 
-    template = "app/static_page.html"
     list_card_template = "app/cards/person_list_card.html"
     page_description = "Contributors, staff, and other people"
-    category = ClusterTaggableManager(through=TaggedPerson, blank=True)
-    role = models.CharField(max_length=1000, blank=True, null=True)
-    # TODO: relations
-    # TODO: external links
+    category = ClusterTaggableManager(
+        through=TaggedPerson,
+        blank=True,
+        help_text="Group people by different categories, and they'll show up together in the staff section. This will also display on the person's profile page.",
+        verbose_name="Category",
+    )
+    role = models.CharField(
+        max_length=1000,
+        blank=True,
+        null=True,
+        verbose_name="Role / job title",
+        help_text="Role in the HOTOSM/OSM ecosystem. E.g. 'Executive Director of HOTOSM'",
+    )
 
-    content_panels = ContentPage.content_panels + [*GeocodedMixin.content_panels]
+    # Social media fields
+    osm_username = models.CharField(max_length=300, blank=True, null=True)
+
+    @property
+    def osm_url(self):
+        return f"https://openstreetmap.org/user/{self.osm_username}"
+
+    twitter_username = models.CharField(max_length=300, blank=True, null=True)
+
+    @property
+    def twitter_url(self):
+        return f"https://twitter.com/{self.twitter_username}"
+
+    linkedin_url = models.URLField(blank=True, null=True)
+    facebook_url = models.URLField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+
+    # TODO: relations
+
+    content_panels = (
+        PreviewablePage.content_panels
+        + [
+            FieldPanel("role"),
+            FieldPanel("category"),
+            MultiFieldPanel(
+                [
+                    FieldPanel("osm_username"),
+                    FieldPanel("twitter_username"),
+                    FieldPanel("linkedin_url"),
+                    FieldPanel("facebook_url"),
+                    FieldPanel("website"),
+                    FieldPanel("email"),
+                ],
+                heading="Social media links",
+            ),
+        ]
+        + ContentPage.content_page_panels
+        + [*GeocodedMixin.content_panels]
+    )
 
     edit_handler = TabbedInterface(
         [
@@ -442,7 +496,6 @@ class OrganisationPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
         ordering = ["title"]
 
     parent_page_type = ["app.DirectoryPage"]
-    template = "app/static_page.html"
     page_description = "Internal and external organisations"
     tags = ClusterTaggableManager(through=TaggedOrganisation, blank=True)
 
@@ -486,7 +539,6 @@ class OpportunityPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
         ordering = ["-first_published_at"]
 
     parent_page_type = ["app.DirectoryPage"]
-    template = "app/static_page.html"
     page_description = "Opportunities for people to get involved with HOT"
     deadline_datetime = models.DateTimeField(blank=True, null=True)
     place_of_work = models.CharField(max_length=1000, blank=True, null=True)
@@ -543,7 +595,6 @@ class ArticlePage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
     class Meta:
         ordering = ["-first_published_at"]
 
-    template = "app/static_page.html"
     list_card_template = "app/cards/article_list_card.html"
     page_description = "Blog posts, news reports, updates and so on"
     parent_page_type = ["app.MagazineIndexPage", "app.MagazineSection"]
@@ -681,7 +732,6 @@ class TaggedEvent(ItemBase):
 
 @register_snippet
 class EventPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
-    template = "app/static_page.html"
     page_description = "Events, workshops, and other gatherings"
 
     class Meta:

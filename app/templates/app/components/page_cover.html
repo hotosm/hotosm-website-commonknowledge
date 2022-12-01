@@ -1,0 +1,71 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% comment %} 
+Args:
+- background=True
+  will place the theme colour in the background
+- background_image=True
+  will place the featured_image in the background
+- icon=True
+  will place the page's light or dark icon in the sidebar, depending on whether a background exists or not
+
+Override args:
+- page_cover_title
+- page_label
+- title
+- aside
+{% endcomment %}
+{% firstof background background_image as dark_background %}
+{% if background_image %}
+    {% image page.featured_image width-1400 as img %}
+{% endif %}
+<header class="px-page-row relative {% if dark_background %}py-24{% endif %} {% if dark_background and transparent_navbar %}pt-[170px]{% endif %} {% if background %}text-white bg-theme-800{% endif %} {% if background_image %}bg-cover bg-center before:contents['.'] before:text-transparent before:absolute before:bg-black before:bg-opacity-30 before:inset-0 before:w-full before:h-full before:z-10{% endif %}"
+        {% if background_image %}style="background-image: url('{{ img.url }}')"{% endif %}>
+    <div class="flex flex-col md:flex-row justify-between {% if icon %}items-start{% else %}items-stretch{% endif %} {% if not dark_background %}py-8 md:py-12 lg:py-24 border-b border-b-gray-300{% endif %}">
+        <div class="relative z-20 max-w-prose flex-shrink-0">
+            {% if page_cover_title %}
+                {{ page_cover_title }}
+            {% else %}
+                <div class="text-sm font-medium capitalize content-separator-2 separator-content-bullet">
+                    {% if label %}
+                        {{ label }}
+                    {% else %}
+                        <span>{{ page.label }}</span>
+                    {% endif %}
+                </div>
+                <h1 class="{% if not dark_background %}text-gray-900{% endif %} my-6 font-extrabold text-4xl sm:text-6xl leading-tight sm:leading-none">
+                    {% firstof title page.title %}
+                </h1>
+            {% endif %}
+            {% firstof summary page.short_summary as has_summary %}
+            {% if has_summary %}
+                <div class="my-6 text-base md:text-xl font-medium space-y-4">
+                    {% if summary %}
+                        {{ summary|richtext }}
+                    {% elif page.short_summary %}
+                        {{ page.short_summary|richtext }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-6 md:mb-0 md:ml-6 w-full h-full">
+            {% if aside %}
+                {{ aside }}
+            {% elif small_image %}
+                {% image page.featured_image width-768 as img %}
+                {% if img is not None %}
+                    <div class="md:ml-auto overflow-hidden rounded-lg relative w-full h-full md:max-w-[300px] min-h-[300px] md:min-h-[200px]">
+                        <div class="bg-cover bg-center scale-100 transition-all group-hover:scale-110 absolute inset-0 w-full h-full"
+                             style="background-image: url('{{ img.url }}')">
+                        </div>
+                    </div>
+                {% endif %}
+            {% elif icon %}
+                {% if icon and dark_background and page.icon_light_transparent %}
+                    {% image page.icon_light_transparent width-200 class="w-[80px] md:w-[180px]" %}
+                {% elif icon and page.icon_dark_transparent %}
+                    {% image page.icon_dark_transparent width-200 class="w-[80px] md:w-[180px]" %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</header>

@@ -5,7 +5,7 @@
     {% comment %} Controller for the interactive map block {% endcomment %}
     <div data-mapbox-target="config"
          data-controller="map-block"
-         class="group map-block--collapsed my-16 mx-4 relative bg-blue-100 rounded-sm"
+         class="group map-block--collapsed my-16 mx-4 relative bg-theme-100 rounded-sm"
          data-map-block-collapsed-class="map-block--collapsed"
          data-map-block-expanded-class="map-block--expanded"
          data-map-block-geo-api-endpoint-value="{% url 'geo-api' %}">
@@ -36,7 +36,7 @@
         <div class="map-block__mobile-launch-btn-container pointer-events-none absolute inset-0 w-full h-full flex flex-row justify-center items-center md:justify-end md:items-start md:p-4">
             <button data-action="click->map-block#toggle"
                     type="button"
-                    class="pointer-events-auto text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-base px-6 py-3.5 text-center inline-flex items-center md:bg-white md:hover:bg-gray-100 md:opacity-90 md:text-gray-700 md:px-3 md:py-2 md:border md:border-gray-300">
+                    class="pointer-events-auto text-white bg-theme-500 hover:bg-theme-600 focus:ring-4 focus:outline-none focus:ring-theme-300 font-medium rounded-sm text-base px-6 py-3.5 text-center inline-flex items-center md:bg-white md:hover:bg-gray-100 md:opacity-90 md:text-gray-700 md:px-3 md:py-2 md:border md:border-gray-300">
                 <span class="md:hidden">Launch map</span>
                 <span class="hidden md:block text-xs">Expand</span>
                 <svg class="ml-2 -mr-1 w-5 h-5 md:w-4 md:h-4"

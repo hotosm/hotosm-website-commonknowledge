@@ -115,17 +115,28 @@ class Command(BaseCommand):
                 top_values = dict(
                     sorted(stats["values"].items(), key=lambda x: x[1], reverse=True)
                 )
-                if list(top_values.values())[0] > 1 and mean(top_values.values()) > 1.2:
+                if options.get("summarise", None) is not None:
+                    if (
+                        list(top_values.values())[0] > 1
+                        and mean(top_values.values()) > 1.2
+                    ):
+                        popular_values_table = "<table><thead><tr><th>Value</th><th>Count</th></tr></thead>\n"
+                        for value, count in list(top_values.items())[:8]:
+                            popular_values_table += (
+                                f"<tr><td>{value}</td><td>{count}</td>\n"
+                            )
+                        popular_values_table += "</table>"
+                    else:
+                        popular_values_table = "Unique values only"
+                else:
                     popular_values_table = (
                         "<table><thead><tr><th>Value</th><th>Count</th></tr></thead>\n"
                     )
-                    for value, count in list(top_values.items())[:8]:
+                    for value, count in list(top_values.items()):
                         popular_values_table += (
                             f"<tr><td>{value}</td><td>{count}</td>\n"
                         )
                     popular_values_table += "</table>"
-                else:
-                    popular_values_table = "Unique values only"
                 print(
                     f"<tr><td>{property}</td><td>{stats['count']}</td><td>{popular_values_table}</td>"
                 )
