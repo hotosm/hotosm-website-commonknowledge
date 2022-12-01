@@ -5,9 +5,9 @@
         {% comment %} Handle this differently than normal {% endcomment %}
     {% endblock inline_title_block %}
     {% fragment as label %}
-    <span>Contributor</span> <span>Staff</span>
+    {% for category in page.category.all %}<span>{{ category }}</span>{% endfor %}
 {% endfragment %}
-{% page_cover page=page label=label small_image=True %}
+{% page_cover page=page label=label summary=page.role small_image=True %}
 {{ block.super }}
 {% endblock content %}
 {% block metadata %}

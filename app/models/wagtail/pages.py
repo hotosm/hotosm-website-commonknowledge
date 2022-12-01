@@ -406,12 +406,31 @@ class PersonPage(GeocodedMixin, ContentPage):
 
     list_card_template = "app/cards/person_list_card.html"
     page_description = "Contributors, staff, and other people"
-    category = ClusterTaggableManager(through=TaggedPerson, blank=True)
-    role = models.CharField(max_length=1000, blank=True, null=True)
+    category = ClusterTaggableManager(
+        through=TaggedPerson,
+        blank=True,
+        help_text="Group people by different categories, and they'll show up together in the staff section. This will also display on the person's profile page.",
+        verbose_name="Category",
+    )
+    role = models.CharField(
+        max_length=1000,
+        blank=True,
+        null=True,
+        verbose_name="Role / job title",
+        help_text="Role in the HOTOSM/OSM ecosystem. E.g. 'Executive Director of HOTOSM'",
+    )
     # TODO: relations
     # TODO: external links
 
-    content_panels = ContentPage.content_panels + [*GeocodedMixin.content_panels]
+    content_panels = (
+        PreviewablePage.content_panels
+        + [
+            FieldPanel("role"),
+            FieldPanel("category"),
+        ]
+        + ContentPage.content_page_panels
+        + [*GeocodedMixin.content_panels]
+    )
 
     edit_handler = TabbedInterface(
         [
