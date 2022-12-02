@@ -12,7 +12,26 @@
     {{ block.super }}
 {% endblock content %}
 {% block metadata %}
-    {% comment %} Impact areas {% endcomment %}
+    {% with page.authors.all as authors %}
+        {% if authors|length > 0 %}
+            <section class="space-y-1">
+                <div>Author</div>
+                {% for author in authors %}<a class="block link" href="{{ author.url }}">{{ author.title }}</a>{% endfor %}
+            </section>
+        {% endif %}
+    {% endwith %}
+    {% if page.first_published_at %}
+        <section class="space-y-1">
+            <div>Published</div>
+            <div class="text-gray-900">{{ page.first_published_at|date:"j F Y" }}</div>
+        </section>
+    {% endif %}
+    {% if page.last_published_at and page.last_published_at != page.first_published_at %}
+        <section class="space-y-1">
+            <div>Last updated</div>
+            <div class="text-gray-900">{{ page.last_published_at|date:"j F Y" }}</div>
+        </section>
+    {% endif %}
     {% with page.localized_related_impact_areas as related %}
         {% if related|length > 0 %}
             <section class="space-y-1">
@@ -21,7 +40,6 @@
             </section>
         {% endif %}
     {% endwith %}
-    {% comment %} Countries {% endcomment %}
     {% with page.localized_related_countries as related %}
         {% if related|length > 0 %}
             <section class="space-y-1">

@@ -17,6 +17,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 
+from app.views.admin import CustomAdminHomePageView
 from app.views.directory import DirectoryView
 from app.views.search import SearchView
 
@@ -26,6 +27,7 @@ from .views.api import MapSearchViewset
 urlpatterns = [
     path("admin/autocomplete/", include(autocomplete_admin_urls)),
     path("django-admin/", admin.site.urls),
+    path("admin/", CustomAdminHomePageView.as_view()),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("sitemap.xml", sitemap),

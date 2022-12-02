@@ -1,18 +1,96 @@
 :root {
-  --w-color-primary-hue: 2;
-  --w-color-primary-saturation: 53%; /* 53% */
-  --w-color-primary-lightness: 45%; /* 53% */
-  --w-color-primary-darker-hue: 24;
-  --w-color-primary-darker-saturation: 100%;
-  --w-color-primary-darker-lightness: 20%;
-  --w-color-primary-dark-hue: 23;
-  --w-color-primary-dark-saturation: 100%;
-  --w-color-primary-dark-lightness: 15%;
-  --w-color-secondary-hue: 220deg;
-  --w-color-secondary-saturation: 12%;
-  --w-color-secondary-lightness: 20%;
+     --w-color-primary-hue: 2;
+     --w-color-primary-saturation: 53%;
+    /* 53% */
+     --w-color-primary-lightness: 45%;
+    /* 53% */
+     --w-color-primary-darker-hue: 24;
+     --w-color-primary-darker-saturation: 100%;
+     --w-color-primary-darker-lightness: 20%;
+     --w-color-primary-dark-hue: 23;
+     --w-color-primary-dark-saturation: 100%;
+     --w-color-primary-dark-lightness: 15%;
+     --w-color-secondary-hue: 220deg;
+     --w-color-secondary-saturation: 12%;
+     --w-color-secondary-lightness: 20%;
 }
-
-.sidebar-custom-branding {
-  width: 100% !important;
+ .sidebar-custom-branding {
+     width: 100% !important;
+}
+ .h-connect-profile-page{
+    margin-bottom:4rem;
+    padding-inline-end:20px;
+    padding-inline-start:20px
+}
+@media screen and (min-width:50em){
+    .h-connect-profile-page{
+        padding-inline-end:80px;
+        padding-inline-start:80px
+    }
+}
+.h-connect-profile-page.w-dismissible--dismissed{
+    display:none
+}
+.h-connect-profile-page__banner{
+    align-items:center;
+    background-color:var(--w-color-info-50);
+    border:5px solid #0000;
+    border-radius:.625rem;
+    display:flex;
+    padding:1.5rem;
+    position:relative
+}
+.h-connect-profile-page__main-icon .icon{
+    border-radius:100%;
+    color:var(--w-color-info-100);
+    height:2.5rem;
+    margin-inline-end:1rem;
+    width:2.5rem
+}
+@media(prefers-reduced-motion:no-preference){
+    .h-connect-profile-page__main-icon .icon{
+        animation:pulse-info 5s 5
+    }
+}
+.h-connect-profile-page__heading{
+    color:var(--w-color-primary);
+    color:var(--w-color-grey-600);
+    font-size:1.375rem;
+    font-weight:700;
+    line-height:1.3;
+    margin-bottom:.5rem;
+    margin-top:0
+}
+.h-connect-profile-page__details{
+    font-size:1.125rem;
+    font-weight:400;
+    line-height:1.5;
+    margin-bottom:0
+}
+.h-connect-profile-page__link{
+    color:var(--w-color-secondary-400);
+    font-weight:700;
+    text-decoration:underline;
+    text-decoration-thickness:2px;
+    text-underline-offset:3px
+}
+.h-connect-profile-page__dismiss{
+    background-color:initial;
+    inset-inline-end:-.75rem;
+    padding:0;
+    position:absolute;
+    top:-.75rem
+}
+.h-connect-profile-page__dismiss .icon{
+    background-color:var(--w-color-white);
+    border-radius:100%;
+    color:var(--w-color-primary);
+    height:1.5rem;
+    width:1.5rem
+}
+@media(forced-colors:active){
+    .h-connect-profile-page__dismiss .icon{
+        background-color:Canvas;
+        color:CanvasText
+    }
 }

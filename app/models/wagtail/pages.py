@@ -9,6 +9,7 @@ from django.contrib.gis.db.models import PointField
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.translation import get_language_from_request
 from modelcluster.contrib.taggit import ClusterTaggableManager
@@ -18,6 +19,7 @@ from wagtail import blocks
 from wagtail.admin.panels import (
     FieldPanel,
     FieldRowPanel,
+    InlinePanel,
     MultiFieldPanel,
     ObjectList,
     TabbedInterface,
@@ -26,9 +28,11 @@ from wagtail.core.rich_text import RichText
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
+from wagtailautocomplete.edit_handlers import AutocompletePanel
 
 import app.models.wagtail.blocks as app_blocks
 from app.models.wagtail.mixins import (
+    AuthorMixin,
     ContentPage,
     ContentSidebarPage,
     GeocodedMixin,
@@ -362,7 +366,9 @@ class ProjectPage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
     parent_page_type = ["app.DirectoryPage"]
     page_description = "HOTOSM and third party projects"
     tags = ClusterTaggableManager(through=TaggedProject, blank=True)
-    # TODO: project status
+    related_people = ParentalManyToManyField(
+        "app.PersonPage", blank=True, related_name="related_projects"
+    )
 
     # Editor
     content_panels = ContentSidebarPage.content_panels + [
@@ -481,6 +487,36 @@ class PersonPage(GeocodedMixin, ContentPage):
         ]
     )
 
+    @classmethod
+    def get_or_create_for_user(cls, user):
+        if not user.is_public:
+            return None, False
+
+        page = (
+            user.page
+            or cls.objects.filter(
+                Q(email=user.email) | Q(title=user.get_full_name())
+            ).first()
+        )
+        if page is not None:
+            if user.page is not page:
+                user.page = page
+                user.save()
+            return page, False
+
+        contributor_index = PersonPage.objects.first().get_parent()
+
+        title = user.get_full_name() or user.username
+        page = cls(title=title, slug=slugify(title))
+        contributor_index.add_child(instance=page)
+        page.save()
+        user.page = page
+        user.save()
+        return page, True
+
+    def articles(self):
+        return ArticlePage.objects.filter(authors=self).all()
+
 
 class TaggedOrganisation(ItemBase):
     tag = models.ForeignKey(
@@ -593,7 +629,9 @@ class MagazineSection(SearchableDirectoryMixin, PreviewablePage):
 
 
 @register_snippet
-class ArticlePage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
+class ArticlePage(
+    AuthorMixin, RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage
+):
     class Meta:
         ordering = ["-first_published_at"]
 
@@ -606,6 +644,7 @@ class ArticlePage(RelatedImpactAreaMixin, GeocodedMixin, ContentSidebarPage):
 
     # Editor
     metadata_panels = [
+        *AuthorMixin.author_content_panels,
         FieldPanel("tags"),
         *RelatedImpactAreaMixin.content_panels,
         *GeocodedMixin.content_panels,
@@ -647,7 +686,7 @@ class TopicContextMixin:
         return context
 
 
-class TopicHomepage(TopicContextMixin, ContentPage):
+class TopicHomepage(AuthorMixin, TopicContextMixin, ContentPage):
     template = "app/topic_homepage.html"
 
     page_description = "Topical overview, can contain subpages"
@@ -662,10 +701,14 @@ class TopicHomepage(TopicContextMixin, ContentPage):
         FieldPanel("show_section_navigation"),
         FieldPanel("show_breadcrumb"),
     ]
+    metadata_panels = [
+        *AuthorMixin.author_content_panels,
+    ]
     edit_handler = TabbedInterface(
         [
             ObjectList(ContentPage.content_panels, heading="Content"),
             ObjectList(layout_panels, heading="Layout"),
+            ObjectList(metadata_panels, heading="Metadata"),
             ObjectList(ContentPage.promote_panels, heading="Sharing"),
             ObjectList(
                 ContentPage.settings_panels,
@@ -686,7 +729,7 @@ class TaggedTopic(ItemBase):
 
 
 @register_snippet
-class TopicPage(TopicContextMixin, ContentPage):
+class TopicPage(AuthorMixin, TopicContextMixin, ContentPage):
     template = "app/topic_page.html"
 
     page_description = "Guide / resource page for a specific task or question."
@@ -696,7 +739,8 @@ class TopicPage(TopicContextMixin, ContentPage):
     # Fields
     tags = ClusterTaggableManager(through=TaggedTopic, blank=True)
 
-    content_panels = ContentPage.content_panels + [
+    metadata_panels = [
+        *AuthorMixin.author_content_panels,
         FieldPanel("tags"),
     ]
 
@@ -711,8 +755,9 @@ class TopicPage(TopicContextMixin, ContentPage):
     ]
     edit_handler = TabbedInterface(
         [
-            ObjectList(content_panels, heading="Content"),
+            ObjectList(ContentPage.content_panels, heading="Content"),
             ObjectList(layout_panels, heading="Layout"),
+            ObjectList(metadata_panels, heading="Metadata"),
             ObjectList(ContentPage.promote_panels, heading="Sharing"),
             ObjectList(
                 ContentPage.settings_panels,
