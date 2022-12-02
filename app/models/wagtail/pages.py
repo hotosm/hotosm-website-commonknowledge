@@ -521,6 +521,41 @@ class OrganisationPage(RelatedImpactAreaMixin, GeocodedMixin, ContentPage):
     )
 
 
+class ToolPage(RelatedImpactAreaMixin, ContentPage):
+    class Meta:
+        ordering = ["title"]
+
+    template = "app/static_page.html"
+    page_description = "Internal and external tools"
+    guide = models.ForeignKey(
+        Page,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="tool_guide",
+        help_text="Page that has a guide to the usage of this tool",
+        verbose_name="Tool guide",
+    )
+
+    # Editor
+    content_panels = ContentPage.content_panels + [
+        FieldPanel("guide"),
+        *RelatedImpactAreaMixin.content_panels,
+    ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading="Content"),
+            ObjectList(Page.promote_panels, heading="Sharing"),
+            ObjectList(
+                Page.settings_panels,
+                heading="Publishing Schedule",
+                classname="settings",
+            ),
+        ]
+    )
+
+
 class OpportunityType(TagBase):
     pass
 
