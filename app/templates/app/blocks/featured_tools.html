@@ -1,0 +1,110 @@
+{% load wagtailimages_tags %}
+<section class="px-page-row overflow-x-hidden">
+    <div class="md:flex justify-between pt-16">
+        <h1 class="font-extrabold sm:text-2xl md:text-4xl text-gray-900 leading-tight flex flex-col md:inline">
+            {% if self.title %}{{ self.title }}{% endif %}
+            {% if self.sub_title %}<span class="text-gray-500">{{ self.sub_title }}</span>{% endif %}
+        </h1>
+        <a href="{{ view_all.url }}">
+            <button class="bg-background-tint rounded-sm text-lg font-semibold  text-gray-700 px-3 py-5 hidden md:block w-[103px]">
+                View all
+            </button>
+        </a>
+    </div>
+    {# dlint:off #}
+    <div data-controller="carousel"
+         class="!overflow-visible"
+         data-carousel-options-value='{ "spaceBetween": 32, "breakpoints": { "0": { "slidesPerView": 1.25 }, "468": { "slidesPerView": 1.75 }, "612": { "slidesPerView": 2.1 }, "768": { "slidesPerView": 2.75 }, "1024": { "slidesPerView": 3 } } }'>
+        {# djlint:on #}
+        <div class="swiper-wrapper my-8">
+            {% for page in pages %}
+                <div class="swiper-slide flex flex-col">
+                    {% image page.featured_image fill-400x260 as img %}
+                    <div class="bg-gray-50 rounded-xl overflow-hidden bg-cover bg-center mb-4 h-[180px] lg:h-[260px]"
+                         style="background-image: url('{{ img.url }}')">
+                    </div>
+                    <div class="flex flex-row gap-2 items-center text-sm font-medium text-gray-700 mb-4">
+                        {% if page.label == 'article' %}
+                            <span>News</span>
+                            <span>•</span>
+                            <span>{{ page.date|date:"d M Y" }}</span>
+                        {% else %}
+                            <span class="capitalize">{{ page.label }}</span>
+                        {% endif %}
+                    </div>
+                    <h4 class="font-semibold leading-tight sm:text-xl md:text-2xl text-gray-900 mb-4">{{ page.title }}</h4>
+                    <div class="text-base font-normal text-gray-700 mb-4">{{ page.short_summary|truncatewords:30|safe }}</div>
+                    <div class="flex flex-col lg:flex-row">
+                        <a class="bg-primary-500 w-full rounded-sm py-2 px-3 text-sm font-medium text-white flex flex-row justify-center mb-4 lg:mb-0 lg:mr-4 lg:w-[134px]"
+                           href="{{ page.url }}">Launch tool</a>
+                        {% if page.guide %}
+                            <a class="bg-background-tint w-full rounded-sm py-2 px-3 text-sm font-medium text-gray-900 flex flex-row justify-center lg:w-[107px]"
+                               href="{{ page.guide.url }}">Read guide</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <svg class="swiper-button-next"
+             xmlns="http://www.w3.org/2000/svg"
+             width="54"
+             height="54"
+             viewBox="0 0 54 54"
+             fill="none">
+            <g opacity="0.9" filter="url(#filter0_dd_14597_63696)">
+            <rect x="3" y="2" width="48" height="48" rx="24" fill="white"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M27.469 15.2688C27.769 14.9688 28.1759 14.8003 28.6002 14.8003C29.0245 14.8003 29.4313 14.9688 29.7314 15.2688L39.3314 24.8688C39.6313 25.1688 39.7999 25.5757 39.7999 26C39.7999 26.4242 39.6313 26.8311 39.3314 27.1312L29.7314 36.7312C29.4296 37.0226 29.0255 37.1839 28.606 37.1802C28.1864 37.1766 27.7851 37.0083 27.4885 36.7117C27.1918 36.415 27.0236 36.0137 27.0199 35.5942C27.0163 35.1747 27.1775 34.7705 27.469 34.4688L34.3378 27.6H15.8002C15.3758 27.6 14.9689 27.4314 14.6688 27.1313C14.3688 26.8313 14.2002 26.4243 14.2002 26C14.2002 25.5756 14.3688 25.1686 14.6688 24.8686C14.9689 24.5685 15.3758 24.4 15.8002 24.4H34.3378L27.469 17.5312C27.169 17.2311 27.0005 16.8242 27.0005 16.4C27.0005 15.9757 27.169 15.5688 27.469 15.2688Z" fill="#CACACA"/>
+            </g>
+            <defs>
+            <filter id="filter0_dd_14597_63696" x="0" y="0" width="54" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feMorphology radius="1" operator="erode" in="SourceAlpha" result="effect1_dropShadow_14597_63696"/>
+            <feOffset dy="1"/>
+            <feGaussianBlur stdDeviation="1"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_14597_63696"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="1"/>
+            <feGaussianBlur stdDeviation="1.5"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+            <feBlend mode="normal" in2="effect1_dropShadow_14597_63696" result="effect2_dropShadow_14597_63696"/>
+            <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_14597_63696" result="shape"/>
+            </filter>
+            </defs>
+        </svg>
+        <svg class="swiper-button-prev"
+             xmlns="http://www.w3.org/2000/svg"
+             width="54"
+             height="54"
+             viewBox="0 0 54 54"
+             fill="none">
+            <g opacity="0.9" filter="url(#filter0_dd_14597_63799)">
+            <rect x="3" y="2" width="48" height="48" rx="24" fill="white"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M26.5311 36.7311C26.231 37.0311 25.8241 37.1996 25.3999 37.1996C24.9756 37.1996 24.5687 37.0311 24.2687 36.7311L14.6687 27.1311C14.3687 26.8311 14.2002 26.4242 14.2002 25.9999C14.2002 25.5757 14.3687 25.1688 14.6687 24.8687L24.2687 15.2687C24.5704 14.9773 24.9746 14.816 25.3941 14.8196C25.8136 14.8233 26.2149 14.9916 26.5116 15.2882C26.8082 15.5849 26.9765 15.9862 26.9801 16.4057C26.9838 16.8252 26.8225 17.2294 26.5311 17.5311L19.6623 24.3999H38.1999C38.6242 24.3999 39.0312 24.5685 39.3312 24.8685C39.6313 25.1686 39.7999 25.5756 39.7999 25.9999C39.7999 26.4243 39.6313 26.8312 39.3312 27.1313C39.0312 27.4313 38.6242 27.5999 38.1999 27.5999H19.6623L26.5311 34.4687C26.831 34.7688 26.9995 35.1757 26.9995 35.5999C26.9995 36.0242 26.831 36.4311 26.5311 36.7311Z" fill="#CACACA"/>
+            </g>
+            <defs>
+            <filter id="filter0_dd_14597_63799" x="0" y="0" width="54" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feMorphology radius="1" operator="erode" in="SourceAlpha" result="effect1_dropShadow_14597_63799"/>
+            <feOffset dy="1"/>
+            <feGaussianBlur stdDeviation="1"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_14597_63799"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="1"/>
+            <feGaussianBlur stdDeviation="1.5"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+            <feBlend mode="normal" in2="effect1_dropShadow_14597_63799" result="effect2_dropShadow_14597_63799"/>
+            <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_14597_63799" result="shape"/>
+            </filter>
+            </defs>
+        </svg>
+    </div>
+    <a href="{{ view_all.url }}">
+        <button class="bg-background-tint w-full rounded-sm px-5 py-3 text-base font-medium text-gray-900 md:hidden">
+            View all
+        </button>
+    </a>
+</section>

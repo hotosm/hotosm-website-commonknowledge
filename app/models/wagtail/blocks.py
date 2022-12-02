@@ -355,6 +355,30 @@ class LatestOpportunities(CarouselBlock):
         return context
 
 
+class FeaturedTools(CarouselBlock):
+    class Meta:
+        help_text = "A block of tools you wish to highlight, presented as a carousel."
+        template = "app/blocks/featured_tools.html"
+        group = "Related content"
+
+    tools = blocks.ListBlock(
+        blocks.PageChooserBlock(page_type="app.ToolPage"),
+        help_text="Tools to list in carousel. You can choose as many as you like.",
+    )
+
+    sub_title = blocks.CharBlock(
+        required=False,
+        help_text="An optional sub-title to display next to the title when displaying projects. Useful for giving context if you are providing a sub-set of tools",
+    )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+
+        context["pages"] = value["tools"]
+
+        return context
+
+
 class FeaturedProjects(CarouselBlock):
     class Meta:
         help_text = (
@@ -540,4 +564,5 @@ full_width_blocks = [
     ("resources", ResourcesBlock()),
     ("openmappinghub", OpenMappingHubs()),
     ("featured_resources", FeaturedResources()),
+    ("featured_tools", FeaturedTools()),
 ]
