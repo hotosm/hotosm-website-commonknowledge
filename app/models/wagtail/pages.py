@@ -488,6 +488,18 @@ class PersonPage(GeocodedMixin, ContentPage):
     )
 
     @classmethod
+    def match_for_user(cls, user):
+        if not user.is_public:
+            return None, False
+
+        return (
+            user.page
+            or cls.objects.filter(
+                Q(email=user.email) | Q(title=user.get_full_name())
+            ).first()
+        )
+
+    @classmethod
     def get_or_create_for_user(cls, user):
         if not user.is_public:
             return None, False

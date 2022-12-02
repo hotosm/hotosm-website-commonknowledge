@@ -22,14 +22,18 @@ class User(AbstractUser):
         help_text="Setting this to false will hide the user's contributions from page author lists, and will not create a PersonPage either.",
     )
 
-    def get_or_create_page(self):
-        from app.models import PersonPage
-
-        return PersonPage.get_or_create_for_user(self)
-
     def save(self, *args, **kwargs) -> None:
+        if self.page is None:
+            self.connect_person_page_if_exists()
         super().save(*args, **kwargs)
         self.refresh_page_authorship()
+
+    def connect_person_page_if_exists(self):
+        from app.models import PersonPage
+
+        page = PersonPage.match_for_user(self)
+        if self.page is None:
+            self.page = page
 
     def refresh_page_authorship(self):
         from wagtail.models import Page, Revision
