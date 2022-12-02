@@ -1,7 +1,15 @@
-{% extends "app/landing_page_with_cover_image.html" %}
+{% extends "app/landing_page.html" %}
+{% load slippers %}
+{% comment %} Make the navbar transparent {% endcomment %}
+{% block header %}
+    {% include "app/include/header.html" with transparent=True %}
+{% endblock header %}
+{% block content_header %}
+    {% page_cover page=page background=True background_image=True transparent_navbar=True %}
+{% endblock content_header %}
 {% block content %}
     {{ block.super }}
-    <turbo-frame id="directory-frame" src="{% url "directory_frame" %}" target="_self">
+    <turbo-frame id="directory-frame" src="{% url "directory_frame" %}?impact_area={{ page.filter_url_value }}" target="_self">
     {% include "app/include/loading.html" %}
     </turbo-frame>
 {% endblock content %}

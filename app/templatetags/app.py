@@ -5,6 +5,8 @@ from django.http.request import HttpRequest
 from django.urls import translate_url as _translate_url
 from wagtail.models import Page
 
+from app.utils.wagtail import localized_pages as _localized_pages
+
 register = template.Library()
 
 
@@ -81,3 +83,8 @@ def get_wagtail_locale_codes():
     from wagtail.core.models import Locale
 
     return list(locale.language_code for locale in Locale.objects.all())
+
+
+@register.filter()
+def localized_pages(pages):
+    return _localized_pages(pages)

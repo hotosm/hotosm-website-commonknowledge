@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "wagtailautocomplete",
     "mapwidgets",
+    "slippers",
 ]
 
 MIDDLEWARE = [

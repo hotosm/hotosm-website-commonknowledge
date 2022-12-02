@@ -3,6 +3,7 @@ import json
 import pycountry
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from wagtail.core.models import Locale
 
 from app.models import CountryPage
 from app.utils.python import ensure_1D_list
@@ -12,10 +13,15 @@ from app.views.api import MapSearchViewset
 class Command(BaseCommand):
     help = "Update `related_countries` fields for all pages, using data from their `frontmatter` field if migrated from the old site."
 
+    def add_arguments(self, parser):
+        parser.add_argument("--locale", dest="locale", type=str, default="en")
+
     @transaction.atomic
     def handle(self, *args, **options):
+        locale = Locale.objects.get(language_code=options.get("en", "en"))
         country_code_database_map = {
-            country.isoa2: country for country in CountryPage.objects.all()
+            country.isoa2: country.get_translation(locale)
+            for country in CountryPage.objects.all()
         }
         country_root_page = CountryPage.objects.first().get_parent()
         for page_type in MapSearchViewset.page_types:

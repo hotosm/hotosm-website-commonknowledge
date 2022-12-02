@@ -4,8 +4,9 @@ from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.search import SearchHeadline, SearchQuery
 from django.core.paginator import Paginator
 from django.db import models
-from django.utils.html import format_html
+from django.utils.html import format_html, strip_tags
 from django.utils.safestring import mark_safe
+from django.utils.text import Truncator
 from mapwidgets.widgets import MapboxPointFieldWidget
 from modelcluster.fields import ParentalManyToManyField
 from wagtail import blocks
@@ -25,6 +26,8 @@ from wagtailautocomplete.edit_handlers import AutocompletePanel
 import app.models.wagtail.blocks as app_blocks
 from app.helpers import concat_html, safe_to_int
 from app.utils.geo import geolocator
+from app.utils.python import ensure_1D_list
+from app.utils.wagtail import localized_related_pages
 
 from .cms import CMSImage
 
@@ -86,7 +89,10 @@ class PreviewablePage(Page):
             return self.first_published_at
         return self.last_published_at
 
-    filter_url_key = "pk"
+    def autocomplete_label(self):
+        return f"[{self.locale.language_code.upper()}] {self.title}"
+
+    filter_url_key = "translation_key"
 
     @property
     def filter_url_value(self):
@@ -103,7 +109,8 @@ class PreviewablePage(Page):
             try:
                 for block in self.content:
                     if block.block_type == "richtext":
-                        return block.value
+                        truncator = Truncator(strip_tags(block.value))
+                        return truncator.words(50)
             except:
                 return None
 
@@ -332,6 +339,16 @@ class GeocodedMixin(Page):
     related_countries = ParentalManyToManyField("app.CountryPage", blank=True)
 
     @property
+    def localized_related_countries(self):
+        """
+        Translations of this page might have different foreign keys defined
+        so collect them all up
+        """
+        return sorted(
+            localized_related_pages(self, "related_countries"), key=lambda p: p.title
+        )
+
+    @property
     def has_unique_location(self):
         return self.coordinates is not None
 
@@ -470,3 +487,13 @@ class RelatedImpactAreaMixin(Page):
     content_panels = [
         AutocompletePanel("related_impact_areas", target_model="app.ImpactAreaPage")
     ]
+
+    @property
+    def localized_related_impact_areas(self):
+        """
+        Translations of this page might have different foreign keys defined
+        so collect them all up
+        """
+        return sorted(
+            localized_related_pages(self, "related_impact_areas"), key=lambda p: p.title
+        )

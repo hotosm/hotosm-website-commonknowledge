@@ -1414,6 +1414,18 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "slippers"
+version = "0.5.0"
+description = "Build reusable components in Django without writing a single line of Python."
+category = "main"
+optional = false
+python-versions = ">=3.7.0,<4.0.0"
+
+[package.dependencies]
+Django = ">=3.2,<4.2"
+PyYAML = ">=5.4.0,<7.0.0"
+
+[[package]]
 name = "smmap"
 version = "5.0.0"
 description = "A pure Python implementation of a sliding window memory map manager"
@@ -1719,7 +1731,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "5fa29165f012c17c81236598eceb5242907300ffd94e46a9f9826dea6d46b906"
+content-hash = "cc48b58d9b1c0aafde29c9211fa5239630574a2015dc684e4c95f9001f7f67d6"
 
 [metadata.files]
 anyascii = [
@@ -2607,6 +2619,10 @@ setuptools = [
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+]
+slippers = [
+    {file = "slippers-0.5.0-py3-none-any.whl", hash = "sha256:5a17ef4cf6eb586739d8a6d85756995a8ac3178a49a560f7e0768258e736aa6b"},
+    {file = "slippers-0.5.0.tar.gz", hash = "sha256:413281c8a82f9940bbbcb60dcc42d075162b5ff25a6e254c9076b6bb0deaf746"},
 ]
 smmap = [
     {file = "smmap-5.0.0-py3-none-any.whl", hash = "sha256:2aba19d6a040e78d8b09de5c57e96207b09ed71d8e55ce0959eeee6c8e190d94"},
