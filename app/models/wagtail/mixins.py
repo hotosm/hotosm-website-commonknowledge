@@ -18,7 +18,7 @@ from wagtail.admin.panels import (
     TabbedInterface,
 )
 from wagtail.api.conf import APIField
-from wagtail.core.models import Page
+from wagtail.core.models import Page, PageManager, Revision
 from wagtail.fields import RichTextField, StreamField
 from wagtail.search.models import Query
 from wagtailautocomplete.edit_handlers import AutocompletePanel
@@ -497,3 +497,104 @@ class RelatedImpactAreaMixin(Page):
         return sorted(
             localized_related_pages(self, "related_impact_areas"), key=lambda p: p.title
         )
+
+
+class AuthorMixin(Page):
+    """
+    Common configuration for pages that want to track their authors.
+    """
+
+    class Meta:
+        abstract = True
+
+    authors = ParentalManyToManyField(
+        "app.PersonPage",
+        blank=True,
+        related_name="+",
+        help_text="Materialised list of authors",
+    )
+
+    added_authors = ParentalManyToManyField(
+        "app.PersonPage",
+        blank=True,
+        related_name="+",
+        help_text="Add authors who haven't manually edited the page through Wagtail",
+    )
+
+    hidden_authors = ParentalManyToManyField(
+        "app.PersonPage",
+        blank=True,
+        related_name="+",
+        help_text="authors who should be hidden from public citation",
+    )
+
+    def get_all_editing_user_pages(self):
+        """
+        Accrue all User instances involved in editing this page.
+        """
+        return {
+            user.page
+            for user in list(
+                [self.owner]
+                + [
+                    user
+                    for user in [
+                        revision.user
+                        for revision in self.revisions.select_related("user")
+                    ]
+                    if user is not None
+                ]
+            )
+            if user is not None and user.is_public and user.page is not None
+        }
+
+    def get_author_pages(self):
+        return list(
+            set(
+                list(self.get_all_editing_user_pages()) + list(self.added_authors.all())
+            )
+            - set(self.hidden_authors.all())
+        )
+
+    def toggle_author(self, person_page_id):
+        if person_page_id is not None and not isinstance(
+            person_page_id,
+            (
+                str,
+                int,
+            ),
+        ):
+            person_page_id = person_page_id.pk
+
+        if person_page_id:
+            if person_page_id in self.added_authors.all():
+                self.added_authors.remove(person_page_id)
+            elif person_page_id in self.hidden_authors.all():
+                self.hidden_authors.remove(person_page_id)
+            else:
+                self.hidden_authors.add(person_page_id)
+            self.refresh_authors()
+
+    def refresh_authors(self, save=True):
+        """
+        Return all the people who have contributed to this page and its subpages
+        """
+        self.authors.set(self.get_author_pages())
+
+        # Re-assert top-level exclusions
+        self.authors.remove(*self.hidden_authors.all())
+
+        if save:
+            self.save()
+
+    author_content_panels = [
+        AutocompletePanel("added_authors"),
+        AutocompletePanel("hidden_authors"),
+    ]
+
+    def save(self, *args, **kwargs):
+        """
+        Rebuild the authors list when the page is edited
+        """
+        self.refresh_authors(save=False)
+        super().save(*args, **kwargs)

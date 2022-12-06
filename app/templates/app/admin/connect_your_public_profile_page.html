@@ -1,0 +1,26 @@
+{% load i18n wagtailadmin_tags wagtailcore_tags %}
+<section class="h-connect-profile-page w-dismissible"
+         aria-labelledby="whats-new-heading"
+         data-wagtail-dismissible-id="{{ dismissible_id }}">
+    <div class="h-connect-profile-page__banner">
+        <button class="h-connect-profile-page__dismiss"
+                type="button"
+                data-wagtail-dismissible-toggle>
+            {% icon name="circle-xmark" %}
+            <span class="w-sr-only">{% trans "Close" %}</span>
+        </button>
+        <div class="h-connect-profile-page__main-icon">{% icon name="help" %}</div>
+        <div class="h-connect-profile-page__content">
+            <h2 id="whats-new-heading" class="h-connect-profile-page__heading">
+                {% blocktrans trimmed %}
+                    Connect your editor account to a public profile page
+                {% endblocktrans %}
+            </h2>
+            <p class="h-connect-profile-page__details">
+                {% blocktrans trimmed %}
+                    Visit the <a class="h-connect-profile-page__link" href="{{ edit_account_url }}">account management page</a> to connect your editor account with your public Person Page. Then, whenever you edit a page, you'll show up as an author.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+</section>

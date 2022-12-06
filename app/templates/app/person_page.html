@@ -4,14 +4,30 @@
     {% block inline_title_block %}
         {% comment %} Handle this differently than normal {% endcomment %}
     {% endblock inline_title_block %}
-    {% fragment as label %}
-    {% for category in page.category.all %}<span>{{ category }}</span>{% endfor %}
-{% endfragment %}
-{% page_cover page=page label=label summary=page.role small_image=True %}
-{{ block.super }}
+    {# djlint:off #}
+  {% comment %} djlint mis-indents fragment tags and their contents: https://github.com/Riverside-Healthcare/djLint/issues/472 {% endcomment %}
+  {% fragment as label %}
+    {# djlint:on #}
+    {% with page.category.all as categories %}
+        {% if categories|length > 0 %}
+            {% for category in page.category.all %}<span>{{ category }}</span>{% endfor %}
+        {% else %}
+            <span>Contributor</span>
+        {% endif %}
+    {% endwith %}
+    {# djlint:off #}
+  {% endfragment %}
+    {# djlint:on #}
+    {% page_cover page=page label=label summary=page.role small_image=True %}
+    {{ block.super }}
+    {% comment %} Authorship {% endcomment %}
+    {% with page.articles as articles %}
+        {% if articles|length > 0 %}
+            {% include "app/blocks/carousel_block.html" with title="Stories" pages=articles %}
+        {% endif %}
+    {% endwith %}
 {% endblock content %}
 {% block metadata %}
-    {% comment %} Countries {% endcomment %}
     {% with page.localized_related_countries as related %}
         {% if related|length > 0 %}
             <section class="space-y-1">
