@@ -11,7 +11,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0052_articlepage_added_authors_articlepage_authors_and_more"),
+        ("app", "0057_articlepage_added_authors_articlepage_authors_and_more"),
     ]
 
     operations = [
