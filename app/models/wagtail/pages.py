@@ -299,11 +299,13 @@ class LandingPage(ThemeablePageMixin, ContentPage):
     page_description = "Free-form full width page."
 
     # Layout
-    show_header = models.BooleanField(default=True)
+    show_navbar = models.BooleanField(default=True)
+    show_title = models.BooleanField(default=True)
     show_footer = models.BooleanField(default=True)
     layout_panels = [
         *ThemeablePageMixin.themeable_content_panels,
-        FieldPanel("show_header"),
+        FieldPanel("show_navbar"),
+        FieldPanel("show_title"),
         FieldPanel("show_footer"),
     ]
     edit_handler = TabbedInterface(

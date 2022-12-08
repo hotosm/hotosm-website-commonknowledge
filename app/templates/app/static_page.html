@@ -48,28 +48,26 @@
             <div class="mx-auto md:max-w-2xl w-full flex flex-col">
                 <div class="mb-4 flex-grow">
                     {% block inline_title_block %}
-                        {% if page.show_header is not False %}
-                            <header class="mb-5">
-                                {% if page.show_breadcrumb is not False %}
-                                    <ul class="list-unstyled text-gray-600 text-sm mb-2 content-separator-2 separator-content-slash">
-                                        {% for ancestor in page.get_ancestors %}
-                                            {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
-                                                <li class="inline-block">
-                                                    <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                        {% if page.label %}<li class="inline-block capitalize">{{ page.label }}</li>{% endif %}
-                                    </ul>
-                                {% endif %}
-                                <div class="mt-4">
-                                    <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
-                                </div>
-                                {% if page.short_summary %}
-                                    <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
-                                {% endif %}
-                            </header>
-                        {% endif %}
+                        <header class="mb-5">
+                            {% if page.show_breadcrumb is not False %}
+                                <ul class="list-unstyled text-gray-600 text-sm mb-2 content-separator-2 separator-content-slash">
+                                    {% for ancestor in page.get_ancestors %}
+                                        {% if ancestor.content_type.model != "page" and ancestor.content_type.model != "homepage" %}
+                                            <li class="inline-block">
+                                                <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if page.label %}<li class="inline-block capitalize">{{ page.label }}</li>{% endif %}
+                                </ul>
+                            {% endif %}
+                            <div class="mt-4">
+                                <h1 class="font-extrabold text-4xl sm:text-6xl mb-2 text-gray-900 leading-tight sm:leading-none">{{ page.title }}</h1>
+                            </div>
+                            {% if page.short_summary %}
+                                <p class="text-xl sm:text-2xl text-gray-800">{{ page.short_summary|richtext }}</p>
+                            {% endif %}
+                        </header>
                         {% if page.featured_image %}
                             <div class="my-4">
                                 {% image page.featured_image width-800 class="w-full" alt=page.feature_image.alt_text %}

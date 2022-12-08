@@ -43,13 +43,13 @@
     <body class="relative subpixel-antialiased text-hotGrey bg-background {% firstof page.resolved_theme_class "theme-primary" %} {% block body_class %}{% endblock body_class %}">
         {% wagtailuserbar %}
         <div class="flex flex-col {% block screen_class %}min-h-screen{% endblock screen_class %}">
-            {% if page.show_header is None or page.show_header is True %}
+            {% if page.show_navbar is not False %}
                 {% block banner %}
                     {% include "app/include/service_status.html" %}
                 {% endblock banner %}
             {% endif %}
             <div class="flex-grow flex flex-col relative {% block content_class %}{% endblock content_class %}">
-                {% if page.show_header is None or page.show_header is True %}
+                {% if page.show_navbar is not False %}
                     {% block header %}
                         {% include "app/include/header.html" %}
                     {% endblock header %}
