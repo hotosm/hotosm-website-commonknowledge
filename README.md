@@ -1,6 +1,6 @@
 # Humanitarian OpenStreetMap Team website
 
-The next Humanitarian OpenStreetMap Team website.
+The next Humanitarian OpenStreetMap Team website - https://alpha.hotosm.org/en-gb/
 
 ## Quickstart
 
