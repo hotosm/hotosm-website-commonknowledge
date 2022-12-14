@@ -23,10 +23,14 @@ class User(AbstractUser):
     )
 
     def save(self, *args, **kwargs) -> None:
-        if self.page is None:
-            self.connect_person_page_if_exists()
-        super().save(*args, **kwargs)
-        self.refresh_page_authorship()
+        try:
+            if self.page is None:
+                self.connect_person_page_if_exists()
+            # self.refresh_page_authorship()
+        except Exception as e:
+            print(self)
+            print(e)
+        return super().save(*args, **kwargs)
 
     def connect_person_page_if_exists(self):
         from app.models import PersonPage
@@ -49,8 +53,7 @@ class User(AbstractUser):
                 | (Q(owner=self))
             )
             for page in pages_edited_by_user:
-                print(page)
-                page.specific.save()
+                page.specific.refresh_authors()
         except Exception as e:
             print(self)
             print(e)
