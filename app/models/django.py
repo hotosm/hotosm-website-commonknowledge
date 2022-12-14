@@ -36,16 +36,22 @@ class User(AbstractUser):
             self.page = page
 
     def refresh_page_authorship(self):
-        from wagtail.models import Page, Revision
+        try:
+            from wagtail.models import Page, Revision
 
-        pages_edited_by_user = Page.objects.filter(
-            Q(
-                id__in=Revision.objects.filter(
-                    base_content_type=ContentType.objects.get_for_model(Page), user=self
-                ).values_list("pk", flat=True)
+            pages_edited_by_user = Page.objects.filter(
+                Q(
+                    id__in=Revision.objects.filter(
+                        base_content_type=ContentType.objects.get_for_model(Page),
+                        user=self,
+                    ).values_list("pk", flat=True)
+                )
+                | (Q(owner=self))
             )
-            | (Q(owner=self))
-        )
-        for page in pages_edited_by_user:
-            print(page)
-            page.specific.save()
+            for page in pages_edited_by_user:
+                print(page)
+                page.specific.save()
+        except Exception as e:
+            print(self)
+            print(e)
+            pass
