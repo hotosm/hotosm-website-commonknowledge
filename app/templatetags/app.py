@@ -73,7 +73,10 @@ def translate_url(context, lang=None, *args, **kwargs):
     """
     Only works for named routes
     """
-    path = context["request"].path
+    request = context.get("request", None)
+    if request is None:
+        return path
+    path = request.path
     translated = _translate_url(path, lang)
     return translated
 
