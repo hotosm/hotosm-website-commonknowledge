@@ -24,7 +24,7 @@ class ConnectYourPublicProfilePage(Component):
         user = parent_context["request"].user
         profile = getattr(user, "wagtail_userprofile", None)
 
-        if user.page is not None:
+        if hasattr(user, "page") and user.page is not None:
             return False
 
         if profile and profile.dismissibles.get(self.get_dismissible_id()):
