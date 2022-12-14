@@ -53,7 +53,8 @@ class User(AbstractUser):
                 | (Q(owner=self))
             )
             for page in pages_edited_by_user:
-                page.specific.refresh_authors()
+                if hasattr(page.specific, "refresh_authors"):
+                    page.specific.refresh_authors()
         except Exception as e:
             print(self)
             print(e)
