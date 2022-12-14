@@ -6,7 +6,7 @@ from modelcluster.fields import ParentalKey
 
 
 class User(AbstractUser):
-    page = ParentalKey(
+    page = models.ForeignKey(
         "app.PersonPage",
         on_delete=models.DO_NOTHING,
         blank=True,
@@ -26,7 +26,7 @@ class User(AbstractUser):
         try:
             if self.page is None:
                 self.connect_person_page_if_exists()
-            # self.refresh_page_authorship()
+            self.refresh_page_authorship()
         except Exception as e:
             print(self)
             print(e)
