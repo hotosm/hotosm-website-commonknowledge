@@ -75,7 +75,7 @@ def translate_url(context, lang=None, *args, **kwargs):
     """
     request = context.get("request", None)
     if request is None:
-        return path
+        return ""
     path = request.path
     translated = _translate_url(path, lang)
     return translated
