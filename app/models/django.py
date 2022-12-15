@@ -48,7 +48,7 @@ class User(AbstractUser):
                     id__in=Revision.objects.filter(
                         base_content_type=ContentType.objects.get_for_model(Page),
                         user=self,
-                    ).values_list("pk", flat=True)
+                    ).values_list("object_id", flat=True)
                 )
                 | (Q(owner=self))
             )
