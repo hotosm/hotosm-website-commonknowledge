@@ -45,10 +45,13 @@ class User(AbstractUser):
 
             pages_edited_by_user = Page.objects.filter(
                 Q(
-                    id__in=Revision.objects.filter(
-                        base_content_type=ContentType.objects.get_for_model(Page),
-                        user=self,
-                    ).values_list("object_id", flat=True)
+                    id__in=[
+                        int(id)
+                        for id in Revision.objects.filter(
+                            base_content_type=ContentType.objects.get_for_model(Page),
+                            user=self,
+                        ).values_list("object_id", flat=True)
+                    ]
                 )
                 | (Q(owner=self))
             )
