@@ -38,7 +38,7 @@ The next Humanitarian OpenStreetMap Team website - https://alpha.hotosm.org/en-g
 
 ## Migration instructions
 
-1. Download the live HOTOSM repo to ./hotosm-website:
+1. Download the live HOTOSM repo to `./hotosm-website`:
 
 ```
 git clone https://github.com/hotosm/hotosm-website.git
