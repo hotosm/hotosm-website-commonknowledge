@@ -17,6 +17,9 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 
+from app.management.commands.generate_migration_report import (
+    generate_migration_report_view,
+)
 from app.views.admin import CustomAdminHomePageView
 from app.views.directory import DirectoryView
 from app.views.search import SearchView
@@ -45,6 +48,7 @@ urlpatterns = [
     path(
         "api/docs/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
     ),
+    path("migrationreport/", generate_migration_report_view),
 ]
 
 urlpatterns += i18n_patterns(

@@ -134,6 +134,7 @@ class PreviewablePage(Page):
     previewable_page_panels = [
         FieldPanel("short_summary"),
         FieldPanel("featured_image"),
+        FieldPanel("frontmatter"),
     ]
     content_panels = Page.content_panels + previewable_page_panels
 
