@@ -41,5 +41,5 @@ class ConnectYourPublicProfilePage(Component):
 class CustomAdminHomePageView(HomeView):
     def get_panels(self):
         panels = super().get_panels()
-        # panels += [ConnectYourPublicProfilePage()]
+        panels += [ConnectYourPublicProfilePage()]
         return panels
