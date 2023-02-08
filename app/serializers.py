@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer,
@@ -10,7 +10,7 @@ from app.models.wagtail import ProjectPage
 
 class UserSerializer(serializers.Serializer):
     class Meta:
-        model = User
+        model = get_user_model()
         fields = [
             "username",
             "id",
