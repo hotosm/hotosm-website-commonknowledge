@@ -13,8 +13,10 @@ from drf_spectacular.views import (
 )
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.admin.auth import require_admin_access
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.utils.urlpatterns import decorate_urlpatterns
 from wagtailautocomplete.urls.admin import urlpatterns as autocomplete_admin_urls
 
 from app.management.commands.generate_migration_report import (
@@ -27,10 +29,15 @@ from app.views.search import SearchView
 from .api import wagtail_api_router
 from .views.api import MapSearchViewset
 
+custom_admin_urls = decorate_urlpatterns(
+    [path("", CustomAdminHomePageView.as_view(), name="wagtailadmin_home")],
+    require_admin_access,
+)
+
 urlpatterns = [
     path("admin/autocomplete/", include(autocomplete_admin_urls)),
     path("django-admin/", admin.site.urls),
-    path("admin/", CustomAdminHomePageView.as_view()),
+    path("admin/", include(custom_admin_urls)),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("sitemap.xml", sitemap),
