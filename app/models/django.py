@@ -26,7 +26,7 @@ class User(AbstractUser):
         try:
             if self.page is None:
                 self.connect_person_page_if_exists()
-            self.refresh_page_authorship()
+            # self.refresh_page_authorship()
         except Exception as e:
             print(self)
             print(e)
