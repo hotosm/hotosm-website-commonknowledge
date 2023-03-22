@@ -12,4 +12,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: fly apps restart hotosm-staging
+      - run: flyctl apps restart hotosm-staging
