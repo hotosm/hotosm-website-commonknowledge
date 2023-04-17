@@ -54,6 +54,7 @@ django-map-widgets = { rev = "54d4dfb18064bb4cec5bc7d3ced9d3acc560a172", git = "
 drf-spectacular = "^0.24.2"
 pandas = "^1.5.1"
 slippers = "^0.5.0"
+wagtailmenus = "^3.1.7"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.0"
