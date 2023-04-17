@@ -7,7 +7,7 @@ from io import BytesIO
 from multiprocessing.sharedctypes import Value
 from pathlib import Path
 from urllib import request
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import marko
 import requests
@@ -120,7 +120,7 @@ class Command(BaseCommand):
                 file_name = "/" + str(path.relative_to(self.source_dir)).removeprefix(
                     "_"
                 )
-                print("---->", file_name)
+                print("----> Examining new file:", file_name)
                 # print("Uploading", file_name)
                 # name = file_name.parts[-1]
 
@@ -129,9 +129,9 @@ class Command(BaseCommand):
                     Q(title=cdn_url) | Q(title=file_name) | Q(file=file_name)
                 ).first()
                 if image is not None:
-                    print("Found image record", image)
+                    print("... found image record", image)
                 else:
-                    print("Creating image record")
+                    print("... creating image record")
                     # with PImage.open(file_name) as dims:
                     #     image = Image(title=name, width=dims.width,
                     #                   height=dims.height)
@@ -151,15 +151,20 @@ class Command(BaseCommand):
                             and file.height > 0
                         ):
                             try:
-                                print("file", file.width, file.height)
+                                print(
+                                    "... parsed image dims: ",
+                                    file.width,
+                                    "x",
+                                    file.height,
+                                )
                                 # Construct `CMSImage` object
                                 image = CMSImage(title=file_name)
                                 image.file = file
                                 image.save()
                                 if image is not None:
-                                    print("image", image.pk, image.file)
+                                    print("... upload complete: ", image.pk, image.file)
                             except IntegrityError:
-                                print("Image couldn't be created:", path)
+                                print("... image couldn't be created:", path)
 
         # Create pages
         ensure_child_page = self.ensure_child_page_factory(home)
@@ -504,6 +509,7 @@ class Command(BaseCommand):
 
         if content is None:
             return
+
         renderer = WagtailHtmlRenderer(self.path_mapping, page.url)
         wagtail_html = renderer.render(content)
         if wagtail_html is not None and len(wagtail_html) > 0:
@@ -639,6 +645,10 @@ class WagtailHtmlRenderer(HTMLRenderer):
     # e.g. Malaria Elimination Mapping Continues
 
     def __init__(self, page_mapping: dict, base: str):
+        """
+        We provide the path map to WagtailHtmlRenderer so that it can
+        resolve relative links to other pages
+        """
         super().__init__()
         self.page_mapping = page_mapping
         self.base = base
@@ -650,6 +660,12 @@ class WagtailHtmlRenderer(HTMLRenderer):
         return html
 
     def render_heading(self, element):
+        return self.transform_headings_to_h2_and_below(element)
+
+    def transform_headings_to_h2_and_below(self, element):
+        """
+        Convert headings to h2-h6, as h1 is reserved for the page title
+        """
         level = element.level + 1
 
         return "<h{level}>{children}</h{level}>\n".format(
@@ -673,6 +689,8 @@ class WagtailHtmlRenderer(HTMLRenderer):
 
     def render_image(self, element: inline.Image):
         image = get_image_by_reference(element.dest)
+        if image is None:
+            image = get_image_by_reference(unquote(element.dest))
         if image is not None:
             template = '<embed embedtype="image" id="{}" alt="{}" format="fullwidth" />'
             title = (
@@ -683,6 +701,11 @@ class WagtailHtmlRenderer(HTMLRenderer):
             body = self.render_children(element)
             self.render = render_func
             return template.format(image.id, title or body)
+        else:
+            print(
+                "❌ couldn't find referenced image in uploads during render:",
+                element.dest,
+            )
 
     def render_plain_text(self, element):
         if hasattr(element, "children") and isinstance(element.children, str):
@@ -742,7 +765,7 @@ def get_image_by_reference(path):
             print("Download complete", path, image)
             return image
         except IntegrityError:
-            print("Image couldn't be created:", path)
+            print("❌ Image couldn't be created:", path)
 
     #     pil_image = PImage.open(response.raw)
     # except PIL.UnidentifiedImageError:
