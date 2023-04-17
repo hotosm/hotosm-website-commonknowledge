@@ -8,7 +8,7 @@ from modelcluster.fields import ParentalKey
 class User(AbstractUser):
     page = models.ForeignKey(
         "app.PersonPage",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
         related_name="user",

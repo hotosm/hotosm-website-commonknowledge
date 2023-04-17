@@ -299,9 +299,9 @@ class LandingPage(ThemeablePageMixin, ContentPage):
     page_description = "Free-form full width page."
 
     # Layout
-    show_navbar = models.BooleanField(default=True)
-    show_title = models.BooleanField(default=True)
-    show_footer = models.BooleanField(default=True)
+    show_navbar = models.BooleanField(default=True, blank=True, null=True)
+    show_title = models.BooleanField(default=True, blank=True, null=True)
+    show_footer = models.BooleanField(default=True, blank=True, null=True)
     layout_panels = [
         *ThemeablePageMixin.themeable_content_panels,
         FieldPanel("show_navbar"),
