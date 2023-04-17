@@ -725,29 +725,31 @@ class WagtailHtmlRenderer(HTMLRenderer):
 
 
 def get_image_by_reference(path):
+    print("🔎 Looking for image:", path)
     # See if it exists already
     # should work for cdn.hotosm.org imagery, if you've run `upload_images` first
     # and should also work for local images that were manually uploaded earlier in this script
     image = CMSImage.objects.filter(Q(title=path) | Q(file=path)).first()
     if image is not None:
-        print("Image was found!", path, image)
+        print("... found image in Wagtail via filepath:", image)
         return image
-    elif "/uploads/" in str(path):
+    if "/uploads/" in str(path):
         cdn_filename = "https://cdn.hotosm.org/website/" + str(path).removeprefix(
             "/uploads/"
         )
         image = CMSImage.objects.filter(Q(title=cdn_filename)).first()
         if image is not None:
+            print("... found relative image path in /uploads folder:", image)
             return image
-    elif "https://cdn.hotosm.org/website/" in str(path):
+    if "https://cdn.hotosm.org/website/" in str(path):
         github_filename = "/uploads/" + str(path).removeprefix(
             "https://cdn.hotosm.org/website/"
         )
         image = CMSImage.objects.filter(Q(title=github_filename)).first()
         if image is not None:
+            print("... found CDN image in /uploads folder:", image)
             return image
-    elif "https://" in path or "http://" in path:
-        print("Downloading image", path)
+    if "https://" in path or "http://" in path:
         """
         Download the image from the URL, then construct a CMSImage object
         """
@@ -762,38 +764,11 @@ def get_image_by_reference(path):
             image.file = file
             image.save()
 
-            print("Download complete", path, image)
+            print("... downloaded image from the web:", image)
             return image
         except IntegrityError:
-            print("❌ Image couldn't be created:", path)
-
-    #     pil_image = PImage.open(response.raw)
-    # except PIL.UnidentifiedImageError:
-    #     pass
-    # if pil_image is not None:
-    #     print("pil_image", pil_image)
-    #     image_file = ImageFile(BytesIO(response.content), name=file_name)
-    #     setattr(image_file, "_dimensions_cache", [
-    #             pil_image.width, pil_image.height])
-    #     print("image_file", image_file)
-    #     image = CMSImage(title=file_name, width=pil_image.width,
-    #                      height=pil_image.height, file=image_file, alt_text="No alt text",)
-    #     image.save()
-    #     print("image", image)
-
-    # result = request.urlretrieve(path)
-    # if result:
-    #     image_data = open(result[0], 'rb')
-    #     image = CMSImage(
-    #         title=key,
-    #         image=ImageFile(image_data, name=key)
-    #     )
-    #     image.save()
-    #     image_mapping[path] = image
-    #     # TODO: Add the image to the image_mapping
-    #     image = image_mapping[key]
-    #     return image
-    #     # TODO: third party URL
+            print("... ❌ failed to download image from the web")
+    # print("... ❌ wasn't sure how to locate image")
 
 
 def to_snake_case(name):
