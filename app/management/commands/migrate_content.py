@@ -90,6 +90,13 @@ class Command(BaseCommand):
             "-p", "--port", dest="port", type=int, default=default_base_url.port or 80
         )
 
+        parser.add_argument(
+            "--dedupe-uploads-and-cdn-images",
+            dest="dedupe_uploads_and_cdn_images",
+            type=bool,
+            default=False,
+        )
+
     # @transaction.atomic
     def handle(self, *args, **options):
         if options.get("scratch"):
@@ -124,10 +131,15 @@ class Command(BaseCommand):
                 # print("Uploading", file_name)
                 # name = file_name.parts[-1]
 
-                cdn_url = "https://cdn.hotosm.org/website/" + path.name
-                image = CMSImage.objects.filter(
-                    Q(title=cdn_url) | Q(title=file_name) | Q(file=file_name)
-                ).first()
+                if options.get("dedupe_uploads_and_cdn_images", None) is not None:
+                    cdn_url = "https://cdn.hotosm.org/website/" + path.name
+                    image = CMSImage.objects.filter(
+                        Q(title=cdn_url) | Q(title=file_name) | Q(file=file_name)
+                    ).first()
+                else:
+                    image = CMSImage.objects.filter(
+                        Q(title=file_name) | Q(file=file_name)
+                    ).first()
                 if image is not None:
                     print("... found image record", image)
                 else:
@@ -724,7 +736,7 @@ class WagtailHtmlRenderer(HTMLRenderer):
         return "".join(rendered)
 
 
-def get_image_by_reference(path):
+def get_image_by_reference(path, dedupe_uploads_and_cdn_images=False):
     print("🔎 Looking for image:", path)
     # See if it exists already
     # should work for cdn.hotosm.org imagery, if you've run `upload_images` first
@@ -733,7 +745,8 @@ def get_image_by_reference(path):
     if image is not None:
         print("... found image in Wagtail via filepath:", image)
         return image
-    if "/uploads/" in str(path):
+    if "/uploads/" in str(path) and dedupe_uploads_and_cdn_images:
+        # Some /uploads also exist in the CDN, so we need to check for that
         cdn_filename = "https://cdn.hotosm.org/website/" + str(path).removeprefix(
             "/uploads/"
         )
@@ -741,7 +754,8 @@ def get_image_by_reference(path):
         if image is not None:
             print("... found relative image path in /uploads folder:", image)
             return image
-    if "https://cdn.hotosm.org/website/" in str(path):
+    if "https://cdn.hotosm.org/website/" in str(path) and dedupe_uploads_and_cdn_images:
+        # Some CDN images also exist in the /uploads folder, so we need to check for that
         github_filename = "/uploads/" + str(path).removeprefix(
             "https://cdn.hotosm.org/website/"
         )
