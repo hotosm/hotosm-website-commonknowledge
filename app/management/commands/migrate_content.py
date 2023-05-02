@@ -697,8 +697,8 @@ class WagtailHtmlRenderer(HTMLRenderer):
             parser = BeautifulSoup(html, "html5lib")
             if parser and parser.body:
                 # print("Untreated:::", parser.body.prettify()[0:600])
-                # Remove empty tags
                 for x in parser.find_all():
+                    # Remove empty tags
                     if (
                         x.name
                         in [
@@ -733,6 +733,22 @@ class WagtailHtmlRenderer(HTMLRenderer):
                     .rstrip("\n")
                 )
         return html
+
+    def render_list_item(self, element):
+        li = super().render_list_item(element)
+        parser = BeautifulSoup(li, "html5lib")
+        for x in parser.find_all():
+            # Remove p tag from ol and li items
+            if x.name == "p" and x.parent.name in ["ol", "li"]:
+                x.unwrap()
+        return (
+            parser.body.prettify()
+            .replace("<body>", "")
+            .replace("</body>", "")
+            .strip()
+            .lstrip("\n")
+            .rstrip("\n")
+        )
 
     def render_heading(self, element):
         return self.transform_headings_to_h2_and_below(element)
