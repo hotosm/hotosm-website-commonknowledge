@@ -494,7 +494,7 @@ class Command(BaseCommand):
             page.save()
         else:
             is_new = False
-            page = q.get()
+            page = q.get().specific
 
         if frontmatter.get("published", True) == False:
             page.unpublish()
@@ -523,6 +523,13 @@ class Command(BaseCommand):
         if wagtail_html is not None and len(wagtail_html) > 0:
             page.content = json.dumps([{"type": "richtext", "value": wagtail_html}])
             page.save()
+            revision = page.save_revision()
+            if page.live:
+                revision.publish()
+            else:
+                revision = page.save_revision(submitted_for_moderation=False)
+        else:
+            print("No content found")
 
     def setup_root_pages(self, host: str, port: int):
         root = Page.get_first_root_node()
