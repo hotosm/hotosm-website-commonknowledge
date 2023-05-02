@@ -511,7 +511,7 @@ class Command(BaseCommand):
         else:
             is_new = False
             page = q.get().specific
-            print("Found page matching slug + location")
+            print("... Found page matching slug + location")
             # Update fields
             for arg in args:
                 setattr(page, arg, args[arg])
@@ -537,7 +537,7 @@ class Command(BaseCommand):
         page = page_data["page"]
 
         if content is None:
-            print("No content found")
+            print("... No content found")
             return
 
         renderer = WagtailHtmlRenderer(self.path_mapping, page.url)
@@ -551,7 +551,7 @@ class Command(BaseCommand):
             else:
                 revision = page.save_revision(submitted_for_moderation=False)
         else:
-            print("No content found")
+            print("... No content found")
 
     def setup_root_pages(self, host: str, port: int):
         root = Page.get_first_root_node()
@@ -669,7 +669,7 @@ def read_md(src):
 
     blocks = data.split("---")
     if len(blocks) < 3:
-        print("Article has no frontmatter-based content")
+        print("... Article has no frontmatter-based content")
         return data, {}
 
     frontmatter = yaml.safe_load(blocks[1])
