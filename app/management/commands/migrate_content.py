@@ -380,6 +380,7 @@ class Command(BaseCommand):
             if len(options["dir"]) == 0 or path in options["dir"]:
                 for path in self.source_dir.glob(path):
                     if path.suffix in {".md", ".markdown", ".mdx"}:
+                        print("---- Processing", path)
                         page, is_new = self.get_or_create_page(path, config)
                         if page:
                             pages.append(page)
@@ -389,7 +390,9 @@ class Command(BaseCommand):
         print("=== Updating page content ===")
         for page_data in pages:
             print(
-                "Updating page content for", page_data["page"].id, page_data["page"].url
+                "---- Updating page content for",
+                page_data["page"].id,
+                page_data["page"].url,
             )
             self.set_page_content(page_data)
 
@@ -528,12 +531,13 @@ class Command(BaseCommand):
 
     def set_page_content(
         self,
-        page: PageData,
+        page_data: PageData,
     ):
-        content = page["content"]
-        page = page["page"]
+        content = page_data["content"]
+        page = page_data["page"]
 
         if content is None:
+            print("No content found")
             return
 
         renderer = WagtailHtmlRenderer(self.path_mapping, page.url)
@@ -707,6 +711,7 @@ class WagtailHtmlRenderer(HTMLRenderer):
         )
 
     def render_link(self, element: inline.Link):
+        href = ""
         if element.dest.startswith("/"):
             href = element.dest.strip("/")
         else:
@@ -732,7 +737,7 @@ class WagtailHtmlRenderer(HTMLRenderer):
             )
             render_func = self.render
             self.render = self.render_plain_text
-            body = self.render_children(element)
+            body = self.escape_html(self.render_children(element))
             self.render = render_func
             return template.format(image.id, title or body)
         else:
