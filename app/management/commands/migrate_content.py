@@ -75,7 +75,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         default_base_url = urlparse(settings.BASE_URL)
 
-        parser.add_argument("--images", dest="images", type=bool, default=False)
+        parser.add_argument(
+            "--upload_images_from_git",
+            dest="upload_images_from_git",
+            type=bool,
+            default=False,
+        )
 
         parser.add_argument("--scratch", dest="scratch", type=bool, default=False)
 
@@ -102,7 +107,7 @@ class Command(BaseCommand):
         if options.get("scratch"):
             Page.get_first_root_node().get_descendants().delete()
             Site.objects.all().delete()
-            if options.get("images"):
+            if options.get("upload_images_from_git"):
                 CMSImage.objects.all().delete()
             management.call_command("fixtree")
 
@@ -122,16 +127,13 @@ class Command(BaseCommand):
         management.call_command("fixtree")
 
         # Upload images from Git
-        if options.get("images"):
+        if options.get("upload_images_from_git"):
             for path in self.image_dir.glob("*"):
                 file_name = "/" + str(path.relative_to(self.source_dir)).removeprefix(
                     "_"
                 )
                 print("----> Examining new file:", file_name)
-                # print("Uploading", file_name)
-                # name = file_name.parts[-1]
-
-                if options.get("dedupe_uploads_and_cdn_images", None) is not None:
+                if options.get("dedupe_uploads_and_cdn_images", False) is True:
                     cdn_url = "https://cdn.hotosm.org/website/" + path.name
                     image = CMSImage.objects.filter(
                         Q(title=cdn_url) | Q(title=file_name) | Q(file=file_name)
@@ -144,14 +146,6 @@ class Command(BaseCommand):
                     print("... found image record", image)
                 else:
                     print("... creating image record")
-                    # with PImage.open(file_name) as dims:
-                    #     image = Image(title=name, width=dims.width,
-                    #                   height=dims.height)
-
-                    # with open(file_name, "rb") as fd:
-                    #     image.file = ContentFile(fd.read(), name)
-                    #     image.save()
-
                     # Create image file
                     with open(path, "rb") as file_data:
                         file = ImageFile(BytesIO(file_data.read()), name=file_name)
@@ -180,15 +174,10 @@ class Command(BaseCommand):
 
         # Create pages
         ensure_child_page = self.ensure_child_page_factory(home)
-
-        # magazine = ensure_child_page(
-        #     MagazineIndexPage(slug="magazine", title="Magazine"))
         news = ensure_child_page(MagazineSection(slug="updates", title="Updates"))
         tech_blog = ensure_child_page(
             MagazineSection(slug="tech-blog", title="Tech Blog")
         )
-        # news = ensure_child_page(MagazineSection(
-        #     slug="tech-blog", title="Tech Blog"))
         people = ensure_child_page(DirectoryPage(slug="people", title="People"))
         opportunities = ensure_child_page(
             DirectoryPage(slug="opportunities", title="Opportunities")
@@ -386,30 +375,35 @@ class Command(BaseCommand):
         pages: PageData = []
         redirects: List[RedirectData] = []
 
-        print("=== Creating empty pages ===")
+        print("=== Creating / finding pages ===")
         for path, config in content_map.items():
             if len(options["dir"]) == 0 or path in options["dir"]:
                 for path in self.source_dir.glob(path):
                     if path.suffix in {".md", ".markdown", ".mdx"}:
-                        page = self.create_page(path, config)
+                        page, is_new = self.get_or_create_page(path, config)
                         if page:
                             pages.append(page)
-                            redirects += self.accrue_redirects(page, path, config)
+                            if is_new:
+                                redirects += self.accrue_redirects(page, path, config)
 
         print("=== Updating page content ===")
         for page_data in pages:
-            print("Updating page content for", page_data["page"].url)
+            print(
+                "Updating page content for", page_data["page"].id, page_data["page"].url
+            )
             self.set_page_content(page_data)
 
         # Redirects
         print("=== Creating redirects ===")
         self.create_redirects(redirects)
 
-    def create_page(self, src: Path, config):
+    def get_or_create_page(self, src: Path, config):
         content, frontmatter = read_md(src)
 
         if frontmatter.get("title", None) is None:
-            return
+            return None, False
+
+        is_new = False
 
         # Get page slug
         # Initially from filename
@@ -493,11 +487,13 @@ class Command(BaseCommand):
         # Create
         q = config["parent"].get_children().filter(slug=slug)
         if not q.exists():
+            is_new = True
             page = config["page_type"](**args)
             print(config["parent"], page)
             config["parent"].add_child(instance=page)
             page.save()
         else:
+            is_new = False
             page = q.get()
 
         if frontmatter.get("published", True) == False:
@@ -510,7 +506,7 @@ class Command(BaseCommand):
             "content": content,
             "page": page,
             "old_path": old_path,
-        }
+        }, is_new
 
     def set_page_content(
         self,
@@ -644,6 +640,7 @@ def read_md(src):
 
     blocks = data.split("---")
     if len(blocks) < 3:
+        print("Article has no frontmatter-based content")
         return data, {}
 
     frontmatter = yaml.safe_load(blocks[1])
