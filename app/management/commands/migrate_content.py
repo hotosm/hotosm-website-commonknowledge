@@ -456,6 +456,17 @@ class Command(BaseCommand):
         if "date" in frontmatter:
             args["last_published_at"] = to_date(frontmatter["date"])
 
+        if (
+            args.get("first_published_at", None) is None
+            and args.get("last_published_at", None) is not None
+        ):
+            args["first_published_at"] = args["last_published_at"]
+        elif (
+            args.get("first_published_at", None) is not None
+            and args.get("last_published_at", None) is None
+        ):
+            args["last_published_at"] = args["first_published_at"]
+
         if "Photo" in frontmatter:
             image = get_image_by_reference(frontmatter["Photo"])
             if image is not None:
