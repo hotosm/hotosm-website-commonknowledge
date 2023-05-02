@@ -694,7 +694,44 @@ class WagtailHtmlRenderer(HTMLRenderer):
     def render(self, element):
         html = super().render(element)
         if html is not None and len(html) > 0:
-            return BeautifulSoup(html, "html5lib").prettify()
+            parser = BeautifulSoup(html, "html5lib")
+            if parser and parser.body:
+                # print("Untreated:::", parser.body.prettify()[0:600])
+                # Remove empty tags
+                for x in parser.find_all():
+                    if (
+                        x.name
+                        in [
+                            "p",
+                            "span",
+                            "b",
+                            "i",
+                            "u",
+                            "em",
+                            "strong",
+                            "a",
+                            "ol",
+                            "ul",
+                            "li",
+                            "h1",
+                            "h2",
+                            "h3",
+                            "h4",
+                            "h5",
+                            "h6",
+                        ]
+                        and len(x.get_text(strip=True)) == 0
+                    ):
+                        x.unwrap()
+                # print("Treated::::", parser.body.prettify()[0:600])
+                return (
+                    parser.body.prettify()
+                    .replace("<body>", "")
+                    .replace("</body>", "")
+                    .strip()
+                    .lstrip("\n")
+                    .rstrip("\n")
+                )
         return html
 
     def render_heading(self, element):
