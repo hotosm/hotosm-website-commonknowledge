@@ -484,9 +484,11 @@ class Command(BaseCommand):
 
         # /Page fields
 
-        # Create
-        q = config["parent"].get_children().filter(slug=slug)
+        # Get or create page instance
+        q = config["parent"].get_children().filter(slug=args["slug"])
         if not q.exists():
+            print("Creating new page")
+            # Create page
             is_new = True
             page = config["page_type"](**args)
             print(config["parent"], page)
@@ -495,6 +497,11 @@ class Command(BaseCommand):
         else:
             is_new = False
             page = q.get().specific
+            print("Found page matching slug + location")
+            # Update fields
+            for arg in args:
+                setattr(page, arg, args[arg])
+            page.save()
 
         if frontmatter.get("published", True) == False:
             page.unpublish()
