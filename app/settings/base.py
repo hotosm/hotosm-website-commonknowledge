@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "wagtailautocomplete",
     "mapwidgets",
     "slippers",
-    "wagtailmenus",
+    # "wagtailmenus",
 ]
 
 MIDDLEWARE = [
