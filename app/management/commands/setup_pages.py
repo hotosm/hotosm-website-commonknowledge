@@ -54,11 +54,13 @@ class Command(BaseCommand):
             home = site.root_page
             print("Site and homepage already set up", site, home)
         except:
-            home = HomePage(
-                title=settings.WAGTAIL_SITE_NAME,
-                slug=slugify(settings.WAGTAIL_SITE_NAME),
+            ensure_child_page = self.ensure_child_page_factory(root)
+            home = ensure_child_page(
+                HomePage(
+                    title=settings.WAGTAIL_SITE_NAME,
+                    slug=slugify(settings.WAGTAIL_SITE_NAME),
+                )
             )
-            root.add_child(instance=home)
 
             site = Site.objects.get_or_create(
                 hostname=host,
