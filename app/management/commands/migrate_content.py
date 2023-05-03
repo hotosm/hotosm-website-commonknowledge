@@ -608,7 +608,8 @@ class Command(BaseCommand):
 
         # Leave a redirect if the page was moved, either by us or by permalink
         old = "/" + str(page_data["old_path"]).lstrip("/").rstrip("/")
-        new = "/" + page_data["page"].url.lstrip("/en/").lstrip("/").rstrip("/")
+        new_url = page_data["page"].url.lstrip("/en/").lstrip("/").rstrip("/")
+        new = "/" + new_url if not "https://" in new_url else new_url
         if old != new:
             print("⚠️ Redirect required:", old, new)
             redirects.append(
