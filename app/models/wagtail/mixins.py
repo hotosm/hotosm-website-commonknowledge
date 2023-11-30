@@ -54,6 +54,13 @@ class PreviewablePage(Page):
     list_card_template = "app/cards/generic_list_card.html"
 
     @property
+    def old_path(self):
+        try:
+            return json.loads(self.frontmatter).get("old_path", None)
+        except:
+            return ""
+
+    @property
     def resolved_theme_class(self):
         if (
             hasattr(self, "theme_class")
